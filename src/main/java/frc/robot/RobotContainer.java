@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.ArmSystem;
+import frc.robot.subsystems.GrabberSystem;
 import frc.robot.subsystems.TankDriveSystem;
 
 /**
@@ -27,7 +28,8 @@ public class RobotContainer {
     Constants.OperatorConstants.kRightMotorBackChannel,
     Constants.OperatorConstants.kRightMotorForwardChannel,
     m_joystick,
-    Constants.OperatorConstants.kSquareInputs
+    Constants.OperatorConstants.kSquareInputs,
+    Constants.OperatorConstants.kMaxOutput
   );
 
   private final ArmSystem m_armSystem = new ArmSystem(
@@ -35,6 +37,12 @@ public class RobotContainer {
     Constants.OperatorConstants.kArmExtenderChannel,
     m_controller
   );
+
+  private final GrabberSystem m_grabSystem = new GrabberSystem(
+    Constants.OperatorConstants.kGrabberForwardChannel,
+    Constants.OperatorConstants.kGrabberBackwardChannel,
+    m_controller
+    );
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -53,5 +61,6 @@ public class RobotContainer {
   private void configureBindings() {
     new Trigger(m_driveSystem::getCondition).whileTrue(m_driveSystem.driveCommand());
     new Trigger(m_armSystem::getCondition).whileTrue(m_armSystem.armCommand());
+    new Trigger(m_grabSystem::getCondition).whileTrue(m_grabSystem.grabCommand());
   }
 }

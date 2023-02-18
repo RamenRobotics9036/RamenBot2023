@@ -25,6 +25,10 @@ public final class Constants {
     public static final int kArmWinchChannel = 19;
     public static final int kArmExtenderChannel = 20;
 
+    public static final int kGrabberForwardChannel = 0;
+    public static final int kGrabberBackwardChannel = 1;
+
     public static boolean kSquareInputs = true;
+    public static double kMaxOutput = 0.2;
   }
 }
