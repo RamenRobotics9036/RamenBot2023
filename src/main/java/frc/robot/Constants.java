@@ -22,8 +22,8 @@ public final class Constants {
     public static final int kRightMotorBackChannel = 13;
     public static final int kRightMotorForwardChannel = 14;
 
-    public static final int kArmWinchChannel = 18;
-    public static final int kArmExtenderChannel = 19;
+    public static final int kArmWinchChannel = 19;
+    public static final int kArmExtenderChannel = 20;
 
     public static boolean kSquareInputs = true;
   }
