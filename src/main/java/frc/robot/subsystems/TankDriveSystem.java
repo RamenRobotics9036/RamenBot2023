@@ -6,7 +6,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -36,6 +35,7 @@ public class TankDriveSystem extends SubsystemBase {
 
         m_leftGroup = new MotorControllerGroup(m_leftFrontMotor, m_leftBackMotor);
         m_rightGroup = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);
+        m_rightGroup.setInverted(true);
         
         m_drive = new DifferentialDrive(m_leftGroup, m_rightGroup);
         m_drive.setMaxOutput(maxOutput);
@@ -80,5 +80,13 @@ public class TankDriveSystem extends SubsystemBase {
 
     public double getRightEncoder() {
         return m_rightEncoder.getPosition();
+    }
+
+    public double getAverageEncoderPosition() {
+        return (Math.abs(m_leftEncoder.getPosition()) + Math.abs(m_rightEncoder.getPosition())) / 2;
+    }
+
+    public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
+        m_drive.tankDrive(leftSpeed, rightSpeed, squareInputs);
     }
 }

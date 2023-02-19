@@ -30,5 +30,6 @@ public final class Constants {
 
     public static boolean kSquareInputs = true;
     public static double kMaxOutput = 0.2;
+    public static double kDeadband = 0.05;
   }
 }
