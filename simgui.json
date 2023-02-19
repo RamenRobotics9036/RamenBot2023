@@ -17,6 +17,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/ArmSystem": "Subsystem",
+      "/LiveWindow/TankDriveSystem": "Subsystem",
       "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler"
     }
