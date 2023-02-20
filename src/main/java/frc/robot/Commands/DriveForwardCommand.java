@@ -34,7 +34,7 @@ public class DriveForwardCommand extends CommandBase{
         if (rotations >= m_drive.getAverageEncoderPosition() * gearBoxRatio) {
             return true;
         }
-        return false;
+        return false; 
     }
 
     @Override
