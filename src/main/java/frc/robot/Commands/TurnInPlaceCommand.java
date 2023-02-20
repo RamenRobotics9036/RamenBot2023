@@ -1,7 +1,7 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.TankDriveSystem;
+import frc.robot.Subsystems.TankDriveSystem;
 
 public class TurnInPlaceCommand extends CommandBase {
     private double rotations;
@@ -32,9 +32,9 @@ public class TurnInPlaceCommand extends CommandBase {
     @Override
     public void execute() {
         if (turnLeft) {
-            m_drive.tankDrive(percentOutput, -percentOutput, false);
+            m_drive.arcadeDrive(0, -percentOutput, false);
         } else if (turnRight) {
-            m_drive.tankDrive(-percentOutput, percentOutput, false);
+            m_drive.arcadeDrive(0, percentOutput, false);
         } else {
             throw new Error("You cannot turn in place by turning in both directions or neither directions");
         }

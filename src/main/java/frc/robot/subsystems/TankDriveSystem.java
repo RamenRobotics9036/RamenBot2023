@@ -1,9 +1,7 @@
-package frc.robot.subsystems;
+package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.Joystick;
 
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -86,8 +84,7 @@ public class TankDriveSystem extends SubsystemBase {
         return (Math.abs(m_leftEncoderWrapper.getPosition()) + Math.abs(m_rightEncoderWrapper.getPosition())) / 2;
     }
 
-    public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
-        // $TODO Need to quickly passthrough tankDrive, should be easy
-        //m_drive.tankDrive(leftSpeed, rightSpeed, squareInputs);
+    public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
+        m_driveTrainWrapper.arcadeDrive(xSpeed, zRotation, squareInputs);
     }
 }

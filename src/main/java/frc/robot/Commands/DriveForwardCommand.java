@@ -1,7 +1,7 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.TankDriveSystem;
+import frc.robot.Subsystems.TankDriveSystem;
 
 public class DriveForwardCommand extends CommandBase{
     private double rotations;
@@ -26,7 +26,7 @@ public class DriveForwardCommand extends CommandBase{
 
     @Override
     public void execute() {
-        m_drive.tankDrive(percentOutput, percentOutput, false);
+        m_drive.arcadeDrive(percentOutput, 0, false);
     }
 
     @Override
