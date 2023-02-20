@@ -35,7 +35,7 @@ public class RobotContainer {
     Constants.OperatorConstants.kMaxOutput,
     Constants.OperatorConstants.kDeadband,
     Constants.OperatorConstants.kgearBoxRatio,
-    Constants.OperatorConstants.kwheelDiameterMeters
+    Constants.OperatorConstants.kwheelDiameterMeter
   );
 
   private final ArmSystem m_armSystem = new ArmSystem(
@@ -43,7 +43,6 @@ public class RobotContainer {
     Constants.OperatorConstants.kArmExtenderChannel,
     m_controller,
     Constants.OperatorConstants.kDeadband,
-    Constants.OperatorConstants.kSquareInputsArm
   );
 
   private final GrabberSystem m_grabSystem = new GrabberSystem(
