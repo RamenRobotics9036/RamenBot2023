@@ -28,14 +28,16 @@ public class RobotContainer {
     Constants.OperatorConstants.kRightMotorBackChannel,
     Constants.OperatorConstants.kRightMotorForwardChannel,
     m_joystick,
-    Constants.OperatorConstants.kSquareInputs,
+    Constants.OperatorConstants.kSquareInputsDrive,
     Constants.OperatorConstants.kMaxOutput
   );
 
   private final ArmSystem m_armSystem = new ArmSystem(
     Constants.OperatorConstants.kArmWinchChannel,
     Constants.OperatorConstants.kArmExtenderChannel,
-    m_controller
+    m_controller,
+    Constants.OperatorConstants.kDeadBand,
+    Constants.OperatorConstants.kSquareInputsArm
   );
 
   private final GrabberSystem m_grabSystem = new GrabberSystem(

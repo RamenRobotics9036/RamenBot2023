@@ -17,10 +17,10 @@ public final class Constants {
     public static final int kDriverJoystickPort = 0;
     public static final int kDriverControllerPort = 1;
 
-    public static final int kLeftMotorForwardChannel= 11;
+    public static final int kLeftMotorForwardChannel= 13;
     public static final int kLeftMotorBackChannel = 12;
-    public static final int kRightMotorBackChannel = 13;
-    public static final int kRightMotorForwardChannel = 14;
+    public static final int kRightMotorBackChannel = 10;
+    public static final int kRightMotorForwardChannel = 11;
 
     public static final int kArmWinchChannel = 19;
     public static final int kArmExtenderChannel = 20;
@@ -28,7 +28,9 @@ public final class Constants {
     public static final int kGrabberForwardChannel = 0;
     public static final int kGrabberBackwardChannel = 1;
 
-    public static boolean kSquareInputs = true;
+    public static boolean kSquareInputsDrive = true;
+    public static boolean kSquareInputsArm = true;
     public static double kMaxOutput = 0.2;
+    public static double kDeadBand = 0.05;
   }
 }
