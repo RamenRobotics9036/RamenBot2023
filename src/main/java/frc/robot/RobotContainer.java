@@ -32,7 +32,10 @@ public class RobotContainer {
     Constants.OperatorConstants.kRightMotorForwardChannel,
     m_joystick,
     Constants.OperatorConstants.kSquareInputsDrive,
-    Constants.OperatorConstants.kMaxOutput
+    Constants.OperatorConstants.kMaxOutput,
+    Constants.OperatorConstants.kDeadband,
+    Constants.OperatorConstants.kgearBoxRatio,
+    Constants.OperatorConstants.kwheelDiameterMeters
   );
 
   private final ArmSystem m_armSystem = new ArmSystem(

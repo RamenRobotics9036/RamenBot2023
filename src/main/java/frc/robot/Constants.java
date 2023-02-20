@@ -32,5 +32,9 @@ public final class Constants {
     public static boolean kSquareInputsArm = true;
     public static double kMaxOutput = 0.2;
     public static double kDeadband = 0.05;
+
+    public static double kgearBoxRatio = 8.28;
+    public static double kwheelDiameterMeters = 0.1524; // 6 inches
+
   }
 }
