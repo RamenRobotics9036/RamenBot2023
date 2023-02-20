@@ -36,7 +36,7 @@ public class TurnInPlaceCommand extends CommandBase {
         } else if (turnRight) {
             m_drive.tankDrive(-percentOutput, percentOutput, false);
         } else {
-            throw new Error("You cannot turn in place by turning in both directions");
+            throw new Error("You cannot turn in place by turning in both directions or neither directions");
         }
     }
 
