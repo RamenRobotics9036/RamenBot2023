@@ -2,9 +2,9 @@ package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.subsystems.ArmSystem;
-import frc.robot.subsystems.GrabberSystem;
-import frc.robot.subsystems.TankDriveSystem;
+import frc.robot.Subsystems.ArmSystem;
+import frc.robot.Subsystems.GrabberSystem;
+import frc.robot.Subsystems.TankDriveSystem;
 
 public class Auto {
     private Auto() {
@@ -13,10 +13,10 @@ public class Auto {
 
     public static CommandBase getAutoCommand(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
         return Commands.sequence(
-            new DriveForwardCommand(m_driveSystem, 5, 5, 0.2),
-            new TurnInPlaceCommand(m_driveSystem, 5, 5, 0.2, true, false),
-            m_armSystem.rotateWinchMotor(5, 5, 0.2),
-            m_armSystem.rotateExtenderMotor(5, 5, 0.2)
+            new DriveForwardCommand(m_driveSystem, 5, 5, 1),
+            new TurnInPlaceCommand(m_driveSystem, 5, 5, 1, true, false),
+            m_armSystem.rotateWinchMotor(5, 5, 1),
+            m_armSystem.rotateExtenderMotor(5, 5, 1)
             ); // All constants used are dummy constants
     }
 } 

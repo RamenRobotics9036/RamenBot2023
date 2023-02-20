@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Auto;
-import frc.robot.subsystems.ArmSystem;
-import frc.robot.subsystems.GrabberSystem;
-import frc.robot.subsystems.TankDriveSystem;
+import frc.robot.Subsystems.ArmSystem;
+import frc.robot.Subsystems.GrabberSystem;
+import frc.robot.Subsystems.TankDriveSystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,7 +35,7 @@ public class RobotContainer {
     Constants.OperatorConstants.kMaxOutput,
     Constants.OperatorConstants.kDeadband,
     Constants.OperatorConstants.kgearBoxRatio,
-    Constants.OperatorConstants.kwheelDiameterMeter
+    Constants.OperatorConstants.kwheelDiameterMeters
   );
 
   private final ArmSystem m_armSystem = new ArmSystem(
@@ -43,6 +43,7 @@ public class RobotContainer {
     Constants.OperatorConstants.kArmExtenderChannel,
     m_controller,
     Constants.OperatorConstants.kDeadband,
+    Constants.OperatorConstants.kSquareInputsArm
   );
 
   private final GrabberSystem m_grabSystem = new GrabberSystem(
