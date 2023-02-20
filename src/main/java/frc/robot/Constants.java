@@ -17,10 +17,10 @@ public final class Constants {
     public static final int kDriverJoystickPort = 0;
     public static final int kDriverControllerPort = 1;
 
-    public static final int kLeftMotorForwardChannel= 11;
+    public static final int kLeftMotorForwardChannel= 13;
     public static final int kLeftMotorBackChannel = 12;
-    public static final int kRightMotorBackChannel = 13;
-    public static final int kRightMotorForwardChannel = 14;
+    public static final int kRightMotorBackChannel = 10;
+    public static final int kRightMotorForwardChannel = 11;
 
     public static final int kArmWinchChannel = 19;
     public static final int kArmExtenderChannel = 20;
