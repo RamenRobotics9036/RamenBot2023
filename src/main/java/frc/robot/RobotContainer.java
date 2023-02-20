@@ -4,10 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Commands.Auto;
 import frc.robot.subsystems.ArmSystem;
 import frc.robot.subsystems.GrabberSystem;
 import frc.robot.subsystems.TankDriveSystem;
@@ -29,15 +32,17 @@ public class RobotContainer {
     Constants.OperatorConstants.kRightMotorForwardChannel,
     m_joystick,
     Constants.OperatorConstants.kSquareInputsDrive,
-    Constants.OperatorConstants.kMaxOutput
+    Constants.OperatorConstants.kMaxOutput,
+    Constants.OperatorConstants.kDeadband,
+    Constants.OperatorConstants.kgearBoxRatio,
+    Constants.OperatorConstants.kwheelDiameterMeter
   );
 
   private final ArmSystem m_armSystem = new ArmSystem(
     Constants.OperatorConstants.kArmWinchChannel,
     Constants.OperatorConstants.kArmExtenderChannel,
     m_controller,
-    Constants.OperatorConstants.kDeadBand,
-    Constants.OperatorConstants.kSquareInputsArm
+    Constants.OperatorConstants.kDeadband,
   );
 
   private final GrabberSystem m_grabSystem = new GrabberSystem(
@@ -49,6 +54,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     configureBindings();
+    CameraServer.startAutomaticCapture();
   }
 
   /**
@@ -64,5 +70,9 @@ public class RobotContainer {
     new Trigger(m_driveSystem::getCondition).whileTrue(m_driveSystem.driveCommand());
     new Trigger(m_armSystem::getCondition).whileTrue(m_armSystem.armCommand());
     new Trigger(m_grabSystem::getCondition).whileTrue(m_grabSystem.grabCommand());
+  }
+
+  public Command getAutonomousCommand() {
+    return Auto.getAutoCommand(m_driveSystem, m_armSystem, m_grabSystem);
   }
 }

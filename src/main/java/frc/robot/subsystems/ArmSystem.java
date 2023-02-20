@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Commands.RotateMotorCommand;
 
 public class ArmSystem extends SubsystemBase{
     private XboxController m_controller;
@@ -94,5 +95,13 @@ public class ArmSystem extends SubsystemBase{
 
     public double getExtenderEncoder() {
         return m_extenderEncoder.getPosition();
+    }
+
+    public RotateMotorCommand rotateWinchMotor(double rotations, double gearBoxRatio, double percentOutput) {
+        return new RotateMotorCommand(m_armWinch, m_extenderEncoder, rotations, gearBoxRatio, percentOutput);
+    }
+
+    public RotateMotorCommand rotateExtenderMotor(double rotations, double gearBoxRatio, double percentOutput) {
+        return new RotateMotorCommand(m_armExtender, m_extenderEncoder, rotations, gearBoxRatio, percentOutput);
     }
 }
