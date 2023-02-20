@@ -1,47 +1,38 @@
 package frc.robot.subsystems;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.DrivetrainWrapper.IDrivetrainWrapper;
+import frc.robot.DrivetrainWrapper.DrivetrainWrapper;
+import frc.robot.RelativeEncoderWrapper.IRelativeEncoderWrapper;
 
 public class TankDriveSystem extends SubsystemBase {
     private Joystick m_controller;
     private boolean squareInputs;
 
-    private CANSparkMax m_leftFrontMotor;
-    private CANSparkMax m_leftBackMotor;
-    private CANSparkMax m_rightFrontMotor;
-    private CANSparkMax m_rightBackMotor;
-
-    private MotorControllerGroup m_leftGroup;
-    private MotorControllerGroup m_rightGroup;
-    private DifferentialDrive m_drive;
-
-    private RelativeEncoder m_leftEncoder;
-    private RelativeEncoder m_rightEncoder;
+    private IDrivetrainWrapper m_driveTrainWrapper;
+    private IRelativeEncoderWrapper m_leftEncoderWrapper;
+    private IRelativeEncoderWrapper m_rightEncoderWrapper;
 
     public TankDriveSystem(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
-     int rightMotorForwardChannel, Joystick m_controller, boolean squareInputs, double maxOutput)
+     int rightMotorForwardChannel, Joystick m_controller, boolean squareInputs, double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters)
     {
-        m_leftFrontMotor = new CANSparkMax(leftMotorForwardChannel, MotorType.kBrushless);
-        m_leftBackMotor = new CANSparkMax(leftMotorBackChannel, MotorType.kBrushless);
-        m_rightFrontMotor = new CANSparkMax(rightMotorForwardChannel, MotorType.kBrushless);
-        m_rightBackMotor = new CANSparkMax(rightMotorBackChannel, MotorType.kBrushless);
-
-        m_leftGroup = new MotorControllerGroup(m_leftFrontMotor, m_leftBackMotor);
-        m_rightGroup = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);
-        m_rightGroup.setInverted(true);
+        m_driveTrainWrapper = DrivetrainWrapper.CreateDrivetrainWrapper(
+          TimedRobot.isSimulation(),
+          leftMotorBackChannel,
+          leftMotorForwardChannel,
+          rightMotorBackChannel,
+          rightMotorForwardChannel,
+          gearBoxRatio,
+          wheelDiameterMeters);
         
-        m_drive = new DifferentialDrive(m_leftGroup, m_rightGroup);
-        m_drive.setMaxOutput(maxOutput);
+        m_driveTrainWrapper.setMaxOutput(maxOutput);
+        m_driveTrainWrapper.setDeadband(Deadband);
 
-        m_leftEncoder = m_leftFrontMotor.getEncoder();
-        m_rightEncoder = m_rightFrontMotor.getEncoder();
+        m_leftEncoderWrapper = m_driveTrainWrapper.getLeftEncoder();
+        m_rightEncoderWrapper = m_driveTrainWrapper.getRightEncoder();
 
         this.m_controller = m_controller;
         this.squareInputs = squareInputs;
@@ -54,39 +45,46 @@ public class TankDriveSystem extends SubsystemBase {
     public CommandBase driveCommand() {
         return run(
             () -> {
-                m_drive.arcadeDrive(-m_controller.getY(), -m_controller.getX(), squareInputs);
+                m_driveTrainWrapper.arcadeDrive(-m_controller.getY(), -m_controller.getX(), squareInputs);
             }
         );
     }
 
     @Override
     public void periodic() {
-        m_drive.arcadeDrive(-m_controller.getY(), -m_controller.getX(), squareInputs);
+        // Simulation components require robotPeriodic to be called
+        m_driveTrainWrapper.robotPeriodic();
+
+        m_driveTrainWrapper.arcadeDrive(-m_controller.getY(), -m_controller.getX(), squareInputs);
     }
 
     @Override
     public void simulationPeriodic() {
-        m_drive.arcadeDrive(-m_controller.getY(), -m_controller.getX(), squareInputs);
+      // Simulation components require simulationPeriodic to be called
+      m_driveTrainWrapper.simulationPeriodic();
+
+      m_driveTrainWrapper.arcadeDrive(-m_controller.getY(), -m_controller.getX(), squareInputs);
     }
 
     public void resetEncoders() {
-        m_leftEncoder.setPosition(0);
-        m_rightEncoder.setPosition(0);
+        m_leftEncoderWrapper.resetPosition();
+        m_rightEncoderWrapper.resetPosition();
     }
 
     public double getLeftEncoder() {
-        return m_leftEncoder.getPosition();
+        return m_leftEncoderWrapper.getPosition();
     }
 
     public double getRightEncoder() {
-        return m_rightEncoder.getPosition();
+        return m_rightEncoderWrapper.getPosition();
     }
 
     public double getAverageEncoderPosition() {
-        return (Math.abs(m_leftEncoder.getPosition()) + Math.abs(m_rightEncoder.getPosition())) / 2;
+        return (Math.abs(m_leftEncoderWrapper.getPosition()) + Math.abs(m_rightEncoderWrapper.getPosition())) / 2;
     }
 
     public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
-        m_drive.tankDrive(leftSpeed, rightSpeed, squareInputs);
+        // $TODO Need to quickly passthrough tankDrive, should be easy
+        //m_drive.tankDrive(leftSpeed, rightSpeed, squareInputs);
     }
 }
