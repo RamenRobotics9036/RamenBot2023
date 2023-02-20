@@ -28,7 +28,8 @@ public final class Constants {
     public static final int kGrabberForwardChannel = 0;
     public static final int kGrabberBackwardChannel = 1;
 
-    public static boolean kSquareInputs = true;
+    public static boolean kSquareInputsDrive = true;
+    public static boolean kSquareInputsArm = true;
     public static double kMaxOutput = 0.2;
     public static double kDeadband = 0.05;
   }

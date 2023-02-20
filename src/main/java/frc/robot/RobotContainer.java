@@ -31,7 +31,7 @@ public class RobotContainer {
     Constants.OperatorConstants.kRightMotorBackChannel,
     Constants.OperatorConstants.kRightMotorForwardChannel,
     m_joystick,
-    Constants.OperatorConstants.kSquareInputs,
+    Constants.OperatorConstants.kSquareInputsDrive,
     Constants.OperatorConstants.kMaxOutput
   );
 
@@ -40,7 +40,7 @@ public class RobotContainer {
     Constants.OperatorConstants.kArmExtenderChannel,
     m_controller,
     Constants.OperatorConstants.kDeadband,
-    Constants.OperatorConstants.kSquareInputs
+    Constants.OperatorConstants.kSquareInputsArm
   );
 
   private final GrabberSystem m_grabSystem = new GrabberSystem(
