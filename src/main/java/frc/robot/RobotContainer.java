@@ -39,7 +39,8 @@ public class RobotContainer {
     Constants.OperatorConstants.kArmWinchChannel,
     Constants.OperatorConstants.kArmExtenderChannel,
     m_controller,
-    Constants.OperatorConstants.kDeadband
+    Constants.OperatorConstants.kDeadband,
+    Constants.OperatorConstants.kSquareInputs
   );
 
   private final GrabberSystem m_grabSystem = new GrabberSystem(
