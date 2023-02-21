@@ -87,4 +87,8 @@ public class TankDriveSystem extends SubsystemBase {
     public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
         m_driveTrainWrapper.arcadeDrive(xSpeed, zRotation, squareInputs);
     }
+
+    public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
+        m_driveTrainWrapper.tankDrive(leftSpeed, rightSpeed, squareInputs);
+    }
 }

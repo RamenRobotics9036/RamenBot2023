@@ -32,9 +32,9 @@ public class TurnInPlaceCommand extends CommandBase {
     @Override
     public void execute() {
         if (turnLeft) {
-            m_drive.arcadeDrive(0, -percentOutput, false);
+            m_drive.tankDrive(percentOutput, -percentOutput, false);
         } else if (turnRight) {
-            m_drive.arcadeDrive(0, percentOutput, false);
+            m_drive.tankDrive(-percentOutput, percentOutput, false);
         } else {
             throw new Error("You cannot turn in place by turning in both directions or neither directions");
         }

@@ -35,8 +35,13 @@ public class DrivetrainWrapperSimulation implements IDrivetrainWrapper {
   public void simulationPeriodic() {
     m_driveTrain.simulationPeriodic();
   }
+
   public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
     m_driveTrain.arcadeDrive(xSpeed, zRotation, squareInputs);
+  }
+
+  public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
+    m_driveTrain.arcadeDrive((leftSpeed + rightSpeed) / 2, (rightSpeed - leftSpeed) / 2, squareInputs);
   }
 
   public IRelativeEncoderWrapper getLeftEncoder() {

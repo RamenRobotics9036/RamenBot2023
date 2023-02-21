@@ -11,6 +11,9 @@ public interface IDrivetrainWrapper {
 
   public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs);
 
+  
+  public void tankDrive(double leftSpeed,double rightSpeed, boolean squareInputs);
+
   public IRelativeEncoderWrapper getLeftEncoder();
   public IRelativeEncoderWrapper getRightEncoder();
 }

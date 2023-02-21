@@ -26,7 +26,7 @@ public class DriveForwardCommand extends CommandBase{
 
     @Override
     public void execute() {
-        m_drive.arcadeDrive(percentOutput, 0, false);
+        m_drive.tankDrive(percentOutput, percentOutput, false);
     }
 
     @Override

@@ -106,6 +106,10 @@ public class DrivetrainWrapper implements IDrivetrainWrapper {
     m_DifferentialDrive.arcadeDrive(xSpeed, zRotation, squareInputs);
   }
 
+  public void tankDrive(double leftSpeed,double rightSpeed, boolean squareInputs) {
+    m_DifferentialDrive.tankDrive(leftSpeed, rightSpeed, squareInputs);
+  }
+
   public IRelativeEncoderWrapper getLeftEncoder() {
     return m_leftEncoderWrapper;
   }
