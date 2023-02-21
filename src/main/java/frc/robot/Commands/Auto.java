@@ -13,10 +13,10 @@ public class Auto {
 
     public static CommandBase getAutoCommand(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
         return Commands.sequence(
-            new DriveForwardCommand(m_driveSystem, 5, 5, 1),
-            new TurnInPlaceCommand(m_driveSystem, 5, 5, 1, true, false),
-            m_armSystem.rotateWinchMotor(5, 5, 1),
-            m_armSystem.rotateExtenderMotor(5, 5, 1)
+            new DriveForwardCommand(m_driveSystem, 5, 5, 0.2),
+            new TurnInPlaceCommand(m_driveSystem, 5, 5, 0.2, true, false),
+            m_armSystem.rotateWinchMotor(5, 5, 0.2),
+            m_armSystem.rotateExtenderMotor(5, 5, 0.2)
             ); // All constants used are dummy constants
     }
 } 
