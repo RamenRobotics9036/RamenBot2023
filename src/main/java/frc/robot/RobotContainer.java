@@ -53,7 +53,6 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    configureBindings();
     // CameraServer.startAutomaticCapture();
   }
 
@@ -66,7 +65,7 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {
+  public void configureBindings() {
     new Trigger(m_driveSystem::getCondition).whileTrue(m_driveSystem.driveCommand());
     new Trigger(m_armSystem::getCondition).whileTrue(m_armSystem.armCommand());
     new Trigger(m_grabSystem::getCondition).whileTrue(m_grabSystem.grabCommand());
