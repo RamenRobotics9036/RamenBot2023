@@ -23,6 +23,7 @@ public class ArmSystem extends SubsystemBase{
     public ArmSystem(int armWinchChannel, int armExtenderChannel, XboxController m_controller, double m_deadband, boolean squareInputs) {
         m_armWinch = new CANSparkMax(armWinchChannel, MotorType.kBrushless);
         m_armExtender = new CANSparkMax(armExtenderChannel, MotorType.kBrushless);
+        m_armExtender.setInverted(true);
 
         m_winchEncoder = m_armWinch.getEncoder();
         m_extenderEncoder = m_armExtender.getEncoder();
