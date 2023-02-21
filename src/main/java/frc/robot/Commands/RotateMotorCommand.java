@@ -33,7 +33,7 @@ public class RotateMotorCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (rotations >= m_encoder.getPosition() * gearBoxRatio) {
+        if (rotations <= m_encoder.getPosition() / gearBoxRatio) {
             return true;
         }
         return false;
@@ -41,5 +41,6 @@ public class RotateMotorCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+        m_motor.set(0);
     }
 }

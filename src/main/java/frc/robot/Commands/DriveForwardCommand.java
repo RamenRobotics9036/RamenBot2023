@@ -31,7 +31,7 @@ public class DriveForwardCommand extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        if (rotations >= m_drive.getAverageEncoderPosition() * gearBoxRatio) {
+        if (rotations <= m_drive.getAverageEncoderPosition() / gearBoxRatio) {
             return true;
         }
         return false;
@@ -39,5 +39,6 @@ public class DriveForwardCommand extends CommandBase{
 
     @Override
     public void end(boolean interrupted) {
+        m_drive.arcadeDrive(0, 0, false);
     }
 }
