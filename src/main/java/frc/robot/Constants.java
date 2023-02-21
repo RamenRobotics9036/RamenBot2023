@@ -34,7 +34,8 @@ public final class Constants {
     
     public static double kDeadband = 0.05;
 
-    public static double kgearBoxRatio = 8.28;
-    public static double kwheelDiameterMeters = 0.1524; // 6 inches
+    public static double kGearBoxRatio = 8.28;
+    public static double kWheelDiameterMeters = 0.1524;
+    public static double kWheelDiameterInches = 6;
   }
 }
