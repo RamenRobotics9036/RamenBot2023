@@ -13,7 +13,7 @@ public class Auto {
 
     public static CommandBase getAutoCommand(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
         return Commands.sequence(
-            new TurnInPlaceCommand(m_driveSystem, 5, 8, 0.2, true, false)
+            new TurnInPlaceCommand(m_driveSystem, 5, 8, 0.2, true)
             ); // All constants used are dummy constants
     }
 }

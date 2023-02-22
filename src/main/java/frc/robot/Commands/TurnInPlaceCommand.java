@@ -9,16 +9,14 @@ public class TurnInPlaceCommand extends CommandBase {
     private double percentOutput;
 
     private boolean turnLeft;
-    private boolean turnRight;
 
     TankDriveSystem m_drive;
-    public TurnInPlaceCommand(TankDriveSystem m_drive, double rotations, double gearBoxRatio, double percentOutput, boolean turnLeft, boolean turnRight) {
+    public TurnInPlaceCommand(TankDriveSystem m_drive, double rotations, double gearBoxRatio, double percentOutput, boolean turnLeft) {
         this.rotations = rotations;
         this.gearBoxRatio = gearBoxRatio;
         this.percentOutput = percentOutput;
 
         this.turnLeft = turnLeft;
-        this.turnRight = turnRight;
 
         this.m_drive = m_drive;
         m_drive.resetEncoders();
@@ -33,10 +31,8 @@ public class TurnInPlaceCommand extends CommandBase {
     public void execute() {
         if (turnLeft) {
             m_drive.tankDrive(percentOutput, -percentOutput, false);
-        } else if (turnRight) {
-            m_drive.tankDrive(-percentOutput, percentOutput, false);
         } else {
-            throw new Error("You cannot turn in place by turning in both directions or neither directions");
+            m_drive.tankDrive(-percentOutput, percentOutput, false);
         }
     }
 
