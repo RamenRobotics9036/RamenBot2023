@@ -14,8 +14,9 @@ package frc.robot;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverJoystickPort = 0;
-    public static final int kDriverControllerPort = 1;
+    public static final int kDriverJoystickPort1 = 0;
+    public static final int kDriverJoystickPort2 = 2;
+    public static final int kDriverControllerPort = 3;
 
     public static final int kLeftMotorForwardChannel= 13;
     public static final int kLeftMotorBackChannel = 12;
@@ -36,5 +37,7 @@ public final class Constants {
 
     public static double kgearBoxRatio = 8.28;
     public static double kwheelDiameterMeters = 0.1524; // 6 inches
+
+    public static boolean kUseArcadeDrive = false;
   }
 }

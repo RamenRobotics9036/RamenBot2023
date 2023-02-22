@@ -21,7 +21,8 @@ import frc.robot.Subsystems.TankDriveSystem;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final Joystick m_joystick = new Joystick(Constants.OperatorConstants.kDriverJoystickPort);
+  private final Joystick m_joystick1 = new Joystick(Constants.OperatorConstants.kDriverJoystickPort1);
+  private final Joystick m_joystick2 = new Joystick(Constants.OperatorConstants.kDriverJoystickPort2);
   private final XboxController m_controller = new XboxController(Constants.OperatorConstants.kDriverControllerPort);
 
   private final TankDriveSystem m_driveSystem = new TankDriveSystem(
@@ -29,12 +30,14 @@ public class RobotContainer {
     Constants.OperatorConstants.kLeftMotorBackChannel,
     Constants.OperatorConstants.kRightMotorBackChannel,
     Constants.OperatorConstants.kRightMotorForwardChannel,
-    m_joystick,
+    m_joystick1,
+    m_joystick2,
     Constants.OperatorConstants.kSquareInputsDrive,
     Constants.OperatorConstants.kMaxOutput,
     Constants.OperatorConstants.kDeadband,
     Constants.OperatorConstants.kgearBoxRatio,
-    Constants.OperatorConstants.kwheelDiameterMeters
+    Constants.OperatorConstants.kwheelDiameterMeters,
+    Constants.OperatorConstants.kUseArcadeDrive
   );
 
   private final ArmSystem m_armSystem = new ArmSystem(
