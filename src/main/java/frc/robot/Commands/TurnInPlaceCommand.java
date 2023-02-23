@@ -9,10 +9,9 @@ public class TurnInPlaceCommand extends CommandBase {
     private double percentOutput;
 
     private boolean turnLeft;
-
     TankDriveSystem m_drive;
-    public TurnInPlaceCommand(TankDriveSystem m_drive, double rotations, double gearBoxRatio,
-     double percentOutput, boolean turnLeft) {
+
+    public TurnInPlaceCommand(TankDriveSystem m_drive, double rotations, double gearBoxRatio, double percentOutput, boolean turnLeft) {
         this.rotations = rotations;
         this.gearBoxRatio = gearBoxRatio;
         this.percentOutput = percentOutput;
