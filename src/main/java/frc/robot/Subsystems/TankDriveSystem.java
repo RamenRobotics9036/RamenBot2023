@@ -10,15 +10,18 @@ import frc.robot.DrivetrainWrapper.DrivetrainWrapper;
 import frc.robot.RelativeEncoderWrapper.IRelativeEncoderWrapper;
 
 public class TankDriveSystem extends SubsystemBase {
-    private Joystick m_controller;
+    private Joystick m_controller1;
+    private Joystick m_controller2;
     private boolean squareInputs;
+    private boolean useArcadeDrive;
 
     private IDrivetrainWrapper m_driveTrainWrapper;
     private IRelativeEncoderWrapper m_leftEncoderWrapper;
     private IRelativeEncoderWrapper m_rightEncoderWrapper;
 
     public TankDriveSystem(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
-     int rightMotorForwardChannel, Joystick m_controller, boolean squareInputs, double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters)
+     int rightMotorForwardChannel, Joystick m_controller1, Joystick m_controller2, boolean squareInputs,
+    double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters, boolean useArcadeDrive)
     {
         m_driveTrainWrapper = DrivetrainWrapper.CreateDrivetrainWrapper(
           TimedRobot.isSimulation(),
@@ -35,8 +38,10 @@ public class TankDriveSystem extends SubsystemBase {
         m_leftEncoderWrapper = m_driveTrainWrapper.getLeftEncoder();
         m_rightEncoderWrapper = m_driveTrainWrapper.getRightEncoder();
 
-        this.m_controller = m_controller;
+        this.m_controller1 = m_controller1;
+        this.m_controller2 = m_controller2;
         this.squareInputs = squareInputs;
+        this.useArcadeDrive = useArcadeDrive;
     }
 
     public boolean getCondition() {
@@ -46,25 +51,31 @@ public class TankDriveSystem extends SubsystemBase {
     public CommandBase driveCommand() {
         return run(
             () -> {
-                m_driveTrainWrapper.arcadeDrive(-m_controller.getY(), -m_controller.getX(), squareInputs);
+                if (useArcadeDrive) {
+                    m_driveTrainWrapper.arcadeDrive(-m_controller1.getY(), -m_controller1.getX(), squareInputs);
+                } else {
+                    m_driveTrainWrapper.tankDrive(-m_controller1.getY(), -m_controller2.getY(), squareInputs);
+                }
             }
         );
     }
 
     @Override
     public void periodic() {
-        // Simulation components require robotPeriodic to be called
-        m_driveTrainWrapper.robotPeriodic();
-
-        m_driveTrainWrapper.arcadeDrive(-m_controller.getY(), -m_controller.getX(), squareInputs);
+        if (useArcadeDrive) {
+            m_driveTrainWrapper.arcadeDrive(-m_controller1.getY(), -m_controller1.getX(), squareInputs);
+        } else {
+            m_driveTrainWrapper.tankDrive(-m_controller1.getY(), -m_controller2.getY(), squareInputs);
+        }
     }
 
     @Override
     public void simulationPeriodic() {
-      // Simulation components require simulationPeriodic to be called
-      m_driveTrainWrapper.simulationPeriodic();
-
-      m_driveTrainWrapper.arcadeDrive(-m_controller.getY(), -m_controller.getX(), squareInputs);
+        if (useArcadeDrive) {
+            m_driveTrainWrapper.arcadeDrive(-m_controller1.getY(), -m_controller1.getX(), squareInputs);
+        } else {
+            m_driveTrainWrapper.tankDrive(-m_controller1.getY(), -m_controller2.getY(), squareInputs);
+        }
     }
 
     public void resetEncoders() {
