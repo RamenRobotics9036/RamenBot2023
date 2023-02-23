@@ -19,9 +19,13 @@ public class Auto {
     }
 
     public static void initShuffleBoardCommands(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
-        SmartDashboard.putData("Rotate Winch", m_armSystem.rotateWinchMotor(1, 60, 0.2));
-        SmartDashboard.putData("Rotate Extender", m_armSystem.rotateExtenderMotor(1, 60, 0.2));
-        SmartDashboard.putData("Turn In Place", new TurnInPlaceCommand(m_driveSystem, 1, 8, 0.2, true));
-        SmartDashboard.putData("Drive Forward", new DriveForwardCommand(m_driveSystem, 1, 8, 0.2));
+        SmartDashboard.putData("Rotate Winch Forwards", m_armSystem.rotateWinchMotor(1, 60, 0.35));
+        SmartDashboard.putData("Rotate Winch Backwards", m_armSystem.rotateWinchMotor(1, 60, -0.35));
+        SmartDashboard.putData("Rotate Extender Backwards", m_armSystem.rotateExtenderMotor(1, 60, -0.35));
+        SmartDashboard.putData("Rotate Extender Backwards", m_armSystem.rotateExtenderMotor(1, 60, 0.35));
+        SmartDashboard.putData("Turn In Place", new TurnInPlaceCommand(m_driveSystem, 1, 8, 0.35, true));
+        SmartDashboard.putData("Drive Forwards", new DriveForwardCommand(m_driveSystem, 1, 8, 0.35));
+        SmartDashboard.putData("Drive Backwards", new DriveForwardCommand(m_driveSystem, 1, 8, 0.35));
+        SmartDashboard.putData("Grab Cargo", new GrabberToggleCommand(m_grabSystem));
     }
 }

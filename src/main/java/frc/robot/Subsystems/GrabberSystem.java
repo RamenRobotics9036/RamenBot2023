@@ -56,4 +56,8 @@ public class GrabberSystem extends SubsystemBase {
             m_solenoid.set(Value.kReverse);
         }
     }
+
+    public void toggle() {
+        m_solenoid.toggle();
+    }
 }
