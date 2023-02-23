@@ -38,7 +38,8 @@ public class RobotContainer {
     Constants.OperatorConstants.kDeadband,
     Constants.OperatorConstants.kGearBoxRatio,
     Constants.OperatorConstants.kWheelDiameterMeters,
-    Constants.OperatorConstants.kUseArcadeDrive
+    Constants.OperatorConstants.kUseArcadeDrive,
+    Constants.OperatorConstants.kSlewRate
   );
 
   private final ArmSystem m_armSystem = new ArmSystem(
