@@ -54,8 +54,6 @@ public class TankDriveSystem extends SubsystemBase {
         this.maxOutput = maxOutput;
 
         this.slewRate = slewRate;
-        slewLimiter = new SlewRateLimiter(slewRate);
-
         initDashBoard();
     }
 
@@ -73,8 +71,7 @@ public class TankDriveSystem extends SubsystemBase {
         m_driveTrainWrapper.setMaxOutput(maxOutput);
         SmartDashboard.putNumber("Left Encoder", m_leftEncoderWrapper.getPosition());
         SmartDashboard.putNumber("Right Encoder", m_rightEncoderWrapper.getPosition());
-        slewRate = SmartDashboard.getNumber("Slew Rate", slewRate);
-        // Change Slew Rate
+        // Update Slew Limiter Value
     }
 
     public boolean getCondition() {
@@ -137,5 +134,10 @@ public class TankDriveSystem extends SubsystemBase {
 
     public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
         m_driveTrainWrapper.tankDrive(leftSpeed, rightSpeed, squareInputs);
+    }
+
+    public void setLimiter(double slewRate) {
+        this.slewRate = slewRate;
+        slewLimiter = new SlewRateLimiter(this.slewRate);
     }
 }
