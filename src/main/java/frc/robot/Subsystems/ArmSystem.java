@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Commands.RotateMotorCommand;
@@ -30,6 +31,18 @@ public class ArmSystem extends SubsystemBase{
 
         this.m_controller = m_controller;
         this.m_deadband = m_deadband;
+
+        initDashBoard();
+    }
+
+    private void initDashBoard() {
+        SmartDashboard.putNumber("Winch Encoder", m_winchEncoder.getPosition());
+        SmartDashboard.putNumber("Extender Encoder", m_extenderEncoder.getPosition());
+    }
+
+    private void updateDashBoard() {
+        SmartDashboard.putNumber("Winch Encoder", m_winchEncoder.getPosition());
+        SmartDashboard.putNumber("Extender Encoder", m_extenderEncoder.getPosition());
     }
 
     public boolean getCondition() {
@@ -46,6 +59,7 @@ public class ArmSystem extends SubsystemBase{
         
                 m_armWinch.set(winchOutput);
                 m_armExtender.set(extenderOutput);
+                updateDashBoard();
             }
         );
     }
@@ -59,6 +73,7 @@ public class ArmSystem extends SubsystemBase{
 
         m_armWinch.set(winchOutput);
         m_armExtender.set(extenderOutput);
+        updateDashBoard();
     }
     
     @Override
@@ -70,6 +85,7 @@ public class ArmSystem extends SubsystemBase{
 
         m_armWinch.set(winchOutput);
         m_armExtender.set(extenderOutput);
+        updateDashBoard();
     }
 
     public void resetEncoders() {

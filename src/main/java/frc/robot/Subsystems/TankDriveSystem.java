@@ -54,12 +54,16 @@ public class TankDriveSystem extends SubsystemBase {
     private void initDashBoard() {
         SmartDashboard.putNumber("Max Speed", maxOutput);
         SmartDashboard.putBoolean("Drive Mode", useArcadeDrive);
+        SmartDashboard.putNumber("Left Encoder", m_leftEncoderWrapper.getPosition());
+        SmartDashboard.putNumber("Right Encoder", m_rightEncoderWrapper.getPosition());
     }
 
     private void updateDashBoard() {
         useArcadeDrive = SmartDashboard.getBoolean("Drive Mode", useArcadeDrive);
         maxOutput = SmartDashboard.getNumber("Max Speed", maxOutput);
         m_driveTrainWrapper.setMaxOutput(maxOutput);
+        SmartDashboard.putNumber("Left Encoder", m_leftEncoderWrapper.getPosition());
+        SmartDashboard.putNumber("Right Encoder", m_rightEncoderWrapper.getPosition());
     }
 
     public boolean getCondition() {
