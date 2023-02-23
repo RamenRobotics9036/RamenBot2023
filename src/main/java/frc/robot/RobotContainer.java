@@ -78,4 +78,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return Auto.getAutoCommand(m_driveSystem, m_armSystem, m_grabSystem);
   }
+
+  public void initShuffleBoardCommands() {
+    Auto.initShuffleBoardCommands(m_driveSystem, m_armSystem, m_grabSystem);
+  }
 }
