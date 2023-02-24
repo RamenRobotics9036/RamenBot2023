@@ -37,7 +37,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    m_robotContainer.putShuffleBoardCommands();
     CommandScheduler.getInstance().run();
   }
 
@@ -65,6 +64,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.configureBindings();
+    m_robotContainer.putShuffleBoardCommands();
   }
 
   /** This function is called periodically during operator control. */
