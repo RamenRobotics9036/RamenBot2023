@@ -37,7 +37,9 @@ public final class Constants {
     public static boolean kUseArcadeDrive = true;
     public static double kSlewRate = 0.5;
 
-    public static double kGearBoxRatio = 8.28;
+    public static double kGearBoxRatioDrive = 8.28;
+    public static double kGearBoxRatioArm = 60;
+
     public static double kWheelDiameterMeters = 0.1524;
     public static double kWheelDiameterInches = 6;
   }
