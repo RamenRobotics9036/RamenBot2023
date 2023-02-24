@@ -42,5 +42,8 @@ public final class Constants {
 
     public static double kWheelDiameterMeters = 0.1524;
     public static double kWheelDiameterInches = 6;
+
+    public static double kAutoMotorSpeed = 0.3;
+    public static double kAutoMotorRotations = 1;
   }
 }

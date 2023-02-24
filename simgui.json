@@ -30,6 +30,7 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Grab Cargo": "Command",
       "/SmartDashboard/Rotate Extender Backwards": "Command",
+      "/SmartDashboard/Rotate Extender Forwards": "Command",
       "/SmartDashboard/Rotate Winch Backwards": "Command",
       "/SmartDashboard/Rotate Winch Forwards": "Command",
       "/SmartDashboard/Turn In Place": "Command"
