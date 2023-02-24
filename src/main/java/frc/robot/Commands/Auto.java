@@ -53,7 +53,48 @@ public class Auto {
          SmartDashboard.getNumber("Auto Motor Rotations",
           Constants.OperatorConstants.kAutoMotorRotations),
            Constants.OperatorConstants.kGearBoxRatioDrive,
+           SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed)));
+
+        SmartDashboard.putData("Drive Backwards", new DriveForwardCommand(m_driveSystem,
+         SmartDashboard.getNumber("Auto Motor Rotations",
+          Constants.OperatorConstants.kAutoMotorRotations),
+           Constants.OperatorConstants.kGearBoxRatioDrive,
            -SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed)));
+
+        SmartDashboard.putData("Grab Cargo", new GrabberToggleCommand(m_grabSystem));
+    }
+
+    public static void putShuffleboardCommands(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
+        SmartDashboard.putData("Rotate Winch Forwards", m_armSystem.rotateWinchMotor(
+            SmartDashboard.getNumber("Auto Motor Rotations", Constants.OperatorConstants.kAutoMotorRotations),
+             Constants.OperatorConstants.kGearBoxRatioArm,
+             SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed)));
+
+        SmartDashboard.putData("Rotate Winch Backwards", m_armSystem.rotateWinchMotor(
+        SmartDashboard.getNumber("Auto Motor Rotations", Constants.OperatorConstants.kAutoMotorRotations),
+            Constants.OperatorConstants.kGearBoxRatioArm,
+            -SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed)));
+
+        SmartDashboard.putData("Rotate Extender Forwards", m_armSystem.rotateExtenderMotor(
+            SmartDashboard.getNumber("Auto Motor Rotations", Constants.OperatorConstants.kAutoMotorRotations),
+                Constants.OperatorConstants.kGearBoxRatioArm,
+                SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed)));
+
+        SmartDashboard.putData("Rotate Extender Backwards", m_armSystem.rotateExtenderMotor(
+        SmartDashboard.getNumber("Auto Motor Rotations", Constants.OperatorConstants.kAutoMotorRotations),
+            Constants.OperatorConstants.kGearBoxRatioArm,
+            -SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed)));
+
+        SmartDashboard.putData("Turn In Place", new TurnInPlaceCommand(m_driveSystem,
+         SmartDashboard.getNumber("Auto Motor Rotations", Constants.OperatorConstants.kAutoMotorRotations),
+          Constants.OperatorConstants.kGearBoxRatioDrive, SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed),
+        SmartDashboard.getBoolean("Auto Turn Left", true)));
+
+        SmartDashboard.putData("Drive Forwards", new DriveForwardCommand(m_driveSystem,
+         SmartDashboard.getNumber("Auto Motor Rotations",
+          Constants.OperatorConstants.kAutoMotorRotations),
+           Constants.OperatorConstants.kGearBoxRatioDrive,
+           SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed)));
 
         SmartDashboard.putData("Drive Backwards", new DriveForwardCommand(m_driveSystem,
          SmartDashboard.getNumber("Auto Motor Rotations",
