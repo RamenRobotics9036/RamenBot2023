@@ -41,6 +41,9 @@ public class DrivetrainWrapperSimulation implements IDrivetrainWrapper {
   }
 
   public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
+    // $TODO - Remove this
+    System.out.println("leftSpeed + rightSpeed / 2: " + (leftSpeed + rightSpeed) / 2 + ", rightSpeed - leftSpeed / 2: " + (rightSpeed - leftSpeed) / 2);
+
     m_driveTrain.arcadeDrive((leftSpeed + rightSpeed) / 2, (rightSpeed - leftSpeed) / 2, squareInputs);
   }
 
