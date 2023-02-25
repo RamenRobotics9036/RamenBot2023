@@ -13,6 +13,9 @@ public class Auto {
     }
 
     public static CommandBase getAutoCommand(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
+        // $TODO - Remove this
+        System.out.println("Called getAutoCommand");
+
         return Commands.sequence(
             new TurnInPlaceCommand(m_driveSystem, 5, 8, 0.2, false)
             ); // All constants used are dummy constants
@@ -26,6 +29,6 @@ public class Auto {
         SmartDashboard.putData("Turn In Place", new TurnInPlaceCommand(m_driveSystem, 1, 8, 0.35, true));
         SmartDashboard.putData("Drive Forwards", new DriveForwardCommand(m_driveSystem, 1, 8, 0.35));
         SmartDashboard.putData("Drive Backwards", new DriveForwardCommand(m_driveSystem, 1, 8, 0.35));
-        SmartDashboard.putData("Grab Cargo", new GrabberToggleCommand(m_grabSystem));
+        // $TODO GrabberToggleCommand doesn't exist in project, SmartDashboard.putData("Grab Cargo", new GrabberToggleCommand(m_grabSystem));
     }
 }

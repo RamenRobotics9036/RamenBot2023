@@ -74,10 +74,23 @@ public class TankDriveSystem extends SubsystemBase {
         SmartDashboard.putNumber("Right Encoder", m_rightEncoderWrapper.getPosition());
     }
 
+    // Simulated drivetrain requires periodic calls to function
+    private void updatePeriodicSimulation(boolean simulationPeriodic) {
+      if (simulationPeriodic) {
+        m_driveTrainWrapper.simulationPeriodic();
+      } else {
+        m_driveTrainWrapper.robotPeriodic();
+      }
+
+      // $TODO - Remove this
+      // System.out.println("Called updatePeriodicSimulation (simulationPeriodic: " + simulationPeriodic + ")");
+    }
+
     public boolean getCondition() {
         return true;
     }
 
+    // $TODO - Is this being called?
     public CommandBase driveCommand() {
         return run(
             () -> {
@@ -94,21 +107,27 @@ public class TankDriveSystem extends SubsystemBase {
     @Override
     public void periodic() {
         updateDashBoard();
-        if (useArcadeDrive) {
-            m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), -m_controller1.getX(), squareInputs);
-        } else {
-            m_driveTrainWrapper.tankDrive(slewLimiter.calculate(-m_controller1.getY()), slewLimiter.calculate(-m_controller2.getY()), squareInputs);
-        }
+        updatePeriodicSimulation(false);
+
+        // $TODO - This shouldn't be called
+        //if (useArcadeDrive) {
+        //    m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), -m_controller1.getX(), squareInputs);
+        //} else {
+        //    m_driveTrainWrapper.tankDrive(slewLimiter.calculate(-m_controller1.getY()), slewLimiter.calculate(-m_controller2.getY()), squareInputs);
+        //}
     }
 
     @Override
     public void simulationPeriodic() {
         updateDashBoard();
-        if (useArcadeDrive) {
-            m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), -m_controller1.getX(), squareInputs);
-        } else {
-            m_driveTrainWrapper.tankDrive(slewLimiter.calculate(-m_controller1.getY()), slewLimiter.calculate(-m_controller2.getY()), squareInputs);
-        }
+        updatePeriodicSimulation(true);
+
+        // $TODO - This shouldn't be called
+        //if (useArcadeDrive) {
+        //    m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), -m_controller1.getX(), squareInputs);
+        //} else {
+        //    m_driveTrainWrapper.tankDrive(slewLimiter.calculate(-m_controller1.getY()), slewLimiter.calculate(-m_controller2.getY()), squareInputs);
+        //}
     }
 
     public void resetEncoders() {
@@ -133,6 +152,9 @@ public class TankDriveSystem extends SubsystemBase {
     }
 
     public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
+        // $TODO - Remove this
+        System.out.println("TankDriveSystem::tankDrive called leftSpeed: " + leftSpeed + ", rightSpeed: " + rightSpeed);
+    
         m_driveTrainWrapper.tankDrive(leftSpeed, rightSpeed, squareInputs);
     }
 

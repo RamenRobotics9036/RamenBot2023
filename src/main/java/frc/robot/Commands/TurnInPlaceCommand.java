@@ -21,6 +21,9 @@ public class TurnInPlaceCommand extends CommandBase {
         this.m_drive = m_drive;
         m_drive.resetEncoders();
         addRequirements(m_drive);
+
+        // $TODO - Remove this
+        System.out.println("Called TurnInPlaceCommand constructor with rotations: " + rotations);
     }
 
     @Override

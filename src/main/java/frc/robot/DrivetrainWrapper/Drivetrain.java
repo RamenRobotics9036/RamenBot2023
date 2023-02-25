@@ -136,6 +136,9 @@ public class Drivetrain {
 
   /** Simulation ArcadeDrive. */
   public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
+    // $TODO - Remove this
+    System.out.println("Internal arcadeDrive called xSpeed: " + xSpeed + ", zRotation: " + zRotation);
+  
     xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
     zRotation = MathUtil.clamp(zRotation, -1.0, 1.0);
 
