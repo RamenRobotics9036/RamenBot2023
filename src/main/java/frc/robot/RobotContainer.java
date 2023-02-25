@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -38,8 +39,7 @@ public class RobotContainer {
     Constants.OperatorConstants.kDeadband,
     Constants.OperatorConstants.kGearBoxRatioDrive,
     Constants.OperatorConstants.kWheelDiameterMetersDrive,
-    Constants.OperatorConstants.kUseArcadeDrive,
-    Constants.OperatorConstants.kSlewRate
+    Constants.OperatorConstants.kUseArcadeDrive
   );
 
   private final ArmSystem m_armSystem = new ArmSystem(
@@ -80,11 +80,18 @@ public class RobotContainer {
     return Auto.getAutoCommand(m_driveSystem, m_armSystem, m_grabSystem);
   }
 
-  public void initShuffleBoardCommands() {
-    Auto.initShuffleBoardCommands(m_driveSystem, m_armSystem, m_grabSystem);
+  public void putShuffleBoardCommands() {
+    Auto.putShuffleBoardCommands(m_driveSystem, m_armSystem, m_grabSystem);
   }
 
-  public void putShuffleBoardCommands() {
-    Auto.putShuffleboardCommands(m_driveSystem, m_armSystem, m_grabSystem);
+  public void resetEncoders() {
+    m_driveSystem.resetEncoders();
+  }
+
+  public void initShuffleBoard() {
+    SmartDashboard.putNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed);
+    SmartDashboard.putNumber("Auto Motor Distance", Constants.OperatorConstants.kAutoMotorDistance);
+    SmartDashboard.putBoolean("Auto Turn Left", true);
+    SmartDashboard.putNumber("Starting Position", 0);
   }
 }

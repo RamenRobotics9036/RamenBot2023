@@ -19,17 +19,13 @@ public class TankDriveSystem extends SubsystemBase {
     private boolean useArcadeDrive;
     private double maxOutput;
 
-    private double slewRate;
-    private SlewRateLimiter slewLimiter;
-
     private IDrivetrainWrapper m_driveTrainWrapper;
     private IRelativeEncoderWrapper m_leftEncoderWrapper;
     private IRelativeEncoderWrapper m_rightEncoderWrapper;
 
     public TankDriveSystem(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
      int rightMotorForwardChannel, Joystick m_controller1, Joystick m_controller2, boolean squareInputs,
-    double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters, boolean useArcadeDrive,
-    double slewRate)
+    double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters, boolean useArcadeDrive)
     {
         m_driveTrainWrapper = DrivetrainWrapper.CreateDrivetrainWrapper(
           TimedRobot.isSimulation(),
@@ -53,8 +49,6 @@ public class TankDriveSystem extends SubsystemBase {
         this.useArcadeDrive = useArcadeDrive;
         this.maxOutput = maxOutput;
 
-        this.slewRate = slewRate;
-        slewLimiter = new SlewRateLimiter(SmartDashboard.getNumber("Slew Rate", slewRate));
         initDashBoard();
     }
 
@@ -63,7 +57,6 @@ public class TankDriveSystem extends SubsystemBase {
         SmartDashboard.putBoolean("Drive Mode", useArcadeDrive);
         SmartDashboard.putNumber("Left Encoder", m_leftEncoderWrapper.getPosition());
         SmartDashboard.putNumber("Right Encoder", m_rightEncoderWrapper.getPosition());
-        SmartDashboard.putNumber("Slew Rate", slewRate);
     }
 
     private void updateDashBoard() {
@@ -83,9 +76,9 @@ public class TankDriveSystem extends SubsystemBase {
             () -> {
                 updateDashBoard();
                 if (useArcadeDrive) {
-                    m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), -m_controller1.getX(), squareInputs);
+                    m_driveTrainWrapper.arcadeDrive(-m_controller1.getY(), -m_controller1.getX(), squareInputs);
                 } else {
-                    m_driveTrainWrapper.tankDrive(slewLimiter.calculate(-m_controller1.getY()), slewLimiter.calculate(-m_controller2.getY()), squareInputs);
+                    m_driveTrainWrapper.tankDrive(-m_controller1.getY(), -m_controller2.getY(), squareInputs);
                 }
             }
         );
@@ -95,9 +88,9 @@ public class TankDriveSystem extends SubsystemBase {
     public void periodic() {
         updateDashBoard();
         if (useArcadeDrive) {
-            m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), -m_controller1.getX(), squareInputs);
+            m_driveTrainWrapper.arcadeDrive(-m_controller1.getY(), -m_controller1.getX(), squareInputs);
         } else {
-            m_driveTrainWrapper.tankDrive(slewLimiter.calculate(-m_controller1.getY()), slewLimiter.calculate(-m_controller2.getY()), squareInputs);
+            m_driveTrainWrapper.tankDrive(-m_controller1.getY(), -m_controller2.getY(), squareInputs);
         }
     }
 
@@ -105,9 +98,9 @@ public class TankDriveSystem extends SubsystemBase {
     public void simulationPeriodic() {
         updateDashBoard();
         if (useArcadeDrive) {
-            m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), -m_controller1.getX(), squareInputs);
+            m_driveTrainWrapper.arcadeDrive(-m_controller1.getY(), -m_controller1.getX(), squareInputs);
         } else {
-            m_driveTrainWrapper.tankDrive(slewLimiter.calculate(-m_controller1.getY()), slewLimiter.calculate(-m_controller2.getY()), squareInputs);
+            m_driveTrainWrapper.tankDrive(-m_controller1.getY(), -m_controller2.getY(), squareInputs);
         }
     }
 
@@ -134,10 +127,5 @@ public class TankDriveSystem extends SubsystemBase {
 
     public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
         m_driveTrainWrapper.tankDrive(leftSpeed, rightSpeed, squareInputs);
-    }
-
-    public void setLimiter(double slewRate) {
-        this.slewRate = slewRate;
-        slewLimiter = new SlewRateLimiter(this.slewRate);
     }
 }

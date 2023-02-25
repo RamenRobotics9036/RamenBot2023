@@ -25,7 +25,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    m_robotContainer.initShuffleBoardCommands();
+    m_robotContainer.initShuffleBoard();
   }
 
   /**
@@ -65,6 +65,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.configureBindings();
     m_robotContainer.putShuffleBoardCommands();
+    m_robotContainer.resetEncoders();
   }
 
   /** This function is called periodically during operator control. */
