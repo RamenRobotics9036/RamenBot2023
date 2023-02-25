@@ -7,14 +7,16 @@ public class TurnInPlaceCommand extends CommandBase {
     private double rotations;
     private double gearBoxRatio;
     private double percentOutput;
+    private double wheelCircumference;
 
     private boolean turnLeft;
     TankDriveSystem m_drive;
 
-    public TurnInPlaceCommand(TankDriveSystem m_drive, double rotations, double gearBoxRatio, double percentOutput, boolean turnLeft) {
+    public TurnInPlaceCommand(TankDriveSystem m_drive, double rotations, double gearBoxRatio, double percentOutput, boolean turnLeft, double wheelCircumference) {
         this.rotations = rotations;
         this.gearBoxRatio = gearBoxRatio;
         this.percentOutput = percentOutput;
+        this.wheelCircumference = wheelCircumference;
 
         this.turnLeft = turnLeft;
 
@@ -38,7 +40,7 @@ public class TurnInPlaceCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (rotations <= m_drive.getAverageEncoderPosition() / gearBoxRatio) {
+        if (rotations <= m_drive.getAverageEncoderPosition() / gearBoxRatio * wheelCircumference) {
             return true;
         }
         return false;

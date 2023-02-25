@@ -37,7 +37,7 @@ public class RobotContainer {
     Constants.OperatorConstants.kMaxOutput,
     Constants.OperatorConstants.kDeadband,
     Constants.OperatorConstants.kGearBoxRatioDrive,
-    Constants.OperatorConstants.kWheelDiameterMeters,
+    Constants.OperatorConstants.kWheelDiameterMetersDrive,
     Constants.OperatorConstants.kUseArcadeDrive,
     Constants.OperatorConstants.kSlewRate
   );

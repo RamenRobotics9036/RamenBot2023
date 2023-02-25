@@ -40,10 +40,17 @@ public final class Constants {
     public static double kGearBoxRatioDrive = 8.28;
     public static double kGearBoxRatioArm = 60;
 
-    public static double kWheelDiameterMeters = 0.1524;
-    public static double kWheelDiameterInches = 6;
+    public static double kWheelDiameterMetersDrive = 0.1524;
+    public static double kWheelDiameterInchesDrive = 6;
+    public static double kWheelCircumferenceInchesDrive = kWheelDiameterInchesDrive * Math.PI;
+
+    public static double kWheelDiameterInchWinch = 0.75;
+    public static double kWheelCircumferenceInchesWinch = 0.75 * Math.PI;
+
+    public static double kWheelDiameterInchExtender = 0.75;
+    public static double kWheelCircumferenceInchesExtender = 0.75 * Math.PI;
 
     public static double kAutoMotorSpeed = 0.3;
-    public static double kAutoMotorRotations = 1;
+    public static double kAutoMotorDistance = 1;
   }
 }

@@ -4,16 +4,18 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.TankDriveSystem;
 
 public class DriveForwardCommand extends CommandBase{
-    private double rotations;
+    private double distance;
     private double gearBoxRatio;
     private double percentOutput;
+    private double wheelCircumference;
 
     TankDriveSystem m_drive;
 
-    public DriveForwardCommand(TankDriveSystem m_drive, double rotations, double gearBoxRatio, double percentOutput) {
-        this.rotations = rotations;
+    public DriveForwardCommand(TankDriveSystem m_drive, double distance, double gearBoxRatio, double percentOutput, double wheelCircumference) {
+        this.distance = distance;
         this.gearBoxRatio = gearBoxRatio;
         this.percentOutput = percentOutput;
+        this.wheelCircumference = wheelCircumference;
 
         this.m_drive = m_drive;
         m_drive.resetEncoders();
@@ -31,7 +33,7 @@ public class DriveForwardCommand extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        if (rotations <= m_drive.getAverageEncoderPosition() / gearBoxRatio) {
+        if (distance <= m_drive.getAverageEncoderPosition() / gearBoxRatio * wheelCircumference) {
             return true;
         }
         return false;
