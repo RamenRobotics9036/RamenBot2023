@@ -31,11 +31,10 @@ public final class Constants {
 
     public static boolean kSquareInputsDrive = true;
     public static boolean kSquareInputsArm = true;
-    public static double kMaxOutput = 0.35;
+    public static double kMaxOutput = 0.2;
     
     public static double kDeadband = 0.05;
     public static boolean kUseArcadeDrive = true;
-    public static double kSlewRate = 0.5;
 
     public static double kGearBoxRatioDrive = 8.28;
     public static double kGearBoxRatioArm = 60;
@@ -43,6 +42,7 @@ public final class Constants {
     public static double kWheelDiameterMetersDrive = 0.1524;
     public static double kWheelDiameterInchesDrive = 6;
     public static double kWheelCircumferenceInchesDrive = kWheelDiameterInchesDrive * Math.PI;
+    public static double kSlewLimit = 3;
 
     public static double kWheelDiameterInchWinch = 0.75;
     public static double kWheelCircumferenceInchesWinch = 0.75 * Math.PI;
