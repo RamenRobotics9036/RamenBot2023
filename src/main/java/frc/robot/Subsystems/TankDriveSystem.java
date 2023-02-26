@@ -97,6 +97,10 @@ public class TankDriveSystem extends SubsystemBase {
     public CommandBase driveCommand() {
         return run(
             () -> {
+                // $TODO Is this being called for teleop drive?
+                // Also, is this being called by autonomous drive, OR is arcadeDrive and tankDrive being called DIRECTLY below by turninplace.java?
+                System.out.println("CORRECT driveCommand being called");
+
                 updateDashBoard();
                 if (useArcadeDrive) {
                     m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), -m_controller1.getX(), squareInputs);
@@ -151,12 +155,15 @@ public class TankDriveSystem extends SubsystemBase {
     }
 
     public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
+        // $TODO - Remove this
+        System.out.println("WRONG TankDriveSystem::arcadeDrive called xSpeed: " + xSpeed + ", zRotation: " + zRotation);
+
         m_driveTrainWrapper.arcadeDrive(xSpeed, zRotation, squareInputs);
     }
 
     public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
         // $TODO - Remove this
-        System.out.println("TankDriveSystem::tankDrive called leftSpeed: " + leftSpeed + ", rightSpeed: " + rightSpeed);
+        System.out.println("WRONG TankDriveSystem::tankDrive called leftSpeed: " + leftSpeed + ", rightSpeed: " + rightSpeed);
     
         m_driveTrainWrapper.tankDrive(leftSpeed, rightSpeed, squareInputs);
     }
