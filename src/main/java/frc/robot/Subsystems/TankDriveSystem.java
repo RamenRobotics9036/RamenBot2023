@@ -2,13 +2,12 @@ package frc.robot.Subsystems;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
-
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.DrivetrainWrapper.IDrivetrainWrapper;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.DrivetrainWrapper.DrivetrainWrapper;
+import frc.robot.DrivetrainWrapper.IDrivetrainWrapper;
 import frc.robot.RelativeEncoderWrapper.IRelativeEncoderWrapper;
 
 public class TankDriveSystem extends SubsystemBase {
@@ -69,7 +68,7 @@ public class TankDriveSystem extends SubsystemBase {
         SmartDashboard.putNumber("Slew Limit", slewLimit);
     }
 
-    private void updateDashBoard() {
+    public void updateDashBoard() {
         useArcadeDrive = SmartDashboard.getBoolean("Drive Mode", useArcadeDrive);
         maxOutput = SmartDashboard.getNumber("Max Speed", maxOutput);
         m_driveTrainWrapper.setMaxOutput(maxOutput);
@@ -84,7 +83,6 @@ public class TankDriveSystem extends SubsystemBase {
     public CommandBase driveCommand() {
         return run(
             () -> {
-                updateDashBoard();
                 if (useArcadeDrive) {
                     m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), -m_controller1.getX(), squareInputs);
                 } else {
@@ -96,7 +94,6 @@ public class TankDriveSystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        updateDashBoard();
         if (useArcadeDrive) {
             m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), -m_controller1.getX(), squareInputs);
         } else {
@@ -106,7 +103,6 @@ public class TankDriveSystem extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {
-        updateDashBoard();
         if (useArcadeDrive) {
             m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), -m_controller1.getX(), squareInputs);
         } else {
@@ -121,7 +117,7 @@ public class TankDriveSystem extends SubsystemBase {
 
     public double getLeftEncoder() {
         return m_leftEncoderWrapper.getPosition();
-    }
+    } 
 
     public double getRightEncoder() {
         return m_rightEncoderWrapper.getPosition();

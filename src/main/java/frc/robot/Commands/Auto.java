@@ -16,24 +16,33 @@ public class Auto {
     public static CommandBase getAutoCommand(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
         if (SmartDashboard.getNumber("Starting Position", 0) == 0) {
             return Commands.sequence(
-                new DriveCommand(m_driveSystem, 1, Constants.OperatorConstants.kGearBoxRatioDrive, 0.3, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-                // Score Piece Here
-                new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.6, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
-                // Put Down Winch And Extender
-
+                new GrabberToggleCommand(m_grabSystem), // Clamp game piece
+                new DriveCommand(m_driveSystem, Constants.OperatorConstants.kAutoDriveBack, Constants.OperatorConstants.kGearBoxRatioDrive, -0.3, Constants.OperatorConstants.kWheelCircumferenceInchesDrive), // Drive backwards slightly
+                m_armSystem.rotateWinchMotor(Constants.OperatorConstants.kAutoWinchRotate, Constants.OperatorConstants.kGearBoxRatioArm, Constants.OperatorConstants.kAutoMotorSpeed, Constants.OperatorConstants.kWheelDiameterInchWinch), // Rotate winch for scoring  
+                m_armSystem.rotateExtenderMotor(Constants.OperatorConstants.kAutoExtenderRotate, Constants.OperatorConstants.kGearBoxRatioArm, Constants.OperatorConstants.kAutoMotorSpeed, Constants.OperatorConstants.kWheelCircumferenceInchesExtender), // Rotate winch for scoring
+                new GrabberToggleCommand(m_grabSystem), // Unclamp game piece to score
+                new DriveCommand(m_driveSystem, Constants.OperatorConstants.kAutoDriveToGamePieces, Constants.OperatorConstants.kGearBoxRatioDrive, -0.6, Constants.OperatorConstants.kWheelCircumferenceInchesDrive) // Drive to pieces in middle of field
+                // Retract Winch And Extender
             );
         } else if (SmartDashboard.getNumber("Starting Position", 0) == 1) {
             return Commands.sequence(
-                new DriveCommand(m_driveSystem, 1, Constants.OperatorConstants.kGearBoxRatioDrive, 0.3, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
-                // Score Piece Here
-                // Put Down Winch And Extender
-            );
+                new GrabberToggleCommand(m_grabSystem), // Clamp game piece
+                new DriveCommand(m_driveSystem, Constants.OperatorConstants.kAutoDriveBack, Constants.OperatorConstants.kGearBoxRatioDrive, -0.3, Constants.OperatorConstants.kWheelCircumferenceInchesDrive), // Drive backwards slightly
+                m_armSystem.rotateWinchMotor(Constants.OperatorConstants.kAutoWinchRotate, Constants.OperatorConstants.kGearBoxRatioArm, Constants.OperatorConstants.kAutoMotorSpeed, Constants.OperatorConstants.kWheelDiameterInchWinch), // Rotate winch for scoring
+                m_armSystem.rotateExtenderMotor(Constants.OperatorConstants.kAutoExtenderRotate, Constants.OperatorConstants.kGearBoxRatioArm, Constants.OperatorConstants.kAutoMotorSpeed, Constants.OperatorConstants.kWheelCircumferenceInchesExtender), // Rotate winch for scoring
+                new GrabberToggleCommand(m_grabSystem), // Unclamp game piece to score
+                new DriveCommand(m_driveSystem, Constants.OperatorConstants.kAutoDriveToChargeStation, Constants.OperatorConstants.kGearBoxRatioDrive, -0.1, Constants.OperatorConstants.kWheelCircumferenceInchesDrive) // Drive Up Charging Station
+                // Retract Winch And Extender
+                );
         } else if (SmartDashboard.getNumber("Starting Position", 0) == 2) {
             return Commands.sequence(
-                new DriveCommand(m_driveSystem, 1, Constants.OperatorConstants.kGearBoxRatioDrive, 0.3, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-                // Score Piece Here
-                new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.6, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
-                // Put Down Winch And Extender
+                new GrabberToggleCommand(m_grabSystem), // Clamp game piece
+                new DriveCommand(m_driveSystem, Constants.OperatorConstants.kAutoDriveBack, Constants.OperatorConstants.kGearBoxRatioDrive, -0.3, Constants.OperatorConstants.kWheelCircumferenceInchesDrive), // Drive backwards slightly
+                m_armSystem.rotateWinchMotor(Constants.OperatorConstants.kAutoWinchRotate, Constants.OperatorConstants.kGearBoxRatioArm, Constants.OperatorConstants.kAutoMotorSpeed, Constants.OperatorConstants.kWheelDiameterInchWinch), // Rotate winch for scoring
+                m_armSystem.rotateExtenderMotor(Constants.OperatorConstants.kAutoExtenderRotate, Constants.OperatorConstants.kGearBoxRatioArm, Constants.OperatorConstants.kAutoMotorSpeed, Constants.OperatorConstants.kWheelCircumferenceInchesExtender), // Rotate winch for scoring
+                new GrabberToggleCommand(m_grabSystem), // Unclamp game piece to score
+                new DriveCommand(m_driveSystem, Constants.OperatorConstants.kAutoDriveToGamePieces, Constants.OperatorConstants.kGearBoxRatioDrive, -0.6, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)  // Drive to pieces in middle of field
+                // Retract Winch And Extender
             );
         }
         return null; // 0 is left, 1 is middle, 2 is right    

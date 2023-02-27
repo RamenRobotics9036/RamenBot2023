@@ -81,18 +81,24 @@ public class RobotContainer {
     return Auto.getAutoCommand(m_driveSystem, m_armSystem, m_grabSystem);
   }
 
-  public void putShuffleBoardCommands() {
+  public void putShuffleBoardAutoCommands() {
     Auto.putShuffleBoardCommands(m_driveSystem, m_armSystem, m_grabSystem);
   }
 
   public void resetEncoders() {
     m_driveSystem.resetEncoders();
+    m_armSystem.resetEncoders();
   }
 
-  public void initShuffleBoard() {
+  public void initDashboard() {
     SmartDashboard.putNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed);
     SmartDashboard.putNumber("Auto Motor Distance", Constants.OperatorConstants.kAutoMotorDistance);
     SmartDashboard.putBoolean("Auto Turn Left", true);
     SmartDashboard.putNumber("Starting Position", 0);
+  }
+
+  public void updateDashBoard() {
+    m_driveSystem.updateDashBoard();
+    m_armSystem.updateDashBoard();
   }
 }

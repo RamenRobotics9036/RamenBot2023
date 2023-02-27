@@ -34,7 +34,7 @@ public final class Constants {
     public static double kMaxOutput = 0.2;
     
     public static double kDeadband = 0.05;
-    public static boolean kUseArcadeDrive = true;
+    public static boolean kUseArcadeDrive = false;
 
     public static double kGearBoxRatioDrive = 8.28;
     public static double kGearBoxRatioArm = 60;
@@ -52,5 +52,12 @@ public final class Constants {
 
     public static double kAutoMotorSpeed = 0.3;
     public static double kAutoMotorDistance = 1;
+
+    public static double kAutoDriveBack = 3;
+    public static double kAutoWinchRotate = 1;
+    public static double kAutoExtenderRotate = 1;
+
+    public static double kAutoDriveToGamePieces = 15 * 12; // 12 for inches to feet
+    public static double kAutoDriveToChargeStation = 11 * 12; // 12 for inches to feet
   }
 }

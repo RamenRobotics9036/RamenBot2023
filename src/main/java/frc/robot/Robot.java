@@ -25,7 +25,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    m_robotContainer.initShuffleBoard();
+    m_robotContainer.initDashboard();
   }
 
   /**
@@ -64,7 +64,8 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.configureBindings();
-    m_robotContainer.putShuffleBoardCommands();
+    m_robotContainer.putShuffleBoardAutoCommands();
+    m_robotContainer.updateDashBoard();
     m_robotContainer.resetEncoders();
   }
 

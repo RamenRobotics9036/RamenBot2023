@@ -14,7 +14,7 @@ public class DriveCommand extends CommandBase{
     public DriveCommand(TankDriveSystem m_drive, double distance, double gearBoxRatio, double percentOutput, double wheelCircumference) {
         this.distance = distance;
         this.gearBoxRatio = gearBoxRatio;
-        this.percentOutput = -percentOutput;
+        this.percentOutput = percentOutput;
         this.wheelCircumference = wheelCircumference;
 
         this.m_drive = m_drive;

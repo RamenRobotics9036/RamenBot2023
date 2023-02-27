@@ -40,11 +40,11 @@ public class ArmSystem extends SubsystemBase{
         SmartDashboard.putNumber("Extender Encoder", m_extenderEncoder.getPosition());
     }
 
-    private void updateDashBoard() {
+    public void updateDashBoard() {
         SmartDashboard.putNumber("Winch Encoder", m_winchEncoder.getPosition());
         SmartDashboard.putNumber("Extender Encoder", m_extenderEncoder.getPosition());
     }
-
+ 
     public boolean getCondition() {
         return true;
     }
@@ -59,7 +59,6 @@ public class ArmSystem extends SubsystemBase{
         
                 m_armWinch.set(winchOutput);
                 m_armExtender.set(extenderOutput);
-                updateDashBoard();
             }
         );
     }
@@ -73,7 +72,6 @@ public class ArmSystem extends SubsystemBase{
 
         m_armWinch.set(winchOutput);
         m_armExtender.set(extenderOutput);
-        updateDashBoard();
     }
     
     @Override
@@ -85,7 +83,6 @@ public class ArmSystem extends SubsystemBase{
 
         m_armWinch.set(winchOutput);
         m_armExtender.set(extenderOutput);
-        updateDashBoard();
     }
 
     public void resetEncoders() {
@@ -115,5 +112,13 @@ public class ArmSystem extends SubsystemBase{
 
     public RotateMotorCommand rotateExtenderMotor(double rotations, double gearBoxRatio, double percentOutput, double extenderCircumference) {
         return new RotateMotorCommand(m_armExtender, m_extenderEncoder, rotations, gearBoxRatio, percentOutput, extenderCircumference);
+    }
+
+    public void setWinchSpeed(double speed) {
+        m_armWinch.set(speed);
+    }
+
+    public void setExtenderSpeed(double speed) {
+        m_armExtender.set(speed);
     }
 }
