@@ -31,7 +31,9 @@ public final class Constants {
 
     public static boolean kSquareInputsDrive = true;
     public static boolean kSquareInputsArm = true;
-    public static double kMaxOutput = 0.2;
+
+    public static double kMaxOutputDrive = 0.2;
+    public static double kMaxOutputWinch = 0.2;
     
     public static double kDeadband = 0.05;
     public static boolean kUseArcadeDrive = false;

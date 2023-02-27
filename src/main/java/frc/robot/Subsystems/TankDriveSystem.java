@@ -84,7 +84,7 @@ public class TankDriveSystem extends SubsystemBase {
         return run(
             () -> {
                 if (useArcadeDrive) {
-                    m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), -m_controller1.getX(), squareInputs);
+                    m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), m_controller1.getX(), squareInputs);
                 } else {
                     m_driveTrainWrapper.tankDrive(slewLimiter.calculate(-m_controller1.getY()), slewLimiter.calculate(-m_controller2.getY()), squareInputs);
                 }
@@ -95,7 +95,7 @@ public class TankDriveSystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (useArcadeDrive) {
-            m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), -m_controller1.getX(), squareInputs);
+            m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), m_controller1.getX(), squareInputs);
         } else {
             m_driveTrainWrapper.tankDrive(slewLimiter.calculate(-m_controller1.getY()), slewLimiter.calculate(-m_controller2.getY()), squareInputs);
         }
@@ -104,7 +104,7 @@ public class TankDriveSystem extends SubsystemBase {
     @Override
     public void simulationPeriodic() {
         if (useArcadeDrive) {
-            m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), -m_controller1.getX(), squareInputs);
+            m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), m_controller1.getX(), squareInputs);
         } else {
             m_driveTrainWrapper.tankDrive(slewLimiter.calculate(-m_controller1.getY()), slewLimiter.calculate(-m_controller2.getY()), squareInputs);
         }

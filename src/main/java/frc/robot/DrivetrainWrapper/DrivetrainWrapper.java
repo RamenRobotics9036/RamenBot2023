@@ -45,7 +45,7 @@ public class DrivetrainWrapper implements IDrivetrainWrapper {
     m_leftMotor   = new MotorControllerGroup(m_leftMotor1, m_leftMotor2);
     m_rightMotor  = new MotorControllerGroup(m_rightMotor1, m_rightMotor2);
 
-    m_rightMotor.setInverted(true);
+    m_leftMotor.setInverted(true);
 
     m_DifferentialDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
 

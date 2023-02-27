@@ -14,6 +14,7 @@ import frc.robot.Commands.RotateMotorCommand;
 public class ArmSystem extends SubsystemBase{
     private XboxController m_controller;
     private double m_deadband;
+    private double maxOutputWinch;
 
     private CANSparkMax m_armWinch;
     private CANSparkMax m_armExtender;
@@ -21,7 +22,7 @@ public class ArmSystem extends SubsystemBase{
     private RelativeEncoder m_winchEncoder;
     private RelativeEncoder m_extenderEncoder;
 
-    public ArmSystem(int armWinchChannel, int armExtenderChannel, XboxController m_controller, double m_deadband, boolean squareInputs) {
+    public ArmSystem(int armWinchChannel, int armExtenderChannel, XboxController m_controller, double m_deadband, boolean squareInputs, double maxOutputWinch) {
         m_armWinch = new CANSparkMax(armWinchChannel, MotorType.kBrushless);
         m_armExtender = new CANSparkMax(armExtenderChannel, MotorType.kBrushless);
         m_armExtender.setInverted(true);
@@ -31,6 +32,7 @@ public class ArmSystem extends SubsystemBase{
 
         this.m_controller = m_controller;
         this.m_deadband = m_deadband;
+        this.maxOutputWinch = maxOutputWinch;
 
         initDashBoard();
     }
@@ -38,11 +40,13 @@ public class ArmSystem extends SubsystemBase{
     private void initDashBoard() {
         SmartDashboard.putNumber("Winch Encoder", m_winchEncoder.getPosition());
         SmartDashboard.putNumber("Extender Encoder", m_extenderEncoder.getPosition());
+        SmartDashboard.putNumber("Winch Max Output", maxOutputWinch);
     }
 
     public void updateDashBoard() {
         SmartDashboard.putNumber("Winch Encoder", m_winchEncoder.getPosition());
         SmartDashboard.putNumber("Extender Encoder", m_extenderEncoder.getPosition());
+        maxOutputWinch = SmartDashboard.getNumber("Winch Max Output", maxOutputWinch);
     }
  
     public boolean getCondition() {
@@ -57,7 +61,7 @@ public class ArmSystem extends SubsystemBase{
                 winchOutput = winchOutput * Math.abs(winchOutput);
                 extenderOutput = extenderOutput * Math.abs(extenderOutput);
         
-                m_armWinch.set(winchOutput);
+                m_armWinch.set(winchOutput * maxOutputWinch);
                 m_armExtender.set(extenderOutput);
             }
         );
@@ -70,7 +74,7 @@ public class ArmSystem extends SubsystemBase{
         winchOutput = winchOutput * Math.abs(winchOutput);
         extenderOutput = extenderOutput * Math.abs(extenderOutput);
 
-        m_armWinch.set(winchOutput);
+        m_armWinch.set(winchOutput * maxOutputWinch);
         m_armExtender.set(extenderOutput);
     }
     
@@ -81,7 +85,7 @@ public class ArmSystem extends SubsystemBase{
         winchOutput = winchOutput * Math.abs(winchOutput);
         extenderOutput = extenderOutput * Math.abs(extenderOutput);
 
-        m_armWinch.set(winchOutput);
+        m_armWinch.set(winchOutput * maxOutputWinch);
         m_armExtender.set(extenderOutput);
     }
 
