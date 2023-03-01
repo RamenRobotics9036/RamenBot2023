@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,44 +23,41 @@ import frc.robot.Subsystems.TankDriveSystem;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final Joystick m_joystick1 = new Joystick(Constants.OperatorConstants.kDriverJoystickPort1);
-  private final Joystick m_joystick2 = new Joystick(Constants.OperatorConstants.kDriverJoystickPort2);
-  private final XboxController m_controller = new XboxController(Constants.OperatorConstants.kDriverControllerPort);
+  private final XboxController m_controller1 = new XboxController(Constants.OperatorConstants.kDriverControllerPort1);
+  private final XboxController m_controller2 = new XboxController(Constants.OperatorConstants.kDriverControllerPort2);
 
-  private final TankDriveSystem m_driveSystem = new TankDriveSystem(
+  public final TankDriveSystem m_driveSystem = new TankDriveSystem(
     Constants.OperatorConstants.kLeftMotorForwardChannel,
     Constants.OperatorConstants.kLeftMotorBackChannel,
     Constants.OperatorConstants.kRightMotorBackChannel,
     Constants.OperatorConstants.kRightMotorForwardChannel,
-    m_joystick1,
-    m_joystick2,
+    m_controller1,
     Constants.OperatorConstants.kSquareInputsDrive,
     Constants.OperatorConstants.kMaxOutputDrive,
     Constants.OperatorConstants.kDeadband,
     Constants.OperatorConstants.kGearBoxRatioDrive,
     Constants.OperatorConstants.kWheelDiameterMetersDrive,
-    Constants.OperatorConstants.kUseArcadeDrive,
     Constants.OperatorConstants.kSlewLimit
   );
 
-  private final ArmSystem m_armSystem = new ArmSystem(
+  public final ArmSystem m_armSystem = new ArmSystem(
     Constants.OperatorConstants.kArmWinchChannel,
     Constants.OperatorConstants.kArmExtenderChannel,
-    m_controller,
+    m_controller2,
     Constants.OperatorConstants.kDeadband,
     Constants.OperatorConstants.kSquareInputsArm,
     Constants.OperatorConstants.kMaxOutputWinch
   );
 
-  private final GrabberSystem m_grabSystem = new GrabberSystem(
+  public final GrabberSystem m_grabSystem = new GrabberSystem(
     Constants.OperatorConstants.kGrabberForwardChannel,
     Constants.OperatorConstants.kGrabberBackwardChannel,
-    m_controller
+    m_controller2
     );
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
   }
 
   /**
@@ -79,6 +76,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    System.out.println("Auto command scheduled container");
     return Auto.getAutoCommand(m_driveSystem, m_armSystem, m_grabSystem);
   }
 

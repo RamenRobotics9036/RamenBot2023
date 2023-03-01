@@ -35,13 +35,6 @@
       "/SmartDashboard/Rotate Winch Backwards": "Command",
       "/SmartDashboard/Rotate Winch Forwards": "Command",
       "/SmartDashboard/Turn In Place": "Command"
-    },
-    "windows": {
-      "/SmartDashboard/Field": {
-        "window": {
-          "visible": true
-        }
-      }
     }
   },
   "NetworkTables View": {

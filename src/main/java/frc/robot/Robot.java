@@ -66,7 +66,6 @@ public class Robot extends TimedRobot {
     m_robotContainer.configureBindings();
     m_robotContainer.putShuffleBoardAutoCommands();
     m_robotContainer.updateDashBoard();
-    m_robotContainer.resetEncoders();
   }
 
   /** This function is called periodically during operator control. */

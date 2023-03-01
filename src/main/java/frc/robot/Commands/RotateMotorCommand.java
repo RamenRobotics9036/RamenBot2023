@@ -2,6 +2,7 @@ package frc.robot.Commands;
 
 import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -10,6 +11,7 @@ public class RotateMotorCommand extends CommandBase {
     private double gearBoxRatio;
     private double percentOutput;
     private double wheelCircumference;
+    private Timer time;
 
     private MotorController m_motor;
     private RelativeEncoder m_encoder;
@@ -22,10 +24,12 @@ public class RotateMotorCommand extends CommandBase {
         
         this.m_motor = m_motor;
         this.m_encoder = m_encoder;
+        time = new Timer();
     }
 
     @Override
     public void initialize() {
+        time.start();
     }
 
     @Override
@@ -35,14 +39,15 @@ public class RotateMotorCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (distance <= m_encoder.getPosition() / gearBoxRatio * wheelCircumference) {
+        if (time.get() > 0.5) {
             return true;
         }
+        System.out.println("Enc pos" + m_encoder.getPosition());
         return false;
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_motor.set(0);
+        m_motor.stopMotor();
     }
 }

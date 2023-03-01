@@ -14,7 +14,7 @@ public class DriveCommand extends CommandBase{
     public DriveCommand(TankDriveSystem m_drive, double distance, double gearBoxRatio, double percentOutput, double wheelCircumference) {
         this.distance = distance;
         this.gearBoxRatio = gearBoxRatio;
-        this.percentOutput = percentOutput;
+        this.percentOutput = -percentOutput;
         this.wheelCircumference = wheelCircumference;
 
         this.m_drive = m_drive;
@@ -28,7 +28,7 @@ public class DriveCommand extends CommandBase{
 
     @Override
     public void execute() {
-        m_drive.tankDrive(percentOutput, percentOutput, false);
+        m_drive.tankDrive(-percentOutput, percentOutput, false);
     }
 
     @Override
@@ -41,6 +41,6 @@ public class DriveCommand extends CommandBase{
 
     @Override
     public void end(boolean interrupted) {
-        m_drive.arcadeDrive(0, 0, false);
+        m_drive.tankDrive(0, 0, false);
     }
 }

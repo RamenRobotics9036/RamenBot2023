@@ -14,9 +14,8 @@ package frc.robot;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverJoystickPort1 = 0;
-    public static final int kDriverJoystickPort2 = 1;
-    public static final int kDriverControllerPort = 2;
+    public static final int kDriverControllerPort1 = 0;
+    public static final int kDriverControllerPort2 = 1;
 
     public static final int kLeftMotorForwardChannel= 13;
     public static final int kLeftMotorBackChannel = 12;
@@ -32,8 +31,8 @@ public final class Constants {
     public static boolean kSquareInputsDrive = true;
     public static boolean kSquareInputsArm = true;
 
-    public static double kMaxOutputDrive = 0.2;
-    public static double kMaxOutputWinch = 0.2;
+    public static double kMaxOutputDrive = 0.5;
+    public static double kMaxOutputWinch = 0.5;
     
     public static double kDeadband = 0.05;
     public static boolean kUseArcadeDrive = false;
