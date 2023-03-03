@@ -56,7 +56,7 @@ public class ArmSystem extends SubsystemBase{
     public CommandBase armCommand() {
         return run(
             () -> {
-                double winchOutput = MathUtil.applyDeadband(m_controller.getLeftY(), m_deadband);
+                double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
                 double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
                 winchOutput = winchOutput * Math.abs(winchOutput);
                 extenderOutput = extenderOutput * Math.abs(extenderOutput);
@@ -69,7 +69,7 @@ public class ArmSystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        double winchOutput = MathUtil.applyDeadband(m_controller.getLeftY(), m_deadband);
+        double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
         double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
         winchOutput = winchOutput * Math.abs(winchOutput);
         extenderOutput = extenderOutput * Math.abs(extenderOutput);
