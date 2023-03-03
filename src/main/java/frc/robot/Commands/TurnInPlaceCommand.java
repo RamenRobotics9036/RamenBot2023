@@ -36,7 +36,6 @@ public class TurnInPlaceCommand extends CommandBase {
 
     @Override
     public void execute() {
-        m_drive.resetEncoders();
         m_drive.tankDrive(percentOutput, -percentOutput, true);
         System.out.println("Turned");
     }
@@ -45,7 +44,8 @@ public class TurnInPlaceCommand extends CommandBase {
     public boolean isFinished() {
         // if (time.get() <= 0.8) {
         //     return false;
-        // }
+        // }        m_drive.resetEncoders();
+
         // return true;
 
         // m_drive.getAverageEncoderPosition() / gearBoxRatio * wheelCircumference

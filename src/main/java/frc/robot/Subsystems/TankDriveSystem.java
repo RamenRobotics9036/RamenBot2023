@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -19,7 +20,8 @@ public class TankDriveSystem extends SubsystemBase {
     private boolean squareInputs;
     private double maxOutput;
 
-    // private SlewRateLimiter slewLimiter;
+    private SlewRateLimiter slewLimiter1;
+    private SlewRateLimiter slewLimiter2;
     private double slewLimit;
 
     private CANSparkMax m_leftMotor1;
@@ -62,7 +64,8 @@ public class TankDriveSystem extends SubsystemBase {
 
         this.slewLimit = SmartDashboard.getNumber("Slew Limit", slewLimit);
         if (this.slewLimit > 0) {
-            // slewLimiter = new SlewRateLimiter(slewLimit);
+            slewLimiter1 = new SlewRateLimiter(slewLimit);
+            slewLimiter2 = new SlewRateLimiter(slewLimit);
         }
 
         initDashBoard();
@@ -90,7 +93,7 @@ public class TankDriveSystem extends SubsystemBase {
         return run(
             () -> {
                 if (Constants.OperatorConstants.kUseArcadeDrive == false){
-        m_drive.tankDrive(m_controller.getRightY(), -m_controller.getLeftY(), squareInputs);
+                    m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
                 }
             }
         );
@@ -98,12 +101,12 @@ public class TankDriveSystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_drive.tankDrive(m_controller.getRightY(), -m_controller.getLeftY(), squareInputs);
+        m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
     }
 
     @Override
     public void simulationPeriodic() {
-        m_drive.tankDrive(m_controller.getRightY(), -m_controller.getLeftY(), squareInputs);
+        m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
     }
 
     public void resetEncoders() {
