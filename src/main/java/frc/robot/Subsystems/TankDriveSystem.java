@@ -1,60 +1,71 @@
 package frc.robot.Subsystems;
 
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.DrivetrainWrapper.DrivetrainWrapper;
-import frc.robot.DrivetrainWrapper.IDrivetrainWrapper;
-import frc.robot.RelativeEncoderWrapper.IRelativeEncoderWrapper;
+import frc.robot.Constants;
 
 public class TankDriveSystem extends SubsystemBase {
-    private Joystick m_controller1;
-    private Joystick m_controller2;
+    private XboxController m_controller;
 
     private boolean squareInputs;
-    private boolean useArcadeDrive;
     private double maxOutput;
 
-    private SlewRateLimiter slewLimiter;
+    private SlewRateLimiter slewLimiter1;
+    private SlewRateLimiter slewLimiter2;
     private double slewLimit;
 
-    private IDrivetrainWrapper m_driveTrainWrapper;
-    private IRelativeEncoderWrapper m_leftEncoderWrapper;
-    private IRelativeEncoderWrapper m_rightEncoderWrapper;
+    private CANSparkMax m_leftMotor1;
+    private CANSparkMax m_leftMotor2;
+    private CANSparkMax m_rightMotor1;
+    private CANSparkMax m_rightMotor2;
+
+    private MotorControllerGroup m_leftMotors;
+    private MotorControllerGroup m_rightMotors;
+
+    private DifferentialDrive m_drive;
+    private RelativeEncoder m_leftEncoder;
+    private RelativeEncoder m_rightEncoder;
 
     public TankDriveSystem(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
-     int rightMotorForwardChannel, Joystick m_controller1, Joystick m_controller2, boolean squareInputs,
-    double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters, boolean useArcadeDrive,
+     int rightMotorForwardChannel, XboxController m_controller, boolean squareInputs,
+    double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters,
     double slewLimit)
     {
-        m_driveTrainWrapper = DrivetrainWrapper.CreateDrivetrainWrapper(
-          TimedRobot.isSimulation(),
-          leftMotorBackChannel,
-          leftMotorForwardChannel,
-          rightMotorBackChannel,
-          rightMotorForwardChannel,
-          gearBoxRatio,
-          wheelDiameterMeters);
+        m_leftMotor1 = new CANSparkMax(leftMotorBackChannel, MotorType.kBrushless);
+        m_leftMotor2 = new CANSparkMax(leftMotorForwardChannel, MotorType.kBrushless);
+        m_rightMotor1 = new CANSparkMax(rightMotorForwardChannel, MotorType.kBrushless);
+        m_rightMotor2 = new CANSparkMax(rightMotorBackChannel, MotorType.kBrushless);
+
+        m_leftMotors = new MotorControllerGroup(m_leftMotor1, m_leftMotor2);
+        m_rightMotors = new MotorControllerGroup(m_rightMotor1, m_rightMotor2);
+        m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
         
-        m_driveTrainWrapper.setMaxOutput(maxOutput);
-        m_driveTrainWrapper.setDeadband(Deadband);
+        
+        m_drive.setMaxOutput(maxOutput);
+        m_drive.setDeadband(Deadband);
 
-        m_leftEncoderWrapper = m_driveTrainWrapper.getLeftEncoder();
-        m_rightEncoderWrapper = m_driveTrainWrapper.getRightEncoder();
+        m_leftEncoder = m_leftMotor1.getEncoder();
+        m_rightEncoder = m_rightMotor1.getEncoder();
 
-        this.m_controller1 = m_controller1;
-        this.m_controller2 = m_controller2;
+        this.m_controller = m_controller;
 
         this.squareInputs = squareInputs;
-        this.useArcadeDrive = useArcadeDrive;
         this.maxOutput = maxOutput;
 
         this.slewLimit = SmartDashboard.getNumber("Slew Limit", slewLimit);
         if (this.slewLimit > 0) {
-            slewLimiter = new SlewRateLimiter(slewLimit);
+            slewLimiter1 = new SlewRateLimiter(slewLimit);
+            slewLimiter2 = new SlewRateLimiter(slewLimit);
         }
 
         initDashBoard();
@@ -62,18 +73,16 @@ public class TankDriveSystem extends SubsystemBase {
 
     private void initDashBoard() {
         SmartDashboard.putNumber("Max Speed", maxOutput);
-        SmartDashboard.putBoolean("Drive Mode", useArcadeDrive);
-        SmartDashboard.putNumber("Left Encoder", m_leftEncoderWrapper.getPosition());
-        SmartDashboard.putNumber("Right Encoder", m_rightEncoderWrapper.getPosition());
+        SmartDashboard.putNumber("Left Encoder", m_leftEncoder.getPosition());
+        SmartDashboard.putNumber("Right Encoder", m_rightEncoder.getPosition());
         SmartDashboard.putNumber("Slew Limit", slewLimit);
     }
 
     public void updateDashBoard() {
-        useArcadeDrive = SmartDashboard.getBoolean("Drive Mode", useArcadeDrive);
         maxOutput = SmartDashboard.getNumber("Max Speed", maxOutput);
-        m_driveTrainWrapper.setMaxOutput(maxOutput);
-        SmartDashboard.putNumber("Left Encoder", m_leftEncoderWrapper.getPosition());
-        SmartDashboard.putNumber("Right Encoder", m_rightEncoderWrapper.getPosition());
+        m_drive.setMaxOutput(maxOutput);
+        SmartDashboard.putNumber("Left Encoder", m_leftEncoder.getPosition());
+        SmartDashboard.putNumber("Right Encoder", m_rightEncoder.getPosition());
     }
 
     public boolean getCondition() {
@@ -83,10 +92,8 @@ public class TankDriveSystem extends SubsystemBase {
     public CommandBase driveCommand() {
         return run(
             () -> {
-                if (useArcadeDrive) {
-                    m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), m_controller1.getX(), squareInputs);
-                } else {
-                    m_driveTrainWrapper.tankDrive(slewLimiter.calculate(-m_controller1.getY()), slewLimiter.calculate(-m_controller2.getY()), squareInputs);
+                if (Constants.OperatorConstants.kUseArcadeDrive == false){
+                    m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
                 }
             }
         );
@@ -94,44 +101,32 @@ public class TankDriveSystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (useArcadeDrive) {
-            m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), m_controller1.getX(), squareInputs);
-        } else {
-            m_driveTrainWrapper.tankDrive(slewLimiter.calculate(-m_controller1.getY()), slewLimiter.calculate(-m_controller2.getY()), squareInputs);
-        }
+        m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
     }
 
     @Override
     public void simulationPeriodic() {
-        if (useArcadeDrive) {
-            m_driveTrainWrapper.arcadeDrive(slewLimiter.calculate(-m_controller1.getY()), m_controller1.getX(), squareInputs);
-        } else {
-            m_driveTrainWrapper.tankDrive(slewLimiter.calculate(-m_controller1.getY()), slewLimiter.calculate(-m_controller2.getY()), squareInputs);
-        }
+        m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
     }
 
     public void resetEncoders() {
-        m_leftEncoderWrapper.resetPosition();
-        m_rightEncoderWrapper.resetPosition();
+        m_leftEncoder.setPosition(0);
+        m_rightEncoder.setPosition(0);
     }
 
     public double getLeftEncoder() {
-        return m_leftEncoderWrapper.getPosition();
+        return m_leftEncoder.getPosition();
     } 
 
     public double getRightEncoder() {
-        return m_rightEncoderWrapper.getPosition();
+        return m_rightEncoder.getPosition();
     }
 
     public double getAverageEncoderPosition() {
-        return (Math.abs(m_leftEncoderWrapper.getPosition()) + Math.abs(m_rightEncoderWrapper.getPosition())) / 2;
-    }
-
-    public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
-        m_driveTrainWrapper.arcadeDrive(xSpeed, zRotation, squareInputs);
+        return (Math.abs(m_leftEncoder.getPosition()) + Math.abs(m_rightEncoder.getPosition())) / 2;
     }
 
     public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
-        m_driveTrainWrapper.tankDrive(leftSpeed, rightSpeed, squareInputs);
+        m_drive.tankDrive(leftSpeed, rightSpeed, squareInputs);
     }
 }

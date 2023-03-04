@@ -1,13 +1,15 @@
 package frc.robot.Commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.TankDriveSystem;
 
 public class TurnInPlaceCommand extends CommandBase {
-    private double rotations;
+    private double rotations; 
     private double gearBoxRatio;
     private double percentOutput;
     private double wheelCircumference;
+    private Timer time;
 
     private boolean turnLeft;
     TankDriveSystem m_drive;
@@ -19,35 +21,45 @@ public class TurnInPlaceCommand extends CommandBase {
         this.wheelCircumference = wheelCircumference;
 
         this.turnLeft = turnLeft;
+        time = new Timer();
 
         this.m_drive = m_drive;
         m_drive.resetEncoders();
         addRequirements(m_drive);
+        
     }
 
     @Override
     public void initialize() {
+        time.start();
     }
 
     @Override
     public void execute() {
-        if (turnLeft) {
-            m_drive.tankDrive(percentOutput, -percentOutput, false);
-        } else {
-            m_drive.tankDrive(-percentOutput, percentOutput, false);
-        }
+        m_drive.tankDrive(percentOutput, -percentOutput, true);
+        System.out.println("Turned");
     }
 
     @Override
     public boolean isFinished() {
-        if (rotations <= m_drive.getAverageEncoderPosition() / gearBoxRatio * wheelCircumference) {
+        // if (time.get() <= 0.8) {
+        //     return false;
+        // }        m_drive.resetEncoders();
+
+        // return true;
+
+        // m_drive.getAverageEncoderPosition() / gearBoxRatio * wheelCircumference
+        // This code ^: if motor spins once, wheel will spin 1/8.28 times * circumfrence = distance traveled <= this is wrong?
+        // Check encoders if # of actual rotations is greather than or equal to # of wanted rotations
+        if (rotations <= m_drive.getAverageEncoderPosition() / gearBoxRatio /** wheelCircumference*/){
             return true;
         }
         return false;
+
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_drive.arcadeDrive(0, 0, false);
+        m_drive.tankDrive(0, 0, false);
     }
 }
