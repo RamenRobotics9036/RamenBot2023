@@ -57,6 +57,7 @@ public class Robot extends TimedRobot {
     m_autonomousCommand.schedule();
   }
 
+  /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
   }
