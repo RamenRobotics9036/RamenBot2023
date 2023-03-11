@@ -26,6 +26,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_robotContainer = new RobotContainer();
     m_robotContainer.initDashboard();
+    m_robotContainer.putShuffleBoardAutoCommands();
   }
 
   /**
@@ -51,6 +52,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.putShuffleBoardAutoCommands();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_autonomousCommand.schedule();
   }
