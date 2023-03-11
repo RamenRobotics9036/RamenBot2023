@@ -42,7 +42,7 @@ public class RotateMotorCommand extends CommandBase {
         if (time.get() > 0.5) {
             return true;
         }
-        System.out.println("Enc pos" + m_encoder.getPosition());
+        // System.out.println("Enc pos" + m_encoder.getPosition());
         return false;
     }
 

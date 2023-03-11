@@ -5,10 +5,12 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Commands.RotateMotorCommand;
 
 public class ArmSystem extends SubsystemBase{
@@ -22,6 +24,8 @@ public class ArmSystem extends SubsystemBase{
     private RelativeEncoder m_winchEncoder;
     private RelativeEncoder m_extenderEncoder;
 
+    private DutyCycleEncoder m_winchAbsoluteEncoder;
+
     public ArmSystem(int armWinchChannel, int armExtenderChannel, XboxController m_controller, double m_deadband, boolean squareInputs, double maxOutputWinch) {
         m_armWinch = new CANSparkMax(armWinchChannel, MotorType.kBrushless);
         m_armExtender = new CANSparkMax(armExtenderChannel, MotorType.kBrushless);
@@ -33,6 +37,8 @@ public class ArmSystem extends SubsystemBase{
         this.m_controller = m_controller;
         this.m_deadband = m_deadband;
         this.maxOutputWinch = maxOutputWinch;
+
+        m_winchAbsoluteEncoder = new DutyCycleEncoder(Constants.OperatorConstants.kAbsoluteEncoderWinchChannel);
 
         initDashBoard();
     }
@@ -47,6 +53,10 @@ public class ArmSystem extends SubsystemBase{
         SmartDashboard.putNumber("Winch Encoder", m_winchEncoder.getPosition());
         SmartDashboard.putNumber("Extender Encoder", m_extenderEncoder.getPosition());
         maxOutputWinch = SmartDashboard.getNumber("Winch Max Output", maxOutputWinch);
+    }
+
+    public void putEncoderPositions() {
+        SmartDashboard.putNumber("Winch Absolute Encoder Position", m_winchAbsoluteEncoder.getAbsolutePosition());
     }
  
     public boolean getCondition() {

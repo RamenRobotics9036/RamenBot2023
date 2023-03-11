@@ -81,7 +81,8 @@ public class RobotContainer {
   }
 
   public void putShuffleBoardAutoCommands() {
-    Auto.putShuffleBoardCommands(m_driveSystem, m_armSystem, m_grabSystem);
+    // Auto.putShuffleBoardCommands(m_driveSystem, m_armSystem, m_grabSystem);
+    m_armSystem.putEncoderPositions();
   }
 
   public void resetEncoders() {

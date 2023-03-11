@@ -51,6 +51,7 @@ public class TankDriveSystem extends SubsystemBase {
 
         m_leftMotors = new MotorControllerGroup(m_leftMotor1, m_leftMotor2);
         m_rightMotors = new MotorControllerGroup(m_rightMotor1, m_rightMotor2);
+        m_leftMotors.setInverted(true);
         m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
         
         
@@ -95,8 +96,13 @@ public class TankDriveSystem extends SubsystemBase {
     public CommandBase driveCommand() {
         return run(
             () -> {
+                double leftAxis = m_controller.getRightY();
+                double rightAxis = m_controller.getLeftY();
+                double xForward = (leftAxis + rightAxis) / 2;
+                double zRotation = (leftAxis - rightAxis) / 2;
+
                 if (Constants.OperatorConstants.kUseArcadeDrive == false){
-                    m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
+                    m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation), squareInputs);
                 }
                 System.out.println("Command called");
             }
@@ -106,14 +112,27 @@ public class TankDriveSystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (!RobotState.isAutonomous()) {
-            m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
-            // System.out.println("Periodic called");
+            double leftAxis = m_controller.getRightY();
+            double rightAxis = m_controller.getLeftY();
+            double xForward = (leftAxis + rightAxis) / 2;
+            double zRotation = (leftAxis - rightAxis) / 2;
+
+            if (Constants.OperatorConstants.kUseArcadeDrive == false){
+                m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation * Constants.OperatorConstants.kRotationDilation), squareInputs);
+            }
         }
     }
 
     @Override
     public void simulationPeriodic() {
-        m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
+        double leftAxis = m_controller.getRightY();
+        double rightAxis = m_controller.getLeftY();
+        double xForward = (leftAxis + rightAxis) / 2;
+        double zRotation = (leftAxis - rightAxis) / 2;
+
+        if (Constants.OperatorConstants.kUseArcadeDrive == false){
+            m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation * Constants.OperatorConstants.kRotationDilation), squareInputs);
+        }
     }
 
     public void resetEncoders() {

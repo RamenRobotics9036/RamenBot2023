@@ -60,5 +60,8 @@ public final class Constants {
 
     public static double kAutoDriveToGamePieces = 15 * 12; // 12 for inches to feet
     public static double kAutoDriveToChargeStation = 11 * 12; // 12 for inches to feet
+
+    public static double kRotationDilation = 0.5;
+    public static int kAbsoluteEncoderWinchChannel = 5;
   }
 }
