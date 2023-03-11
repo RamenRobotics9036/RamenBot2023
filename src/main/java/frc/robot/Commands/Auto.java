@@ -1,75 +1,40 @@
-package frc.robot.Commands;
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants;
-import frc.robot.Subsystems.ArmSystem;
-import frc.robot.Subsystems.GrabberSystem;
-import frc.robot.Subsystems.TankDriveSystem;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.subsystems.ArmSystem;
+import frc.robot.subsystems.DriveSystem;
+import frc.robot.subsystems.GrabSystem;
 
-public class Auto {
-    private Auto() {
-        throw new Error("Auto is a utility class and should not be constructed. One should utilize this class via static methods.");
+public final class Autos {
+  /** Example static factory for an autonomous command. */
+  public static CommandBase getAuto(DriveSystem m_driveSystem, ArmSystem m_armSystem, GrabSystem m_grabSystem) {
+    if (SmartDashboard.getBoolean("Auto Charge Station", AutoConstants.autoUseChargeStation)) {
+      System.out.println("USING CHARGE STATION IN AUTO");
+      return Commands.sequence(
+        new InstantCommand()
+      );
+    } else {
+      System.out.println("USING STANDARD AUTO COMMAND");
+      return Commands.sequence(
+        new InstantCommand()
+      );
     }
+  }
 
-    public static CommandBase getAutoCommand(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
-            return Commands.sequence(
-                m_armSystem.rotateWinchMotor(1, 1, 1, 1), // Rotate winch for scoring , putting circumfrence as 1 gets rotations
-                new WaitCommand(1),
-                new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.3, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
-            );
-    }
+  public static void dashBoardInit() {
+    SmartDashboard.putBoolean("Use Auto Charge Station", AutoConstants.autoUseChargeStation);
+    System.out.println("USE AUTO CHARGE STATION SET TO " + SmartDashboard.getBoolean("Use Auto Charge Station", AutoConstants.autoUseChargeStation));
+  }
 
-    public static void putShuffleBoardCommands(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
-
-        SmartDashboard.putBoolean("Auto Middle", false);
-    //     SmartDashboard.putData("Rotate Winch Forwards", m_armSystem.rotateWinchMotor(
-    //         SmartDashboard.getNumber("Auto Motor Distance", Constants.OperatorConstants.kAutoMotorDistance),
-    //          Constants.OperatorConstants.kGearBoxRatioArm,
-    //          SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed),
-    //          Constants.OperatorConstants.kWheelDiameterInchWinch));
-
-    //     SmartDashboard.putData("Rotate Winch Backwards", m_armSystem.rotateWinchMotor(
-    //     SmartDashboard.getNumber("Auto Motor Distance", Constants.OperatorConstants.kAutoMotorDistance),
-    //         Constants.OperatorConstants.kGearBoxRatioArm,
-    //         -SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed),
-    //         Constants.OperatorConstants.kWheelDiameterInchWinch));
-
-    //     SmartDashboard.putData("Rotate Extender Forwards", m_armSystem.rotateExtenderMotor(
-    //         SmartDashboard.getNumber("Auto Motor Distance", Constants.OperatorConstants.kAutoMotorDistance),
-    //             Constants.OperatorConstants.kGearBoxRatioArm,
-    //             SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed),
-    //             Constants.OperatorConstants.kWheelDiameterInchExtender));
-
-    //     SmartDashboard.putData("Rotate Extender Backwards", m_armSystem.rotateExtenderMotor(
-    //     SmartDashboard.getNumber("Auto Motor Distance", Constants.OperatorConstants.kAutoMotorDistance),
-    //         Constants.OperatorConstants.kGearBoxRatioArm,
-    //         -SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed),
-    //         Constants.OperatorConstants.kWheelDiameterInchExtender));
-
-    //     SmartDashboard.putData("Turn In Place", new TurnInPlaceCommand(m_driveSystem,
-    //      SmartDashboard.getNumber("Auto Motor Distance", Constants.OperatorConstants.kAutoMotorDistance),
-    //       Constants.OperatorConstants.kGearBoxRatioDrive, SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed),
-    //     SmartDashboard.getBoolean("Auto Turn Left", true),
-    //     Constants.OperatorConstants.kWheelCircumferenceInchesDrive));
-
-    //     SmartDashboard.putData("Drive Forwards", new DriveCommand(m_driveSystem,
-    //      SmartDashboard.getNumber("Auto Motor Distance",
-    //       Constants.OperatorConstants.kAutoMotorDistance),
-    //        Constants.OperatorConstants.kGearBoxRatioDrive,
-    //        SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed),
-    //        Constants.OperatorConstants.kWheelCircumferenceInchesDrive));
-
-    //     SmartDashboard.putData("Drive Backwards", new DriveCommand(m_driveSystem,
-    //      SmartDashboard.getNumber("Auto Motor Distance",
-    //       Constants.OperatorConstants.kAutoMotorDistance),
-    //        Constants.OperatorConstants.kGearBoxRatioDrive,
-    //        -SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed),
-    //        Constants.OperatorConstants.kWheelCircumferenceInchesDrive));
-
-    //     SmartDashboard.putData("Grab Cargo", new GrabberToggleCommand(m_grabSystem));
-    }
+  private Autos() {
+    throw new UnsupportedOperationException("This is a utility class!");
+  }
 }

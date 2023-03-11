@@ -1,139 +1,128 @@
-package frc.robot.Subsystems;
-
+package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotState;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.RobotConstants;
+import frc.robot.Constants.SystemConstants;
 
-public class TankDriveSystem extends SubsystemBase {
-    private XboxController m_controller;
-
+public class DriveSystem extends SubsystemBase {
+    private XboxController m_driveController;
     private boolean squareInputs;
-    private double maxOutput;
+    private double maxOutputDrive;
+    private double deadBandDrive;
 
-    private SlewRateLimiter slewLimiter1;
-    private SlewRateLimiter slewLimiter2;
-    private double slewLimit;
-
-    private CANSparkMax m_leftMotor1;
-    private CANSparkMax m_leftMotor2;
-    private CANSparkMax m_rightMotor1;
-    private CANSparkMax m_rightMotor2;
+    private CANSparkMax m_frontLeftMotor;
+    private CANSparkMax m_backLeftMotor;
+    private CANSparkMax m_frontRightMotor;
+    private CANSparkMax m_backRightMotor;
 
     private MotorControllerGroup m_leftMotors;
     private MotorControllerGroup m_rightMotors;
+    private DifferentialDrive m_drivetrain;
 
-    private DifferentialDrive m_drive;
     private RelativeEncoder m_leftEncoder;
     private RelativeEncoder m_rightEncoder;
 
-    public TankDriveSystem(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
-     int rightMotorForwardChannel, XboxController m_controller, boolean squareInputs,
-    double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters,
-    double slewLimit)
-    {
-        m_leftMotor1 = new CANSparkMax(leftMotorBackChannel, MotorType.kBrushless);
-        m_leftMotor2 = new CANSparkMax(leftMotorForwardChannel, MotorType.kBrushless);
-        m_rightMotor1 = new CANSparkMax(rightMotorForwardChannel, MotorType.kBrushless);
-        m_rightMotor2 = new CANSparkMax(rightMotorBackChannel, MotorType.kBrushless);
+    public DriveSystem(XboxController m_driveController) {
+        this.m_driveController = m_driveController;
+        squareInputs = SystemConstants.squareInputsDrive;
+        maxOutputDrive = SystemConstants.maxOutputDrive;
+        deadBandDrive = SystemConstants.deadBandDrive;
 
-        m_leftMotors = new MotorControllerGroup(m_leftMotor1, m_leftMotor2);
-        m_rightMotors = new MotorControllerGroup(m_rightMotor1, m_rightMotor2);
-        m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
-        
-        
-        m_drive.setMaxOutput(maxOutput);
-        m_drive.setDeadband(Deadband);
+        m_frontLeftMotor = new CANSparkMax(RobotConstants.frontLeftMotorChannel, MotorType.kBrushless);
+        m_backLeftMotor = new CANSparkMax(RobotConstants.backLeftMotorChannel, MotorType.kBrushless);
+        m_frontRightMotor = new CANSparkMax(RobotConstants.frontRightMotorChannel, MotorType.kBrushless);
+        m_backRightMotor = new CANSparkMax(RobotConstants.backRightMotorChannel, MotorType.kBrushless);
 
-        m_leftEncoder = m_leftMotor1.getEncoder();
-        m_rightEncoder = m_rightMotor1.getEncoder();
+        m_leftMotors = new MotorControllerGroup(m_frontLeftMotor, m_backLeftMotor);
+        m_rightMotors = new MotorControllerGroup(m_frontRightMotor, m_backRightMotor);
+        m_leftMotors.setInverted(true);
 
-        this.m_controller = m_controller;
+        m_drivetrain = new DifferentialDrive(m_leftMotors, m_rightMotors);
+        m_drivetrain.setMaxOutput(maxOutputDrive);
 
-        this.squareInputs = squareInputs;
-        this.maxOutput = maxOutput;
-
-        this.slewLimit = SmartDashboard.getNumber("Slew Limit", slewLimit);
-        if (this.slewLimit > 0) {
-            slewLimiter1 = new SlewRateLimiter(slewLimit);
-            slewLimiter2 = new SlewRateLimiter(slewLimit);
-        }
-
-        initDashBoard();
-    }
-
-    private void initDashBoard() {
-        SmartDashboard.putNumber("Max Speed", maxOutput);
-        SmartDashboard.putNumber("Left Encoder", m_leftEncoder.getPosition());
-        SmartDashboard.putNumber("Right Encoder", m_rightEncoder.getPosition());
-        SmartDashboard.putNumber("Slew Limit", slewLimit);
-    }
-
-    public void updateDashBoard() {
-        maxOutput = SmartDashboard.getNumber("Max Speed", maxOutput);
-        m_drive.setMaxOutput(maxOutput);
-        SmartDashboard.putNumber("Left Encoder", m_leftEncoder.getPosition());
-        SmartDashboard.putNumber("Right Encoder", m_rightEncoder.getPosition());
-    }
-
-    public boolean getCondition() {
-        return true;
-    }
-
-    public CommandBase driveCommand() {
-        return run(
-            () -> {
-                if (Constants.OperatorConstants.kUseArcadeDrive == false){
-                    m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
-                }
-                System.out.println("Command called");
-            }
-        );
-    }
-
-    @Override
-    public void periodic() {
-        if (!RobotState.isAutonomous()) {
-            m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
-            // System.out.println("Periodic called");
-        }
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
-    }
-
-    public void resetEncoders() {
-        m_leftEncoder.setPosition(0);
-        m_rightEncoder.setPosition(0);
+        m_leftEncoder = m_frontLeftMotor.getEncoder();
+        m_rightEncoder = m_frontRightMotor.getEncoder();
     }
 
     public double getLeftEncoder() {
         return m_leftEncoder.getPosition();
-    } 
+    }
 
     public double getRightEncoder() {
         return m_rightEncoder.getPosition();
     }
 
-    public double getAverageEncoderPosition() {
-        return (Math.abs(m_leftEncoder.getPosition()) + Math.abs(m_rightEncoder.getPosition())) / 2;
+    public double getLeftMotorSpeed() {
+        return m_leftMotors.get();
     }
 
-    public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
-        m_drive.tankDrive(leftSpeed, rightSpeed, squareInputs);
+    public double getRightMotorSpeed() {
+        return m_rightMotors.get();
+    }
+
+    public void tankDrive(double leftSpeed, double rightSpeed) {
+        m_drivetrain.tankDrive(leftSpeed, rightSpeed);
+    }
+
+    public double getAverageSpeed() {
+        return (m_leftMotors.get() + m_rightMotors.get()) / 2;
+    }
+
+    public double getAverageEncoderPosition() {
+        return (m_leftEncoder.getPosition() + m_rightEncoder.getPosition()) / 2;
+    }
+
+    public void dashBoardInit() {
+        SmartDashboard.putNumber("Drive Max Speed", maxOutputDrive);
+        SmartDashboard.putNumber("Drive Dead Band", deadBandDrive);
+    }
+    
+      public void dashBoardUpdate() {
+        maxOutputDrive = SmartDashboard.getNumber("Drive Max Speed", maxOutputDrive);
+        m_drivetrain.setMaxOutput(maxOutputDrive);
+        deadBandDrive = SmartDashboard.getNumber("Drive Dead Band", deadBandDrive);
+        System.out.println("MAX OUTPUT SET TO " + maxOutputDrive);
+        System.out.println("DRIVE DEAD BAND SET TO " + deadBandDrive);
+      }
+
+    public CommandBase driveCommand() {
+        return run(
+            () -> {
+                if (RobotState.isTeleop()) {
+                    double leftSpeed = m_driveController.getLeftY();
+                    double rightSpeed = m_driveController.getRightY();
+
+                    leftSpeed = MathUtil.applyDeadband(leftSpeed, deadBandDrive);
+                    rightSpeed = MathUtil.applyDeadband(rightSpeed, deadBandDrive);
+
+                    m_drivetrain.tankDrive(leftSpeed, rightSpeed, squareInputs);
+
+                    if (m_leftMotors.get() != 0) {
+                        System.out.println("LEFT MOTOR SPEED SET AT " + m_leftMotors.get());
+                        System.out.println("LEFT ENCODER AT POSITION " + m_leftEncoder.getPosition());
+                    }
+                    if (m_rightMotors.get() != 0) {
+                        System.out.println("RIGHT MOTOR SPEED SET AT " + m_rightMotors.get());
+                        System.out.println("RIGHT ENCODER AT POSITION " + m_rightEncoder.getPosition());
+                    }
+                }
+            }
+        );
+    }
+
+    public void stopSystem() {
+        m_drivetrain.stopMotor();
+        System.out.println("DRIVE SYSTEM STOPPED");
     }
 }
