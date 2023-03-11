@@ -6,6 +6,9 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -95,13 +98,17 @@ public class TankDriveSystem extends SubsystemBase {
                 if (Constants.OperatorConstants.kUseArcadeDrive == false){
                     m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
                 }
+                System.out.println("Command called");
             }
         );
     }
 
     @Override
     public void periodic() {
-        m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
+        if (!RobotState.isAutonomous()) {
+            m_drive.tankDrive(slewLimiter1.calculate(m_controller.getRightY()), slewLimiter2.calculate(-m_controller.getLeftY()), squareInputs);
+            // System.out.println("Periodic called");
+        }
     }
 
     @Override

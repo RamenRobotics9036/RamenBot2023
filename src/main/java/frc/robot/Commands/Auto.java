@@ -1,7 +1,10 @@
 package frc.robot.Commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Subsystems.ArmSystem;
 import frc.robot.Subsystems.GrabberSystem;
@@ -15,13 +18,14 @@ public class Auto {
     public static CommandBase getAutoCommand(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
             return Commands.sequence(
                 m_armSystem.rotateWinchMotor(1, 1, 1, 1), // Rotate winch for scoring , putting circumfrence as 1 gets rotations
-                new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive).andThen(
-                new TurnInPlaceCommand(m_driveSystem, 4, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, false, 4))
-                // Retract Winch And Extender
+                new WaitCommand(1),
+                new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.3, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
             );
-        }
+    }
 
     public static void putShuffleBoardCommands(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
+
+        SmartDashboard.putBoolean("Auto Middle", false);
     //     SmartDashboard.putData("Rotate Winch Forwards", m_armSystem.rotateWinchMotor(
     //         SmartDashboard.getNumber("Auto Motor Distance", Constants.OperatorConstants.kAutoMotorDistance),
     //          Constants.OperatorConstants.kGearBoxRatioArm,

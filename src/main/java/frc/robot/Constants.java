@@ -26,13 +26,13 @@ public final class Constants {
     public static final int kArmExtenderChannel = 20;
 
     public static final int kGrabberForwardChannel = 0;
-    public static final int kGrabberBackwardChannel = 1;
+    public static final int kGrabberBackwardChannel = 15;
 
     public static boolean kSquareInputsDrive = true;
     public static boolean kSquareInputsArm = true;
 
-    public static double kMaxOutputDrive = 0.5;
-    public static double kMaxOutputWinch = 0.5;
+    public static double kMaxOutputDrive = 0.7;
+    public static double kMaxOutputWinch = 0.8;
     
     public static double kDeadband = 0.05;
     public static boolean kUseArcadeDrive = false;
@@ -53,7 +53,7 @@ public final class Constants {
 
     public static double kAutoMotorSpeed = 0.3;
     public static double kAutoMotorDistance = 1;
-
+   
     public static double kAutoDriveBack = 3;
     public static double kAutoWinchRotate = 1;
     public static double kAutoExtenderRotate = 1;
