@@ -13,52 +13,50 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort1 = 0;
-    public static final int kDriverControllerPort2 = 1;
+  /**
+   * Consants for human players and controllers on a laptop.
+   */
+  public static class ControllerConstants {
+    public static int driveControllerPort = 0;
+    public static int armControllerPort = 1;
+  }
 
-    public static final int kLeftMotorForwardChannel= 13;
-    public static final int kLeftMotorBackChannel = 12;
-    public static final int kRightMotorBackChannel = 10;
-    public static final int kRightMotorForwardChannel = 11;
+  /**
+   * Consants for systems on the robot.
+   */
+  public static class RobotConstants {
+    public static int frontRightMotorChannel = 10;
+    public static int backRightMotorChannel = 11;
+    public static int frontLeftMotorChannel = 13;
+    public static int backLeftMotorChannel = 12;
 
-    public static final int kArmWinchChannel = 19;
-    public static final int kArmExtenderChannel = 20;
+    public static int solenoidForwardChannel = 0;
+    public static int solenoidBackChannel = 15;
 
-    public static final int kGrabberForwardChannel = 0;
-    public static final int kGrabberBackwardChannel = 15;
+    public static int winchMotorChannel = 19;
+    public static int extenderMotorChannel = 20;
+  }
 
-    public static boolean kSquareInputsDrive = true;
-    public static boolean kSquareInputsArm = true;
+  /**
+   * Consants for system paramaters.
+   */
+  public static class SystemConstants {
+    public static boolean squareInputsDrive = true;
+    public static double maxOutputDrive = 0.5;
+    public static double deadBandDrive= 0.1;
 
-    public static double kMaxOutputDrive = 0.7;
-    public static double kMaxOutputWinch = 0.8;
-    
-    public static double kDeadband = 0.05;
-    public static boolean kUseArcadeDrive = false;
+    public static boolean squareInputsArm = true;
+    public static double deadBandArm= 0.1;
+    public static double winchMaxOutput = 0.5;
+    public static double extenderMaxOutput = 0.5;
+  }
 
-    public static double kGearBoxRatioDrive = 8.28;
-    public static double kGearBoxRatioArm = 60;
-
-    public static double kWheelDiameterMetersDrive = 0.1524;
-    public static double kWheelDiameterInchesDrive = 6;
-    public static double kWheelCircumferenceInchesDrive = kWheelDiameterInchesDrive * Math.PI;
-    public static double kSlewLimit = 3;
-
-    public static double kWheelDiameterInchWinch = 0.75;
-    public static double kWheelCircumferenceInchesWinch = 0.75 * Math.PI;
-
-    public static double kWheelDiameterInchExtender = 0.75;
-    public static double kWheelCircumferenceInchesExtender = 0.75 * Math.PI;
-
-    public static double kAutoMotorSpeed = 0.3;
-    public static double kAutoMotorDistance = 1;
-   
-    public static double kAutoDriveBack = 3;
-    public static double kAutoWinchRotate = 1;
-    public static double kAutoExtenderRotate = 1;
-
-    public static double kAutoDriveToGamePieces = 15 * 12; // 12 for inches to feet
-    public static double kAutoDriveToChargeStation = 11 * 12; // 12 for inches to feet
+  /**
+   * Consants for autonomous parameters.
+   */
+  public static class AutoConstants {
+    public static double gearBoxRatioDrive = 8.28;
+    public static double wheelDiameterInchDrive = 6;
+    public static boolean autoUseChargeStation = false;
   }
 }

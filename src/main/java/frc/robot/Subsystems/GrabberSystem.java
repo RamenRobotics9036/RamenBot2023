@@ -1,63 +1,67 @@
-package frc.robot.Subsystems;
+package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.RobotConstants;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
-public class GrabberSystem extends SubsystemBase {
-    private XboxController m_controller;
+
+public class GrabSystem extends SubsystemBase {
+    private XboxController m_grabController;
+
     private final Compressor m_compressor = new Compressor(PneumaticsModuleType.REVPH);
     private PneumaticHub m_pneumaticHub;
     private DoubleSolenoid m_solenoid;
 
-    public GrabberSystem(int grabberForwardChannel, int grabberBackwardChannel, XboxController m_controller) {
+    public GrabSystem(XboxController m_grabController) {
+        this.m_grabController = m_grabController;
+
         m_pneumaticHub = new PneumaticHub();
         m_compressor.enableDigital();
-        m_solenoid = m_pneumaticHub.makeDoubleSolenoid(grabberForwardChannel, grabberBackwardChannel);
-
-        this.m_controller = m_controller;
+        m_solenoid = m_pneumaticHub.makeDoubleSolenoid(RobotConstants.solenoidForwardChannel, RobotConstants.solenoidForwardChannel);
     }
 
-    public boolean getCondition() {
-        return true;
+    public void setSolenoid(Value value) {
+        m_solenoid.set(value);
+    }
+
+    public void toggleSolenoid() {
+        m_solenoid.toggle();
+    }
+
+    public Value getValue() {
+        return m_solenoid.get();
+    }
+
+    public void dashBoardInit() {
+    }
+    
+    public void dashBoardUpdate() {
     }
 
     public CommandBase grabCommand() {
         return run(
             () -> {
-                if (m_controller.getLeftBumperReleased()) {
-                    m_solenoid.set(Value.kForward);
-                } else if (m_controller.getRightBumperReleased()) {
-                    m_solenoid.set(Value.kReverse);
+                if (RobotState.isTeleop()) {
+                    if (m_grabController.getLeftBumperReleased()) {
+                        m_solenoid.set(Value.kForward);
+                        System.out.println("SOLENOID POSITION SET AT " + m_solenoid.get());
+                    } else if (m_grabController.getRightBumperReleased()) {
+                        m_solenoid.set(Value.kReverse);
+                        System.out.println("SOLENOID POSITION SET AT " + m_solenoid.get());
+                    }
                 }
             }
         );
     }
 
-    @Override
-    public void periodic() {
-        if (m_controller.getLeftBumperReleased()) {
-            m_solenoid.set(Value.kForward);
-        } else if (m_controller.getRightBumperReleased()) {
-            m_solenoid.set(Value.kReverse);
-        }
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        if (m_controller.getLeftBumperReleased()) {
-            m_solenoid.set(Value.kForward);
-        } else if (m_controller.getRightBumperReleased()) {
-            m_solenoid.set(Value.kReverse);
-        }
-    }
-
-    public void toggle() {
-        m_solenoid.toggle();
+    public void stopSystem() {
+        System.out.println("GRAB SYSTEM STOPPED");
     }
 }
