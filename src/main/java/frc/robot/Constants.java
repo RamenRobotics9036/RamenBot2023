@@ -14,8 +14,8 @@ package frc.robot;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverJoystickPort = 0;
-    public static final int kDriverControllerPort = 1;
+    public static final int kDriverControllerPort1 = 0;
+    public static final int kDriverControllerPort2 = 1;
 
     public static final int kLeftMotorForwardChannel= 13;
     public static final int kLeftMotorBackChannel = 12;
@@ -26,15 +26,39 @@ public final class Constants {
     public static final int kArmExtenderChannel = 20;
 
     public static final int kGrabberForwardChannel = 0;
-    public static final int kGrabberBackwardChannel = 1;
+    public static final int kGrabberBackwardChannel = 15;
 
     public static boolean kSquareInputsDrive = true;
     public static boolean kSquareInputsArm = true;
-    public static double kMaxOutput = 0.2;
+
+    public static double kMaxOutputDrive = 0.7;
+    public static double kMaxOutputWinch = 0.8;
     
     public static double kDeadband = 0.05;
+    public static boolean kUseArcadeDrive = false;
 
-    public static double kgearBoxRatio = 8.28;
-    public static double kwheelDiameterMeter = 0.1524; // 6 inches
+    public static double kGearBoxRatioDrive = 8.28;
+    public static double kGearBoxRatioArm = 60;
+
+    public static double kWheelDiameterMetersDrive = 0.1524;
+    public static double kWheelDiameterInchesDrive = 6;
+    public static double kWheelCircumferenceInchesDrive = kWheelDiameterInchesDrive * Math.PI;
+    public static double kSlewLimit = 3;
+
+    public static double kWheelDiameterInchWinch = 0.75;
+    public static double kWheelCircumferenceInchesWinch = 0.75 * Math.PI;
+
+    public static double kWheelDiameterInchExtender = 0.75;
+    public static double kWheelCircumferenceInchesExtender = 0.75 * Math.PI;
+
+    public static double kAutoMotorSpeed = 0.3;
+    public static double kAutoMotorDistance = 1;
+   
+    public static double kAutoDriveBack = 3;
+    public static double kAutoWinchRotate = 1;
+    public static double kAutoExtenderRotate = 1;
+
+    public static double kAutoDriveToGamePieces = 15 * 12; // 12 for inches to feet
+    public static double kAutoDriveToChargeStation = 11 * 12; // 12 for inches to feet
   }
 }

@@ -30,9 +30,9 @@ public class GrabberSystem extends SubsystemBase {
     public CommandBase grabCommand() {
         return run(
             () -> {
-                if (m_controller.getRightBumperReleased()) {
+                if (m_controller.getLeftBumperReleased()) {
                     m_solenoid.set(Value.kForward);
-                } else if (m_controller.getLeftBumperReleased()) {
+                } else if (m_controller.getRightBumperReleased()) {
                     m_solenoid.set(Value.kReverse);
                 }
             }
@@ -41,19 +41,23 @@ public class GrabberSystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (m_controller.getRightBumperReleased()) {
+        if (m_controller.getLeftBumperReleased()) {
             m_solenoid.set(Value.kForward);
-        } else if (m_controller.getLeftBumperReleased()) {
+        } else if (m_controller.getRightBumperReleased()) {
             m_solenoid.set(Value.kReverse);
         }
     }
 
     @Override
     public void simulationPeriodic() {
-        if (m_controller.getRightBumperReleased()) {
+        if (m_controller.getLeftBumperReleased()) {
             m_solenoid.set(Value.kForward);
-        } else if (m_controller.getLeftBumperReleased()) {
+        } else if (m_controller.getRightBumperReleased()) {
             m_solenoid.set(Value.kReverse);
         }
+    }
+
+    public void toggle() {
+        m_solenoid.toggle();
     }
 }

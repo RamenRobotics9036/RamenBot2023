@@ -17,6 +17,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/ArmSystem": "Subsystem",
+      "/LiveWindow/GrabberSystem": "Subsystem",
       "/LiveWindow/TankDriveSystem": "Subsystem",
       "/LiveWindow/Ungrouped/AnalogGyro[0]": "Gyro",
       "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
@@ -25,7 +26,18 @@
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Drive Backwards": "Command",
+      "/SmartDashboard/Drive Forwards": "Command",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Grab Cargo": "Command",
+      "/SmartDashboard/Rotate Extender Backwards": "Command",
+      "/SmartDashboard/Rotate Extender Forwards": "Command",
+      "/SmartDashboard/Rotate Winch Backwards": "Command",
+      "/SmartDashboard/Rotate Winch Forwards": "Command",
+      "/SmartDashboard/Turn In Place": "Command"
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }

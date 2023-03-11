@@ -2,28 +2,34 @@ package frc.robot.Commands;
 
 import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class RotateMotorCommand extends CommandBase {
-    private double rotations;
+    private double distance;
     private double gearBoxRatio;
     private double percentOutput;
+    private double wheelCircumference;
+    private Timer time;
 
     private MotorController m_motor;
     private RelativeEncoder m_encoder;
 
-    public RotateMotorCommand(MotorController m_motor, RelativeEncoder m_encoder, double rotations, double gearBoxRatio, double percentOutput) {
-        this.rotations = rotations;
+    public RotateMotorCommand(MotorController m_motor, RelativeEncoder m_encoder, double distance, double gearBoxRatio, double percentOutput, double wheelCircumference) {
+        this.distance = distance;
         this.gearBoxRatio = gearBoxRatio;
         this.percentOutput = percentOutput;
+        this.wheelCircumference = wheelCircumference;
         
         this.m_motor = m_motor;
         this.m_encoder = m_encoder;
+        time = new Timer();
     }
 
     @Override
     public void initialize() {
+        time.start();
     }
 
     @Override
@@ -33,13 +39,15 @@ public class RotateMotorCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (rotations >= m_encoder.getPosition() * gearBoxRatio) {
+        if (time.get() > 0.5) {
             return true;
         }
+        System.out.println("Enc pos" + m_encoder.getPosition());
         return false;
     }
 
     @Override
     public void end(boolean interrupted) {
+        m_motor.stopMotor();
     }
 }
