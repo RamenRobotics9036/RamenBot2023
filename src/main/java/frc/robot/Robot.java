@@ -25,6 +25,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    m_robotContainer.initDashboard();
+    m_robotContainer.putShuffleBoardAutoCommands();
   }
 
   /**
@@ -49,23 +51,22 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.putShuffleBoardAutoCommands();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand.schedule();
   }
 
-  /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
   }
 
   @Override
   public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+    CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.configureBindings();
+    m_robotContainer.putShuffleBoardAutoCommands();
+    m_robotContainer.updateDashBoard();
   }
 
   /** This function is called periodically during operator control. */
@@ -91,6 +92,5 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {
-    CommandScheduler.getInstance().run();
   }
 }
