@@ -1,39 +1,43 @@
-package frc.robot.Commands;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Subsystems.TankDriveSystem;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.subsystems.DriveSystem;
 
-public class DriveCommand extends CommandBase{
-    private double distance;
-    private double gearBoxRatio;
-    private double percentOutput;
-    private double wheelCircumference;
+public class DriveCommand extends CommandBase {
+    private DriveSystem m_driveSystem;
 
-    TankDriveSystem m_drive;
+    private double speed;
+    private double inchesDistance;
 
-    public DriveCommand(TankDriveSystem m_drive, double distance, double gearBoxRatio, double percentOutput, double wheelCircumference) {
-        this.distance = distance;
-        this.gearBoxRatio = gearBoxRatio;
-        this.percentOutput = -percentOutput;
-        this.wheelCircumference = wheelCircumference;
+    public DriveCommand(DriveSystem m_driveSystem, double speed, double inchesDistance, boolean driveForwards) {
+        this.m_driveSystem = m_driveSystem;
+        addRequirements(m_driveSystem);
 
-        this.m_drive = m_drive;
-        m_drive.resetEncoders();
-        addRequirements(m_drive);
+        if (driveForwards) {
+            this.speed = speed;
+        } else {
+            this.speed = -speed;
+        }
+        this.inchesDistance = inchesDistance;
     }
 
     @Override
     public void initialize() {
+        System.out.println("DRIVE COMMAND INITIALIZED");
     }
 
     @Override
     public void execute() {
-        m_drive.tankDrive(-percentOutput, percentOutput, false);
+        m_driveSystem.tankDrive(speed, speed);
+        System.out.println("DRIVE MOTOR SPEED SET AT " + m_driveSystem.getAverageSpeed());
+        System.out.println("DRIVE MOTOR ENCODERS SET AT " + m_driveSystem.getAverageEncoderPosition());
     }
 
     @Override
     public boolean isFinished() {
-        if (distance <= m_drive.getAverageEncoderPosition() / gearBoxRatio * wheelCircumference) {
+        if (inchesDistance <= m_driveSystem.getAverageEncoderPosition() / AutoConstants.gearBoxRatioDrive * AutoConstants.wheelDiameterInchDrive) {
+            System.out.println("DRIVE COMMAND IS FINISHED SET TO TRUE");
             return true;
         }
         return false;
@@ -41,6 +45,7 @@ public class DriveCommand extends CommandBase{
 
     @Override
     public void end(boolean interrupted) {
-        m_drive.tankDrive(0, 0, false);
+        m_driveSystem.stopSystem();
+        System.out.println("DRIVE COMMAND ENDED");
     }
 }

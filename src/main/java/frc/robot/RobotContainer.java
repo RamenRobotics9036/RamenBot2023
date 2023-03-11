@@ -4,17 +4,14 @@
 
 package frc.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
+import frc.robot.commands.Autos;
+import frc.robot.subsystems.ArmSystem;
+import frc.robot.subsystems.DriveSystem;
+import frc.robot.subsystems.GrabSystem;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Commands.Auto;
-import frc.robot.Subsystems.ArmSystem;
-import frc.robot.Subsystems.GrabberSystem;
-import frc.robot.Subsystems.TankDriveSystem;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,41 +20,16 @@ import frc.robot.Subsystems.TankDriveSystem;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final XboxController m_controller1 = new XboxController(Constants.OperatorConstants.kDriverControllerPort1);
-  private final XboxController m_controller2 = new XboxController(Constants.OperatorConstants.kDriverControllerPort2);
+  private XboxController m_driveController = new XboxController(Constants.ControllerConstants.driveControllerPort);
+  private XboxController m_armController = new XboxController(Constants.ControllerConstants.armControllerPort);
 
-  public final TankDriveSystem m_driveSystem = new TankDriveSystem(
-    Constants.OperatorConstants.kLeftMotorForwardChannel,
-    Constants.OperatorConstants.kLeftMotorBackChannel,
-    Constants.OperatorConstants.kRightMotorBackChannel,
-    Constants.OperatorConstants.kRightMotorForwardChannel,
-    m_controller1,
-    Constants.OperatorConstants.kSquareInputsDrive,
-    Constants.OperatorConstants.kMaxOutputDrive,
-    Constants.OperatorConstants.kDeadband,
-    Constants.OperatorConstants.kGearBoxRatioDrive,
-    Constants.OperatorConstants.kWheelDiameterMetersDrive,
-    Constants.OperatorConstants.kSlewLimit
-  );
-
-  public final ArmSystem m_armSystem = new ArmSystem(
-    Constants.OperatorConstants.kArmWinchChannel,
-    Constants.OperatorConstants.kArmExtenderChannel,
-    m_controller2,
-    Constants.OperatorConstants.kDeadband,
-    Constants.OperatorConstants.kSquareInputsArm,
-    Constants.OperatorConstants.kMaxOutputWinch
-  );
-
-  public final GrabberSystem m_grabSystem = new GrabberSystem(
-    Constants.OperatorConstants.kGrabberForwardChannel,
-    Constants.OperatorConstants.kGrabberBackwardChannel,
-    m_controller2
-    );
+  private DriveSystem m_driveSystem = new DriveSystem(m_driveController);
+  private ArmSystem m_armSystem = new ArmSystem(m_armController);
+  private GrabSystem m_grabSystem = new GrabSystem(m_armController);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // CameraServer.startAutomaticCapture();
+    configureBindings();
   }
 
   /**
@@ -69,35 +41,31 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  public void configureBindings() {
-    new Trigger(m_driveSystem::getCondition).whileTrue(m_driveSystem.driveCommand());
-    new Trigger(m_armSystem::getCondition).whileTrue(m_armSystem.armCommand());
-    new Trigger(m_grabSystem::getCondition).whileTrue(m_grabSystem.grabCommand());
+  private void configureBindings() {
+    m_driveSystem.setDefaultCommand(m_driveSystem.driveCommand());
+    m_armSystem.setDefaultCommand(m_armSystem.armCommand());
+    m_grabSystem.setDefaultCommand(m_grabSystem.grabCommand());
   }
 
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
   public Command getAutonomousCommand() {
-    System.out.println("Auto command scheduled container");
-    return Auto.getAutoCommand(m_driveSystem, m_armSystem, m_grabSystem);
+    return Autos.getAuto(m_driveSystem, m_armSystem, m_grabSystem);
   }
 
-  public void putShuffleBoardAutoCommands() {
-    Auto.putShuffleBoardCommands(m_driveSystem, m_armSystem, m_grabSystem);
+  public void dashBoardInit() {
+    Autos.dashBoardInit();
+    m_driveSystem.dashBoardInit();
+    m_armSystem.dashBoardInit();
+    m_grabSystem.dashBoardInit();
   }
 
-  public void resetEncoders() {
-    m_driveSystem.resetEncoders();
-    m_armSystem.resetEncoders();
-  }
-
-  public void initDashboard() {
-    SmartDashboard.putNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed);
-    SmartDashboard.putNumber("Auto Motor Distance", Constants.OperatorConstants.kAutoMotorDistance);
-    SmartDashboard.putBoolean("Auto Turn Left", true);
-    SmartDashboard.putNumber("Starting Position", 0);
-  }
-
-  public void updateDashBoard() {
-    m_driveSystem.updateDashBoard();
-    m_armSystem.updateDashBoard();
+  public void dashBoardUpdate() {
+    m_driveSystem.dashBoardUpdate();
+    m_armSystem.dashBoardUpdate();
+    m_grabSystem.dashBoardUpdate();
   }
 }
