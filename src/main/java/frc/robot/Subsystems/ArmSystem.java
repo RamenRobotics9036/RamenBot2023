@@ -28,9 +28,10 @@ public class ArmSystem extends SubsystemBase{
 
     public ArmSystem(int armWinchChannel, int armExtenderChannel, XboxController m_controller, double m_deadband, boolean squareInputs, double maxOutputWinch) {
         m_armWinch = new CANSparkMax(armWinchChannel, MotorType.kBrushless);
+        m_armWinch.setSmartCurrentLimit(20);
         m_armExtender = new CANSparkMax(armExtenderChannel, MotorType.kBrushless);
-        m_armExtender.setInverted(true);
-
+        m_armExtender.setSmartCurrentLimit(20);
+        m_armExtender.setInverted(false);
         m_winchEncoder = m_armWinch.getEncoder();
         m_extenderEncoder = m_armExtender.getEncoder();
 
@@ -53,6 +54,10 @@ public class ArmSystem extends SubsystemBase{
         SmartDashboard.putNumber("Winch Encoder", m_winchEncoder.getPosition());
         SmartDashboard.putNumber("Extender Encoder", m_extenderEncoder.getPosition());
         maxOutputWinch = SmartDashboard.getNumber("Winch Max Output", maxOutputWinch);
+    }
+
+    public double getWinchAbsoluteEncoder() {
+        return m_winchAbsoluteEncoder.getAbsolutePosition();
     }
 
     public void putEncoderPositions() {
@@ -134,5 +139,9 @@ public class ArmSystem extends SubsystemBase{
 
     public void setExtenderSpeed(double speed) {
         m_armExtender.set(speed);
+    }
+
+    public double getLeftAxis() {
+        return m_controller.getLeftY();
     }
 }

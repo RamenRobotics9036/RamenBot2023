@@ -6,9 +6,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -51,9 +49,8 @@ public class TankDriveSystem extends SubsystemBase {
 
         m_leftMotors = new MotorControllerGroup(m_leftMotor1, m_leftMotor2);
         m_rightMotors = new MotorControllerGroup(m_rightMotor1, m_rightMotor2);
-        m_leftMotors.setInverted(true);
+        m_rightMotors.setInverted(true);
         m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
-        
         
         m_drive.setMaxOutput(maxOutput);
         m_drive.setDeadband(Deadband);
@@ -96,13 +93,13 @@ public class TankDriveSystem extends SubsystemBase {
     public CommandBase driveCommand() {
         return run(
             () -> {
-                double leftAxis = m_controller.getRightY();
-                double rightAxis = m_controller.getLeftY();
+                double leftAxis = m_controller.getLeftY();
+                double rightAxis = m_controller.getRightY();
                 double xForward = (leftAxis + rightAxis) / 2;
                 double zRotation = (leftAxis - rightAxis) / 2;
 
                 if (Constants.OperatorConstants.kUseArcadeDrive == false){
-                    m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation), squareInputs);
+                    m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
                 }
                 System.out.println("Command called");
             }
@@ -112,26 +109,26 @@ public class TankDriveSystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (!RobotState.isAutonomous()) {
-            double leftAxis = m_controller.getRightY();
-            double rightAxis = m_controller.getLeftY();
+            double leftAxis = m_controller.getLeftY();
+            double rightAxis = m_controller.getRightY();
             double xForward = (leftAxis + rightAxis) / 2;
             double zRotation = (leftAxis - rightAxis) / 2;
 
             if (Constants.OperatorConstants.kUseArcadeDrive == false){
-                m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation * Constants.OperatorConstants.kRotationDilation), squareInputs);
+                m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
             }
         }
     }
 
     @Override
     public void simulationPeriodic() {
-        double leftAxis = m_controller.getRightY();
-        double rightAxis = m_controller.getLeftY();
+        double leftAxis = m_controller.getLeftY();
+        double rightAxis = m_controller.getRightY();
         double xForward = (leftAxis + rightAxis) / 2;
         double zRotation = (leftAxis - rightAxis) / 2;
 
         if (Constants.OperatorConstants.kUseArcadeDrive == false){
-            m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation * Constants.OperatorConstants.kRotationDilation), squareInputs);
+            m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
         }
     }
 
