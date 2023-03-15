@@ -41,6 +41,10 @@ public class SetWinchToAngle extends CommandBase {
 
     @Override
     public boolean isFinished() {
+        if (MathUtil.applyDeadband(m_armSystem.getLeftAxis(), Constants.OperatorConstants.kDeadband) != 0) {
+            return true;
+            
+        }
         System.out.println("ENCODER" + m_armSystem.getWinchAbsoluteEncoder());
         System.out.println("ANGLE" + angle);
         if (inverse == 1 && m_armSystem.getWinchAbsoluteEncoder() >= angle) {
@@ -51,7 +55,7 @@ public class SetWinchToAngle extends CommandBase {
             return true;
         }
         return false;
-    }   
+    }
 
     @Override
     public void end(boolean interrupted) {

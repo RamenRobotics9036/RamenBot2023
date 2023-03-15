@@ -79,6 +79,8 @@ public class RobotContainer {
     new Trigger(m_controller2::getXButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCube, 0.5));
     new Trigger(m_controller2::getBButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchGroundAngle, 0.5));
     new Trigger(m_controller2::getYButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchRetractAngle, 0.5));
+
+    // new Trigger(m_armSystem::isOffHigher).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kEmergencyAngle, 0.5));
   }
 
   public Command getAutonomousCommand() {
