@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Auto;
 import frc.robot.Commands.SetWinchToAngle;
+import frc.robot.Commands.SetSoftLimitCommand;
+import frc.robot.Commands.RetractArmCommand;
 import frc.robot.Subsystems.ArmSystem;
 import frc.robot.Subsystems.GrabberSystem;
 import frc.robot.Subsystems.TankDriveSystem;
@@ -76,9 +78,12 @@ public class RobotContainer {
     new Trigger(m_grabSystem::getCondition).whileTrue(m_grabSystem.grabCommand());
 
     new Trigger(m_controller2::getAButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCone, 0.5));
-    new Trigger(m_controller2::getXButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCube, 0.5));
-    new Trigger(m_controller2::getBButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchGroundAngle, 0.5));
-    new Trigger(m_controller2::getYButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchRetractAngle, 0.5));
+    // new Trigger(m_controller2::getXButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCube, 0.5));
+    // new Trigger(m_controller2::getBButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchGroundAngle, 0.5));
+    // new Trigger(m_controller2::getYButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchRetractAngle, 0.5));
+
+    new Trigger(m_controller2::getBButtonReleased).onTrue(new RetractArmCommand(m_armSystem));
+    new Trigger(m_controller2::getXButtonReleased).onTrue(new SetSoftLimitCommand(m_armSystem));
 
     // new Trigger(m_armSystem::isOffHigher).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kEmergencyAngle, 0.5));
   }
@@ -89,8 +94,8 @@ public class RobotContainer {
   }
 
   public void putShuffleBoardAutoCommands() {
-    // Auto.putShuffleBoardCommands(m_driveSystem, m_armSystem, m_grabSystem);
-    m_armSystem.putEncoderPositions();
+    Auto.putShuffleBoardCommands(m_driveSystem, m_armSystem, m_grabSystem);
+    // m_armSystem.putSensorOutputs();
   }
 
   public void resetEncoders() {

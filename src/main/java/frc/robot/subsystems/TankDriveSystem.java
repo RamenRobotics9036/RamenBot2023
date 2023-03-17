@@ -120,17 +120,22 @@ public class TankDriveSystem extends SubsystemBase {
         }
     }
 
+
+
     @Override
     public void simulationPeriodic() {
         double leftAxis = m_controller.getLeftY();
-        double rightAxis = m_controller.getRightY();
+        double rightAxis = m_controller.getRightY(); 
         double xForward = (leftAxis + rightAxis) / 2;
         double zRotation = (leftAxis - rightAxis) / 2;
 
         if (Constants.OperatorConstants.kUseArcadeDrive == false){
-            m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
+            m_drive.arcadeDrive(slewLimiter1.calculate(xForward),
+            slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
         }
     }
+
+
 
     public void resetEncoders() {
         m_leftEncoder.setPosition(0);

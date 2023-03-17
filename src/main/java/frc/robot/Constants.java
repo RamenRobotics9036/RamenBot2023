@@ -73,6 +73,7 @@ public final class Constants {
     public static double kWinchGroundAngle = 0.44;
     public static double kEmergencyAngle = 0.55;
 
-    public static float kExtenderSoftLimitTurns = (float)0.5;
+    public static float kExtenderSoftLimitTurns = (float)5;
+    public static int kHallEffectExtenderChannel = 4;
   }
 }

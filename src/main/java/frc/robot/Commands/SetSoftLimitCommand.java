@@ -5,29 +5,26 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.ArmSystem;
 
 
-public class RetractArmCommand extends CommandBase{
+public class SetSoftLimitCommand extends CommandBase{
     ArmSystem armSystem;
 
-    public RetractArmCommand(ArmSystem armSystem) {
+    public SetSoftLimitCommand(ArmSystem armSystem) {
         this.armSystem = armSystem;
         addRequirements(armSystem);
     }
 
     @Override
     public void initialize() {
+        armSystem.setSoftLimit();
     }
 
     @Override
     public void execute() {
-        armSystem.setExtenderSpeed(-0.2);
     }
 
     @Override
     public boolean isFinished() {
-        if (!armSystem.getDigitalSensor()){
-            return true;
-        }
-        return false;
+        return true;
     }
 
     @Override

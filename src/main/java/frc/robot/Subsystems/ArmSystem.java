@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,6 +21,7 @@ public class ArmSystem extends SubsystemBase{
     private XboxController m_controller;
     private double m_deadband;
     private double maxOutputWinch;
+    private DigitalInput sensor = new DigitalInput(Constants.OperatorConstants.kHallEffectExtenderChannel);
 
     private CANSparkMax m_armWinch;
     private CANSparkMax m_armExtender;
@@ -37,8 +39,6 @@ public class ArmSystem extends SubsystemBase{
         m_armExtender.setInverted(false);
         m_winchEncoder = m_armWinch.getEncoder();
         m_extenderEncoder = m_armExtender.getEncoder();
-
-        // m_armExtender.setSoftLimit(SoftLimitDirection.kForward, Constants.OperatorConstants.kExtenderSoftLimitTurns);
 
         this.m_controller = m_controller;
         this.m_deadband = m_deadband;
@@ -69,8 +69,9 @@ public class ArmSystem extends SubsystemBase{
         return m_winchAbsoluteEncoder.getAbsolutePosition();
     }
 
-    public void putEncoderPositions() {
+    public void putSensorOutputs() {
         SmartDashboard.putNumber("Winch Absolute Encoder Position", m_winchAbsoluteEncoder.getAbsolutePosition());
+        SmartDashboard.putBoolean("Hall Effect Sensor Output", getDigitalSensor());
     }
  
     public boolean getCondition() {
@@ -104,8 +105,11 @@ public class ArmSystem extends SubsystemBase{
         );
     }
 
+    
+
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Num rotations", m_extenderEncoder.getPosition());
         double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
         double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
         winchOutput = winchOutput * Math.abs(winchOutput);
@@ -123,6 +127,8 @@ public class ArmSystem extends SubsystemBase{
         setWinchSpeed(winchOutput * maxOutputWinch);
         setExtenderSpeed(extenderOutput);
     }
+
+
     
     @Override
     public void simulationPeriodic() {
@@ -177,5 +183,15 @@ public class ArmSystem extends SubsystemBase{
     public double getLeftAxis() {
         return m_controller.getLeftY();
     }
+    public boolean getDigitalSensor() {
+        return sensor.get();
+    }
 
+    public void setSoftLimit() {
+        resetExtenderEncoder();
+        m_armExtender.enableSoftLimit(SoftLimitDirection.kForward, true);
+        m_armExtender.enableSoftLimit(SoftLimitDirection.kReverse, true);
+        m_armExtender.setSoftLimit(SoftLimitDirection.kForward, Constants.OperatorConstants.kExtenderSoftLimitTurns);
+        m_armExtender.setSoftLimit(SoftLimitDirection.kReverse, 0);
+    }
 }
