@@ -3,7 +3,6 @@ package frc.robot.Commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Subsystems.ArmSystem;
@@ -26,6 +25,8 @@ public class Auto {
     public static void putShuffleBoardCommands(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
 
         SmartDashboard.putBoolean("Auto Middle", false);
+        // SmartDashboard.putData("Retract Arm", new RetractArmCommand(m_armSystem));
+        // SmartDashboard.putData("Set Soft Limit", new SetSoftLimitCommand(m_armSystem));
     //     SmartDashboard.putData("Rotate Winch Forwards", m_armSystem.rotateWinchMotor(
     //         SmartDashboard.getNumber("Auto Motor Distance", Constants.OperatorConstants.kAutoMotorDistance),
     //          Constants.OperatorConstants.kGearBoxRatioArm,
