@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Commands.RotateMotorCommand;
+import frc.robot.Commands.SetArmPositionCommand;
 
 public class ArmSystem extends SubsystemBase{
     private XboxController m_controller;
@@ -56,6 +57,11 @@ public class ArmSystem extends SubsystemBase{
     public CommandBase armCommand() {
         return run(
             () -> {
+                if (m_controller.getAButtonPressed()){
+                    new SetArmPositionCommand(0, m_winchEncoder , m_armWinch);
+                } else if (m_controller.getBButtonPressed()){
+                    new SetArmPositionCommand(3, m_winchEncoder , m_armWinch);
+                }
                 double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
                 double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
                 winchOutput = winchOutput * Math.abs(winchOutput);
@@ -108,7 +114,7 @@ public class ArmSystem extends SubsystemBase{
 
     public double getExtenderEncoder() {
         return m_extenderEncoder.getPosition();
-    }
+    } 
 
     public RotateMotorCommand rotateWinchMotor(double rotations, double gearBoxRatio, double percentOutput, double winchCircumference) {
         return new RotateMotorCommand(m_armWinch, m_extenderEncoder, rotations, gearBoxRatio, percentOutput, winchCircumference);
