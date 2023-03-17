@@ -1,20 +1,27 @@
 package frc.robot.Subsystems;
 
+import javax.swing.border.EtchedBorder;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Commands.RotateMotorCommand;
 
 public class ArmSystem extends SubsystemBase{
     private XboxController m_controller;
     private double m_deadband;
     private double maxOutputWinch;
+    private DigitalInput sensor = new DigitalInput(Constants.OperatorConstants.kHallEffectExtenderChannel);
 
     private CANSparkMax m_armWinch;
     private CANSparkMax m_armExtender;
@@ -22,17 +29,22 @@ public class ArmSystem extends SubsystemBase{
     private RelativeEncoder m_winchEncoder;
     private RelativeEncoder m_extenderEncoder;
 
+    private DutyCycleEncoder m_winchAbsoluteEncoder;
+
     public ArmSystem(int armWinchChannel, int armExtenderChannel, XboxController m_controller, double m_deadband, boolean squareInputs, double maxOutputWinch) {
         m_armWinch = new CANSparkMax(armWinchChannel, MotorType.kBrushless);
+        m_armWinch.setSmartCurrentLimit(20);
         m_armExtender = new CANSparkMax(armExtenderChannel, MotorType.kBrushless);
-        m_armExtender.setInverted(true);
-
+        m_armExtender.setSmartCurrentLimit(20);
+        m_armExtender.setInverted(false);
         m_winchEncoder = m_armWinch.getEncoder();
         m_extenderEncoder = m_armExtender.getEncoder();
 
         this.m_controller = m_controller;
         this.m_deadband = m_deadband;
         this.maxOutputWinch = maxOutputWinch;
+
+        m_winchAbsoluteEncoder = new DutyCycleEncoder(Constants.OperatorConstants.kAbsoluteEncoderWinchChannel);
 
         initDashBoard();
     }
@@ -48,45 +60,87 @@ public class ArmSystem extends SubsystemBase{
         SmartDashboard.putNumber("Extender Encoder", m_extenderEncoder.getPosition());
         maxOutputWinch = SmartDashboard.getNumber("Winch Max Output", maxOutputWinch);
     }
+
+    public double getWinchAbsoluteEncoder() {
+        return m_winchAbsoluteEncoder.getAbsolutePosition();
+    }
+
+    private double getWinchAbsoluteEncoderPrivate() {
+        return m_winchAbsoluteEncoder.getAbsolutePosition();
+    }
+
+    public void putSensorOutputs() {
+        SmartDashboard.putNumber("Winch Absolute Encoder Position", m_winchAbsoluteEncoder.getAbsolutePosition());
+        SmartDashboard.putBoolean("Hall Effect Sensor Output", getDigitalSensor());
+    }
  
     public boolean getCondition() {
         return true;
     }
 
+    public boolean isOffLower() {
+        return getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit;
+    }
+
+    public boolean isOffHigher() {
+        return getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit;
+    }
+
     public CommandBase armCommand() {
         return run(
             () -> {
-                double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
-                double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
-                winchOutput = winchOutput * Math.abs(winchOutput);
-                extenderOutput = extenderOutput * Math.abs(extenderOutput);
-        
-                m_armWinch.set(winchOutput * maxOutputWinch);
-                m_armExtender.set(extenderOutput);
+                if (!(getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit && m_controller.getLeftY() > 0 )) {
+                    double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
+                    double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
+                    winchOutput = winchOutput * Math.abs(winchOutput);
+                    extenderOutput = extenderOutput * Math.abs(extenderOutput);
+                }
+                if (!(getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit && m_controller.getLeftY() < 0)) {
+                    double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
+                    double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
+                    winchOutput = winchOutput * Math.abs(winchOutput);
+                    extenderOutput = extenderOutput * Math.abs(extenderOutput);
+                }
             }
         );
     }
 
+    
+
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Num rotations", m_extenderEncoder.getPosition());
         double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
         double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
         winchOutput = winchOutput * Math.abs(winchOutput);
         extenderOutput = extenderOutput * Math.abs(extenderOutput);
 
-        m_armWinch.set(winchOutput * maxOutputWinch);
-        m_armExtender.set(extenderOutput);
+        if (getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit && winchOutput > 0 ) {
+            m_armWinch.set(0);
+            return;            
+        }
+        if (getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit && winchOutput < 0) {
+            m_armWinch.set(0);
+            return;
+        }
+
+        setWinchSpeed(winchOutput * maxOutputWinch);
+        setExtenderSpeed(extenderOutput);
     }
+
+
     
     @Override
     public void simulationPeriodic() {
-        double winchOutput = MathUtil.applyDeadband(m_controller.getLeftY(), m_deadband);
-        double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
-        winchOutput = winchOutput * Math.abs(winchOutput);
-        extenderOutput = extenderOutput * Math.abs(extenderOutput);
-
-        m_armWinch.set(winchOutput * maxOutputWinch);
-        m_armExtender.set(extenderOutput);
+        if (!(getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit | getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit)) {
+            double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
+            double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
+            winchOutput = winchOutput * Math.abs(winchOutput);
+            extenderOutput = extenderOutput * Math.abs(extenderOutput);
+    
+            setWinchSpeed(winchOutput * maxOutputWinch);
+            setExtenderSpeed(extenderOutput);
+        }
     }
 
     public void resetEncoders() {
@@ -124,5 +178,20 @@ public class ArmSystem extends SubsystemBase{
 
     public void setExtenderSpeed(double speed) {
         m_armExtender.set(speed);
+    }
+
+    public double getLeftAxis() {
+        return m_controller.getLeftY();
+    }
+    public boolean getDigitalSensor() {
+        return sensor.get();
+    }
+
+    public void setSoftLimit() {
+        resetExtenderEncoder();
+        m_armExtender.enableSoftLimit(SoftLimitDirection.kForward, true);
+        m_armExtender.enableSoftLimit(SoftLimitDirection.kReverse, true);
+        m_armExtender.setSoftLimit(SoftLimitDirection.kForward, Constants.OperatorConstants.kExtenderSoftLimitTurns);
+        m_armExtender.setSoftLimit(SoftLimitDirection.kReverse, 0);
     }
 }
