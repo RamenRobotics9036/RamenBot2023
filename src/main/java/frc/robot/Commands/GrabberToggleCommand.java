@@ -9,6 +9,7 @@ public class GrabberToggleCommand extends CommandBase{
 
     public GrabberToggleCommand(GrabberSystem m_grabSystem) {
         this.m_grabSystem = m_grabSystem;
+        addRequirements(m_grabSystem);
     }
 
     @Override
