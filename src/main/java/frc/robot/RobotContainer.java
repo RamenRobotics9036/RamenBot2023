@@ -73,6 +73,7 @@ public class RobotContainer {
    * joysticks}.
    */
   public void configureBindings() {
+    new Trigger(m_driveSystem::getCondition).whileTrue(m_driveSystem.driveCommand());
     new Trigger(m_armSystem::getCondition).whileTrue(m_armSystem.armCommand());
     new Trigger(m_grabSystem::getCondition).whileTrue(m_grabSystem.grabCommand());
 
@@ -84,10 +85,6 @@ public class RobotContainer {
     new Trigger(m_controller2::getYButtonReleased).onTrue(new RetractArmCommand(m_armSystem).andThen(new SetSoftLimitCommand(m_armSystem)));
 
     // new Trigger(m_armSystem::isOffHigher).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kEmergencyAngle, 0.5));
-
-    // Configure default command for Drive Subsystem
-    m_driveSystem.setDefaultCommand(
-        m_driveSystem.getDefaultDriveCommand());
   }
 
   public Command getAutonomousCommand() {
