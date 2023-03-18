@@ -64,16 +64,17 @@ public final class Constants {
     public static double kRotationDilation = 1;
     public static int kAbsoluteEncoderWinchChannel = 5;
 
-    public static double kWinchEncoderUpperLimit = 0.61;
-    public static double kWinchEncoderLowerLimit = 0.42;
+    // public static double kWinchEncoderUpperLimit = 0.61;
+    public static double kWinchEncoderUpperLimit = 0.78;
+    public static double kWinchEncoderLowerLimit = 0.56;
 
-    public static double kWinchMiddleNodeCone = 0.6;
-    public static double kWinchMiddleNodeCube = 0.58;
-    public static double kWinchRetractAngle = 0.42;
-    public static double kWinchGroundAngle = 0.44;
-    public static double kEmergencyAngle = 0.55;
+    public static double kWinchMiddleNodeCone = 0.77;
+    public static double kWinchMiddleNodeCube = 0.75;
+    public static double kWinchRetractAngle = 0.56;
+    public static double kWinchGroundAngle = 0.59;
+    public static double kEmergencyAngle = 0.72;
 
-    public static float kExtenderSoftLimitTurns = (float)5;
+    public static float kExtenderSoftLimitTurns = (float)-100;
     public static int kHallEffectExtenderChannel = 4;
   }
 }

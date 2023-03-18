@@ -37,6 +37,8 @@ public class TankDriveSystem extends SubsystemBase {
     private RelativeEncoder m_leftEncoder;
     private RelativeEncoder m_rightEncoder;
 
+    // private final AnalogGyro m_gyro = new AnalogGyro(0);
+
     public TankDriveSystem(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
      int rightMotorForwardChannel, XboxController m_controller, boolean squareInputs,
     double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters,

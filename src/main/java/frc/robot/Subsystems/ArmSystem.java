@@ -47,6 +47,7 @@ public class ArmSystem extends SubsystemBase{
         m_winchAbsoluteEncoder = new DutyCycleEncoder(Constants.OperatorConstants.kAbsoluteEncoderWinchChannel);
 
         initDashBoard();
+        setSoftLimit();
     }
 
     private void initDashBoard() {
@@ -89,18 +90,23 @@ public class ArmSystem extends SubsystemBase{
     public CommandBase armCommand() {
         return run(
             () -> {
-                if (!(getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit && m_controller.getLeftY() > 0 )) {
-                    double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
-                    double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
-                    winchOutput = winchOutput * Math.abs(winchOutput);
-                    extenderOutput = extenderOutput * Math.abs(extenderOutput);
+                // SmartDashboard.putNumber("Num rotations", m_extenderEncoder.getPosition());
+                double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
+                double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
+                winchOutput = winchOutput * Math.abs(winchOutput);
+                extenderOutput = extenderOutput * Math.abs(extenderOutput);
+        
+                if (getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit && winchOutput > 0 ) {
+                    m_armWinch.set(0);
+                    return;            
                 }
-                if (!(getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit && m_controller.getLeftY() < 0)) {
-                    double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
-                    double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
-                    winchOutput = winchOutput * Math.abs(winchOutput);
-                    extenderOutput = extenderOutput * Math.abs(extenderOutput);
+                if (getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit && winchOutput < 0) {
+                    m_armWinch.set(0);
+                    return;
                 }
+
+                setWinchSpeed(winchOutput * maxOutputWinch);
+                setExtenderSpeed(extenderOutput);
             }
         );
     }
@@ -109,23 +115,32 @@ public class ArmSystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Num rotations", m_extenderEncoder.getPosition());
+        SmartDashboard.putNumber("Absolute encoder", getWinchAbsoluteEncoder());
+        SmartDashboard.putNumber("Extender encoder", getExtenderEncoder());
         double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
         double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
         winchOutput = winchOutput * Math.abs(winchOutput);
         extenderOutput = extenderOutput * Math.abs(extenderOutput);
 
+        SmartDashboard.putNumber("Extender output", extenderOutput);
+
         if (getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit && winchOutput > 0 ) {
             m_armWinch.set(0);
-            return;            
-        }
-        if (getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit && winchOutput < 0) {
+        } else if (getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit && winchOutput < 0) {
             m_armWinch.set(0);
-            return;
+        } else {
+            setWinchSpeed(winchOutput * maxOutputWinch);
         }
 
-        setWinchSpeed(winchOutput * maxOutputWinch);
-        setExtenderSpeed(extenderOutput);
+        if (getExtenderEncoder() <= Constants.OperatorConstants.kExtenderSoftLimitTurns && extenderOutput < 0) {
+            m_armExtender.set(0);
+        } else if (getExtenderEncoder() > 0 && extenderOutput > 0) {
+            m_armExtender.set(0);
+        } else {
+            setExtenderSpeed(extenderOutput);
+        }
+
+        // setExtenderSpeed(extenderOutput);
     }
 
 
@@ -188,10 +203,9 @@ public class ArmSystem extends SubsystemBase{
     }
 
     public void setSoftLimit() {
+        m_armExtender.enableSoftLimit(SoftLimitDirection.kForward, false);
+        m_armExtender.enableSoftLimit(SoftLimitDirection.kReverse, false);
         resetExtenderEncoder();
-        m_armExtender.enableSoftLimit(SoftLimitDirection.kForward, true);
-        m_armExtender.enableSoftLimit(SoftLimitDirection.kReverse, true);
-        m_armExtender.setSoftLimit(SoftLimitDirection.kForward, Constants.OperatorConstants.kExtenderSoftLimitTurns);
-        m_armExtender.setSoftLimit(SoftLimitDirection.kReverse, 0);
     }
 }
+

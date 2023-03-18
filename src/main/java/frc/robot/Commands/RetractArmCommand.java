@@ -19,7 +19,7 @@ public class RetractArmCommand extends CommandBase{
 
     @Override
     public void execute() {
-        armSystem.setExtenderSpeed(-0.2);
+        armSystem.setExtenderSpeed(0.4);
     }
 
     @Override
@@ -33,5 +33,6 @@ public class RetractArmCommand extends CommandBase{
     @Override
     public void end(boolean interrupted) {
         armSystem.setExtenderSpeed(0);
+        armSystem.resetExtenderEncoder();
     }
 }
