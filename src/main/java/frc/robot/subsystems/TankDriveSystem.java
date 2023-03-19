@@ -92,52 +92,27 @@ public class TankDriveSystem extends SubsystemBase {
         return true;
     }
 
-    public CommandBase driveCommand() {
+    public CommandBase getDefaultDriveCommand() {
         return run(
-            () -> {
-                double leftAxis = m_controller.getLeftY();
-                double rightAxis = m_controller.getRightY();
-                double xForward = (leftAxis + rightAxis) / 2;
-                double zRotation = (leftAxis - rightAxis) / 2;
+           () -> {
+                // NOTE: The isAutonomous check isn't really required, since default commands
+                //   seem to only run in teleop.  But left the check as an extra layer of
+                //   protection
+                if (!RobotState.isAutonomous()) {
+                  double leftAxis = m_controller.getLeftY();
+                  double rightAxis = m_controller.getRightY();
+                  double xForward = (leftAxis + rightAxis) / 2;
+                  double zRotation = (leftAxis - rightAxis) / 2;
 
-                if (Constants.OperatorConstants.kUseArcadeDrive == false){
-                    m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
-                }
-                System.out.println("Command called");
-            }
+                  if (Constants.OperatorConstants.kUseArcadeDrive == false){
+                      m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
+                  }
+               }
+
+               //System.out.println("getDefaultDriveCommand called");
+           }
         );
     }
-
-    @Override
-    public void periodic() {
-        if (!RobotState.isAutonomous()) {
-            double leftAxis = m_controller.getLeftY();
-            double rightAxis = m_controller.getRightY();
-            double xForward = (leftAxis + rightAxis) / 2;
-            double zRotation = (leftAxis - rightAxis) / 2;
-
-            if (Constants.OperatorConstants.kUseArcadeDrive == false){
-                m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
-            }
-        }
-    }
-
-
-
-    @Override
-    public void simulationPeriodic() {
-        double leftAxis = m_controller.getLeftY();
-        double rightAxis = m_controller.getRightY(); 
-        double xForward = (leftAxis + rightAxis) / 2;
-        double zRotation = (leftAxis - rightAxis) / 2;
-
-        if (Constants.OperatorConstants.kUseArcadeDrive == false){
-            m_drive.arcadeDrive(slewLimiter1.calculate(xForward),
-            slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
-        }
-    }
-
-
 
     public void resetEncoders() {
         m_leftEncoder.setPosition(0);
