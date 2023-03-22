@@ -3,15 +3,15 @@ package frc.robot.Commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.Subsystems.ArmSystem;
+import frc.robot.Subsystems.WinchSystem;
 
 public class SetWinchToAngle extends CommandBase {
-    private ArmSystem m_armSystem;
+    private WinchSystem m_armSystem;
     private double angle;
     private double speed;
     private int inverse;
 
-    public SetWinchToAngle(ArmSystem m_armSystem, double angle, double speed) {
+    public SetWinchToAngle(WinchSystem m_armSystem, double angle, double speed) {
         this.m_armSystem = m_armSystem;
         addRequirements(m_armSystem);
 

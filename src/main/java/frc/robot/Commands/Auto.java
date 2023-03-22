@@ -27,7 +27,9 @@ public class Auto {
                 // new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
 
                 // new DriveCommand(m_driveSystem, 9 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.8, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-                new AutoBalanceCommand(m_driveSystem, 0.25)
+                // new AutoBalanceCommand(m_driveSystem, 0.25)
+
+                new DriveUntilTiltCommand(m_driveSystem, 3, 4, 0.2)
 
 
             );

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Auto;
@@ -18,6 +19,9 @@ import frc.robot.Commands.RetractArmCommand;
 import frc.robot.Subsystems.ArmSystem;
 import frc.robot.Subsystems.GrabberSystem;
 import frc.robot.Subsystems.TankDriveSystem;
+import frc.robot.Subsystems.WinchSystem;
+import edu.wpi.first.wpilibj2.command.Commands;
+
 
 
 /**
@@ -45,7 +49,6 @@ public class RobotContainer {
   );
 
   public final ArmSystem m_armSystem = new ArmSystem(
-    Constants.OperatorConstants.kArmWinchChannel,
     Constants.OperatorConstants.kArmExtenderChannel,
     m_controller2,
     Constants.OperatorConstants.kDeadband,
@@ -58,6 +61,10 @@ public class RobotContainer {
     Constants.OperatorConstants.kGrabberBackwardChannel,
     m_controller2
     );
+
+  public final WinchSystem m_winchSystem = new WinchSystem(
+    Constants.OperatorConstants.kArmWinchChannel, Constants.OperatorConstants.kMaxOutputWinch,
+     m_controller2, Constants.OperatorConstants.kDeadband);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -78,12 +85,12 @@ public class RobotContainer {
     new Trigger(m_armSystem::getCondition).whileTrue(m_armSystem.armCommand());
     new Trigger(m_grabSystem::getCondition).whileTrue(m_grabSystem.grabCommand());
 
-    new Trigger(m_controller2::getAButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCone, 0.5));
-    new Trigger(m_controller2::getXButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCube, 0.5));
-    new Trigger(m_controller2::getBButtonReleased).onTrue(new RetractArmCommand(m_armSystem).andThen(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchGroundAngle, 0.5)));
+    new Trigger(m_controller2::getAButtonReleased).onTrue(new SetWinchToAngle(m_winchSystem, Constants.OperatorConstants.kWinchMiddleNodeCone, 0.5));
+    new Trigger(m_controller2::getXButtonReleased).onTrue(new SetWinchToAngle(m_winchSystem, Constants.OperatorConstants.kWinchMiddleNodeCube, 0.5));
+    new Trigger(m_controller2::getBButtonReleased).onTrue(Commands.parallel(new RetractArmCommand(m_armSystem), (new SetWinchToAngle(m_winchSystem, Constants.OperatorConstants.kWinchGroundAngle, 0.5))));
     // new Trigger(m_controller2::getYButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchRetractAngle, 0.5));
     
-    new Trigger(m_controller2::getYButtonReleased).onTrue(new RetractArmCommand(m_armSystem).andThen(new SetSoftLimitCommand(m_armSystem)));
+    new Trigger(m_controller2::getYButtonReleased).onTrue(new RetractArmCommand(m_armSystem));
 
     // new Trigger(m_armSystem::isOffHigher).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kEmergencyAngle, 0.5));
   }
