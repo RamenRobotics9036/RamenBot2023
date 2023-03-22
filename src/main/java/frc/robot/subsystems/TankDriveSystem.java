@@ -6,6 +6,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -37,7 +39,7 @@ public class TankDriveSystem extends SubsystemBase {
     private RelativeEncoder m_leftEncoder;
     private RelativeEncoder m_rightEncoder;
 
-    // private final AnalogGyro m_gyro = new AnalogGyro(0);
+    private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
 
     public TankDriveSystem(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
      int rightMotorForwardChannel, XboxController m_controller, boolean squareInputs,
@@ -110,6 +112,7 @@ public class TankDriveSystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // System.out.println("GYRO ANGLE AT " + m_gyro.getAngle());
         if (!RobotState.isAutonomous()) {
             double leftAxis = m_controller.getLeftY();
             double rightAxis = m_controller.getRightY();
@@ -158,5 +161,13 @@ public class TankDriveSystem extends SubsystemBase {
 
     public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
         m_drive.tankDrive(leftSpeed, rightSpeed, squareInputs);
+    }
+
+    public void calibrate() {
+        m_gyro.calibrate();
+    }
+
+    public double getGyroAngle() {
+        return m_gyro.getAngle();
     }
 }
