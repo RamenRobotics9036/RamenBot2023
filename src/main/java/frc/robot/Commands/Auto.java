@@ -16,9 +16,20 @@ public class Auto {
 
     public static CommandBase getAutoCommand(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
             return Commands.sequence(
-                m_armSystem.rotateWinchMotor(1, 1, 1, 1), // Rotate winch for scoring , putting circumfrence as 1 gets rotations
-                new WaitCommand(1),
-                new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.3, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
+                // m_armSystem.rotateWinchMotor(1, 1, 1, 1), // Rotate winch for scoring , putting circumfrence as 1 gets rotations
+                
+                
+                // new SetWinchToAngle(m_armSystem, 0.74, 0.5),
+                // new SetExtenderToLength(m_armSystem, -100, 0.5),
+                // new GrabberToggleCommand(m_grabSystem),
+                // new WaitCommand(1),
+                // Comment next line out if going middle
+                // new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+
+                new DriveCommand(m_driveSystem, 9 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.8, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+                new AutoBalanceCommand(m_driveSystem, 0.2)
+
+
             );
     }
 
