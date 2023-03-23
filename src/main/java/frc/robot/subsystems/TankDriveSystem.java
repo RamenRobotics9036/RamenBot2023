@@ -6,6 +6,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -37,7 +39,7 @@ public class TankDriveSystem extends SubsystemBase {
     private RelativeEncoder m_leftEncoder;
     private RelativeEncoder m_rightEncoder;
 
-    // private final AnalogGyro m_gyro = new AnalogGyro(0);
+    private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
 
     public TankDriveSystem(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
      int rightMotorForwardChannel, XboxController m_controller, boolean squareInputs,
@@ -92,27 +94,53 @@ public class TankDriveSystem extends SubsystemBase {
         return true;
     }
 
-    public CommandBase getDefaultDriveCommand() {
+    public CommandBase driveCommand() {
         return run(
-           () -> {
-                // NOTE: The isAutonomous check isn't really required, since default commands
-                //   seem to only run in teleop.  But left the check as an extra layer of
-                //   protection
-                if (!RobotState.isAutonomous()) {
-                  double leftAxis = m_controller.getLeftY();
-                  double rightAxis = m_controller.getRightY();
-                  double xForward = (leftAxis + rightAxis) / 2;
-                  double zRotation = (leftAxis - rightAxis) / 2;
+            () -> {
+                double leftAxis = m_controller.getLeftY();
+                double rightAxis = m_controller.getRightY();
+                double xForward = (leftAxis + rightAxis) / 2;
+                double zRotation = (leftAxis - rightAxis) / 2;
 
-                  if (Constants.OperatorConstants.kUseArcadeDrive == false){
-                      m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
-                  }
-               }
-
-               //System.out.println("getDefaultDriveCommand called");
-           }
+                if (Constants.OperatorConstants.kUseArcadeDrive == false){
+                    m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
+                }
+                System.out.println("Command called");
+            }
         );
     }
+
+    @Override
+    public void periodic() {
+        // System.out.println("GYRO ANGLE AT " + m_gyro.getAngle());
+        if (!RobotState.isAutonomous()) {
+            double leftAxis = m_controller.getLeftY();
+            double rightAxis = m_controller.getRightY();
+            double xForward = (leftAxis + rightAxis) / 2;
+            double zRotation = (leftAxis - rightAxis) / 2;
+
+            if (Constants.OperatorConstants.kUseArcadeDrive == false){
+                m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
+            }
+        }
+    }
+
+
+
+    @Override
+    public void simulationPeriodic() {
+        double leftAxis = m_controller.getLeftY();
+        double rightAxis = m_controller.getRightY(); 
+        double xForward = (leftAxis + rightAxis) / 2;
+        double zRotation = (leftAxis - rightAxis) / 2;
+
+        if (Constants.OperatorConstants.kUseArcadeDrive == false){
+            m_drive.arcadeDrive(slewLimiter1.calculate(xForward),
+            slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
+        }
+    }
+
+
 
     public void resetEncoders() {
         m_leftEncoder.setPosition(0);
@@ -133,5 +161,13 @@ public class TankDriveSystem extends SubsystemBase {
 
     public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
         m_drive.tankDrive(leftSpeed, rightSpeed, squareInputs);
+    }
+
+    public void calibrate() {
+        m_gyro.calibrate();
+    }
+
+    public double getGyroAngle() {
+        return m_gyro.getAngle();
     }
 }
