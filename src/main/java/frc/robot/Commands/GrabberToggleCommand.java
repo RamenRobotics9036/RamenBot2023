@@ -19,7 +19,7 @@ public class GrabberToggleCommand extends CommandBase{
 
     @Override
     public void execute() {
-        m_grabSystem.toggle();
+        m_grabSystem.openGrabber();
         finished = true;
     }
 
