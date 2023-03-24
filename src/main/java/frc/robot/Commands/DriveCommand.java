@@ -28,7 +28,7 @@ public class DriveCommand extends CommandBase{
 
     @Override
     public void execute() {
-        m_drive.tankDrive(-percentOutput, percentOutput, false);
+        m_drive.tankDrive(-percentOutput, -percentOutput, false);
     }
 
     @Override

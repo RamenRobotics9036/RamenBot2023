@@ -207,5 +207,13 @@ public class ArmSystem extends SubsystemBase{
         m_armExtender.enableSoftLimit(SoftLimitDirection.kReverse, false);
         resetExtenderEncoder();
     }
+
+    public double getArmCurrent() {
+        return m_armExtender.getOutputCurrent();
+    }
+
+    public void setArmCurrent(int value) {
+        m_armExtender.setSmartCurrentLimit(value);
+    }
 }
 
