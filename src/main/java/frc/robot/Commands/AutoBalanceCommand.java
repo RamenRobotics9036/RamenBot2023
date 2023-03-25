@@ -2,7 +2,9 @@ package frc.robot.Commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.BangBangController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Subsystems.TankDriveSystem;
 
 public class AutoBalanceCommand extends CommandBase{
@@ -23,22 +25,16 @@ public class AutoBalanceCommand extends CommandBase{
 
     @Override
     public void execute() {
-        if (MathUtil.applyDeadband(m_driveSystem.getGyroAngle(), 2) > 0) {
-            // m_driveSystem.tankDrive(rate, rate, false);
-            System.out.println("Speed set to " + rate);
-        } if (MathUtil.applyDeadband(m_driveSystem.getGyroAngle(), 2) < 0) {
-            // m_driveSystem.tankDrive(-rate, -rate, false);
-            System.out.println("Speed set to " + -rate);
+        if (MathUtil.applyDeadband(m_driveSystem.getGyroAngle() + 2, 2) > 0) {
+            m_driveSystem.tankDrive(rate, rate, false);
+        } if (MathUtil.applyDeadband(m_driveSystem.getGyroAngle() + 2, 2) < 0) {
+            m_driveSystem.tankDrive(-rate, -rate, false);
         }
+        new WaitCommand(0.5);
     }
 
     @Override
     public boolean isFinished() {
-        if (MathUtil.applyDeadband(m_driveSystem.getGyroAngle(), 2) == 0) {
-            System.out.println("Command finished");
-            return true;
-        }
-
         return false;
     }
 
