@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import java.time.Instant;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class VerifyJoysticks {
   public class JoystickConfig {
@@ -73,9 +74,16 @@ public class VerifyJoysticks {
       m_lastResult = AllSuccess;
       m_recordedTime = currentTime;
       m_firstCall = false;
+
+      // We only update the dashboard every few seconds
+      UpdateDashboard();
     }
 
     return m_lastResult;
+  }
+
+  private void UpdateDashboard() {
+    SmartDashboard.putBoolean("Joystick health", m_lastResult);
   }
 
   private boolean VerifySingleJoystick(
