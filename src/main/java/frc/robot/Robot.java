@@ -18,6 +18,7 @@ import frc.robot.Commands.RetractArmCommand;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
+  private VerifyJoysticks m_verifyJoysticks = new VerifyJoysticks();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -39,6 +40,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+
+    m_verifyJoysticks.VerifyJoysticksPeriodically();
   }
 
   @Override
