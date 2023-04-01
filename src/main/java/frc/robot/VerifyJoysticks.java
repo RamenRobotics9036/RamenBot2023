@@ -42,8 +42,15 @@ public class VerifyJoysticks {
         6,    // expectedAxisCount
         10,    // expectedButtonCount
         1,    // expectedPOVCountt
-        "Xbox Controller",
-        21)   // expectedJoystickType
+        "Controller (XBOX 360 For Windows)",
+        1),   // expectedJoystickType
+      new JoystickConfig(
+        0,
+        6, 
+        16,
+        1,
+        "Controller (Xbox One For Windows)",
+        1)
   };
 
   // Constructor
