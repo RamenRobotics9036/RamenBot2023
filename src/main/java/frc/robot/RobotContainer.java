@@ -62,6 +62,12 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    // Configure default command for Drive Subsystem.  We want there to ALWAYS be a motor signal sent, even
+    // in autonomous mode.  If we didn't send a motor signal EVERY 20ms, then Slew would prevent
+    // the robot from ever stopping fully in some cases.  And also, the motor watchdog would trip
+    m_driveSystem.setDefaultCommand(
+        m_driveSystem.getDefaultDriveCommand());
+
     // CameraServer.startAutomaticCapture();
   }
 

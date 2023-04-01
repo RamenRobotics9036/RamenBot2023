@@ -129,11 +129,12 @@ public class TankDriveSystem extends SubsystemBase {
         return true;
     }
 
-    @Override
-    public void periodic() {
-        if (!RobotState.isAutonomous()) {
-          ProcessJoystickInput();
-        }
+    public CommandBase getDefaultDriveCommand() {
+        return run(
+           () -> {
+                ProcessJoystickInput();
+           }
+        );
     }
 
     public void resetEncoders() {
@@ -153,9 +154,12 @@ public class TankDriveSystem extends SubsystemBase {
         return (Math.abs(m_leftEncoder.getPosition()) + Math.abs(m_rightEncoder.getPosition())) / 2;
     }
 
-    public void ProcessJoystickInput() {    
-      double leftAxis = m_controller.getLeftY();
-      double rightAxis = m_controller.getRightY();
+    public void ProcessJoystickInput() {
+      // In autonomous, the default command is to tell the robot to STOP.  Recall
+      // that we have to send a voltage-level to the motors EVERY 20ms, otherwise
+      // the watchdog trips
+      double leftAxis = RobotState.isAutonomous() ? 0 : m_controller.getLeftY();
+      double rightAxis = RobotState.isAutonomous() ? 0 : m_controller.getRightY();
       
       double xSpeed = (m_controller.getLeftY() + m_controller.getRightY()) / 2;
       double zRotation = (m_controller.getLeftY() - m_controller.getRightY()) / 2;
