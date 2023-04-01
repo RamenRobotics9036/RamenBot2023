@@ -67,7 +67,7 @@ public class TankDriveSystem extends SubsystemBase {
         this.squareInputs = squareInputs;
         this.maxOutput = maxOutput;
 
-        this.slewLimit = SmartDashboard.getNumber("Slew Limit", slewLimit);
+        this.slewLimit = slewLimit;
         if (this.slewLimit > 0) {
             slewLimiter1 = new SlewRateLimiter(slewLimit);
             slewLimiter2 = new SlewRateLimiter(slewLimit);
@@ -77,17 +77,17 @@ public class TankDriveSystem extends SubsystemBase {
     }
 
     private void initDashBoard() {
-        SmartDashboard.putNumber("Max Speed", maxOutput);
-        SmartDashboard.putNumber("Left Encoder", m_leftEncoder.getPosition());
-        SmartDashboard.putNumber("Right Encoder", m_rightEncoder.getPosition());
-        SmartDashboard.putNumber("Slew Limit", slewLimit);
+        // SmartDashboard.putNumber("Max Speed", maxOutput);
+        // SmartDashboard.putNumber("Left Encoder", m_leftEncoder.getPosition());
+        // SmartDashboard.putNumber("Right Encoder", m_rightEncoder.getPosition());
+        // SmartDashboard.putNumber("Slew Limit", slewLimit);
     }
 
     public void updateDashBoard() {
-        maxOutput = SmartDashboard.getNumber("Max Speed", maxOutput);
-        m_drive.setMaxOutput(maxOutput);
-        SmartDashboard.putNumber("Left Encoder", m_leftEncoder.getPosition());
-        SmartDashboard.putNumber("Right Encoder", m_rightEncoder.getPosition());
+        // maxOutput = SmartDashboard.getNumber("Max Speed", maxOutput);
+        // m_drive.setMaxOutput(maxOutput);
+        // SmartDashboard.putNumber("Left Encoder", m_leftEncoder.getPosition());
+        // SmartDashboard.putNumber("Right Encoder", m_rightEncoder.getPosition());
     }
 
     public boolean getCondition() {
@@ -112,9 +112,6 @@ public class TankDriveSystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Gyro Roll ", m_gyro.getRoll() + 2);
-        SmartDashboard.putNumber("Gyro Deadband ", MathUtil.applyDeadband(m_gyro.getRoll() + 2, 2));
-
         if (!RobotState.isAutonomous()) {
             double leftAxis = m_controller.getLeftY();
             double rightAxis = m_controller.getRightY();
@@ -170,5 +167,9 @@ public class TankDriveSystem extends SubsystemBase {
 
     public double getGyroAngle() {
         return m_gyro.getRoll();
+    }
+
+    public double getGyroYaw() {
+        return m_gyro.getYaw();
     }
 }
