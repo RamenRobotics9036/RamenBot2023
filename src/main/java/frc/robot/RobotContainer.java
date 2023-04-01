@@ -104,10 +104,10 @@ public class RobotContainer {
   }
 
   public void initDashboard() {
-    SmartDashboard.putNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed);
-    SmartDashboard.putNumber("Auto Motor Distance", Constants.OperatorConstants.kAutoMotorDistance);
-    SmartDashboard.putBoolean("Auto Turn Left", true);
-    SmartDashboard.putNumber("Starting Position", 0);
+    // SmartDashboard.putNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed);
+    // SmartDashboard.putNumber("Auto Motor Distance", Constants.OperatorConstants.kAutoMotorDistance);
+    // SmartDashboard.putBoolean("Auto Turn Left", true);
+    // SmartDashboard.putNumber("Starting Position", 0);
   }
 
   public void updateDashBoard() {

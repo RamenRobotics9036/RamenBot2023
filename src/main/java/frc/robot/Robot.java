@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Commands.RetractArmCommand;
@@ -18,6 +21,8 @@ import frc.robot.Commands.RetractArmCommand;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
+  private AddressableLED m_LEDLight = new AddressableLED(Constants.OperatorConstants.kLEDLightsChannel);
+  private AddressableLEDBuffer m_LEDBuffer = new AddressableLEDBuffer(Constants.OperatorConstants.kLEDLightsLength);
   private VerifyJoysticks m_verifyJoysticks = new VerifyJoysticks();
 
   /**
@@ -28,6 +33,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_robotContainer = new RobotContainer();
     m_robotContainer.initDashboard();
+    SmartDashboard.putBoolean("Get Cube", true);
   }
 
   /**
@@ -65,14 +71,33 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.configureBindings();
+
     m_robotContainer.putShuffleBoardAutoCommands();
     m_robotContainer.updateDashBoard();
+
     new RetractArmCommand(m_robotContainer.m_armSystem).schedule();
+
+    m_LEDLight.setLength(m_LEDBuffer.getLength());
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
+    if (SmartDashboard.getBoolean("Get Cube", true)) {
+
+      for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
+        m_LEDBuffer.setRGB(i, 0, 255, 255);
+      }
+      m_LEDLight.setData(m_LEDBuffer);
+      m_LEDLight.start();
+    } else {
+      for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
+        m_LEDBuffer.setRGB(i, 170, 255, 0);
+      }
+      m_LEDLight.setData(m_LEDBuffer);
+      m_LEDLight.start();
+    }
   }
 
   @Override

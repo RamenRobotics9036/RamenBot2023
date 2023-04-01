@@ -116,20 +116,25 @@ public class ArmSystem extends SubsystemBase{
 
     @Override
     public void periodic() {
+        Double winchAbsoluteEncoder = Double.valueOf(getWinchAbsoluteEncoderPrivate());
+        SmartDashboard.putBoolean("Winch Absolute Encoder", !(winchAbsoluteEncoder == 0.0));
+
         if (!RobotState.isAutonomous()) {
-            SmartDashboard.putNumber("Absolute encoder", getWinchAbsoluteEncoder());
-            SmartDashboard.putNumber("Extender encoder", getExtenderEncoder());
+            // SmartDashboard.putNumber("Absolute encoder", getWinchAbsoluteEncoder());
+            // SmartDashboard.putNumber("Extender encoder", getExtenderEncoder());
             double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
             double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
             winchOutput = winchOutput * Math.abs(winchOutput);
             extenderOutput = extenderOutput * Math.abs(extenderOutput);
 
-            SmartDashboard.putNumber("Extender output", extenderOutput);
-
-            if (getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit && winchOutput > 0 ) {
-                m_armWinch.set(0);
-            } else if (getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit && winchOutput < 0) {
-                m_armWinch.set(0);
+            if (getWinchAbsoluteEncoderPrivate() != 0.0) {
+                if (getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit && winchOutput > 0 ) {
+                    m_armWinch.set(0);
+                } else if (getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit && winchOutput < 0) {
+                    m_armWinch.set(0);
+                } else {
+                    setWinchSpeed(winchOutput * maxOutputWinch);
+                }
             } else {
                 setWinchSpeed(winchOutput * maxOutputWinch);
             }
@@ -174,11 +179,11 @@ public class ArmSystem extends SubsystemBase{
         m_extenderEncoder.setPosition(0);
     }
 
-    public double getWinchEncoder() {
+    public Double getWinchEncoder() {
         return m_winchEncoder.getPosition();
     }
 
-    public double getExtenderEncoder() {
+    public Double getExtenderEncoder() {
         return m_extenderEncoder.getPosition();
     }
 

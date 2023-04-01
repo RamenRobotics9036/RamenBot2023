@@ -76,5 +76,8 @@ public final class Constants {
 
     public static float kExtenderSoftLimitTurns = (float)-125; // Max is 155
     public static int kHallEffectExtenderChannel = 4;
+
+    public static int kLEDLightsChannel = 9;
+    public static int kLEDLightsLength = 4;
   }
 }
