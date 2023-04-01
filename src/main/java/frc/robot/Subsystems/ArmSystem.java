@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -115,29 +116,31 @@ public class ArmSystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Absolute encoder", getWinchAbsoluteEncoder());
-        SmartDashboard.putNumber("Extender encoder", getExtenderEncoder());
-        double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
-        double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
-        winchOutput = winchOutput * Math.abs(winchOutput);
-        extenderOutput = extenderOutput * Math.abs(extenderOutput);
+        if (!RobotState.isAutonomous()) {
+            SmartDashboard.putNumber("Absolute encoder", getWinchAbsoluteEncoder());
+            SmartDashboard.putNumber("Extender encoder", getExtenderEncoder());
+            double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
+            double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
+            winchOutput = winchOutput * Math.abs(winchOutput);
+            extenderOutput = extenderOutput * Math.abs(extenderOutput);
 
-        SmartDashboard.putNumber("Extender output", extenderOutput);
+            SmartDashboard.putNumber("Extender output", extenderOutput);
 
-        if (getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit && winchOutput > 0 ) {
-            m_armWinch.set(0);
-        } else if (getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit && winchOutput < 0) {
-            m_armWinch.set(0);
-        } else {
-            setWinchSpeed(winchOutput * maxOutputWinch);
-        }
+            if (getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit && winchOutput > 0 ) {
+                m_armWinch.set(0);
+            } else if (getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit && winchOutput < 0) {
+                m_armWinch.set(0);
+            } else {
+                setWinchSpeed(winchOutput * maxOutputWinch);
+            }
 
-        if (getExtenderEncoder() <= Constants.OperatorConstants.kExtenderSoftLimitTurns && extenderOutput < 0) {
-            m_armExtender.set(0);
-        } else if (getExtenderEncoder() > 0 && extenderOutput > 0) {
-            m_armExtender.set(0);
-        } else {
-            setExtenderSpeed(extenderOutput);
+            if (getExtenderEncoder() <= Constants.OperatorConstants.kExtenderSoftLimitTurns && extenderOutput < 0) {
+                m_armExtender.set(0);
+            } else if (getExtenderEncoder() > 0 && extenderOutput > 0) {
+                m_armExtender.set(0);
+            } else {
+                setExtenderSpeed(extenderOutput);
+            }
         }
 
         // setExtenderSpeed(extenderOutput);
