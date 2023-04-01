@@ -26,16 +26,7 @@ public class Auto {
                         new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)    
                     );
                 }
-
-                    // new SetWinchToAngle(m_armSystem, 0.75, 0.9),
-                    // new SetExtenderToLength(m_armSystem, -100, 0.9),
-                    // new WaitCommand(0.5),
-                    // new GrabberToggleCommand(m_grabSystem),
-                    // new TurnDegrees(m_driveSystem, 0.5, 80),
-                    // new WaitCommand(0.5),
-                    // new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-                    // new AutoBalanceCommand(m_driveSystem, 0.25)
-
+                else {
                     return Commands.sequence(
                         new SetWinchToAngle(m_armSystem, 0.75, 0.9),
                         new SetExtenderToLength(m_armSystem, -100, 0.9),
@@ -47,25 +38,8 @@ public class Auto {
                         new AutoBalanceCommand(m_driveSystem, 0.25)
                     );
                 }
+    }
                 
-                // Not Autobalance
-                // new SetWinchToAngle(m_armSystem, 0.75, 0.9),
-                // new SetExtenderToLength(m_armSystem, -100, 0.9),
-                // new WaitCommand(0.5),
-                // new GrabberToggleCommand(m_grabSystem),
-                // new WaitCommand(0.5),
-                // new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
-
-                // Autobalance
-                // new SetWinchToAngle(m_armSystem, 0.75, 0.9),
-                // new SetExtenderToLength(m_armSystem, -100, 0.9),
-                // new WaitCommand(0.5),
-                // new GrabberToggleCommand(m_grabSystem),
-                // new TurnDegrees(m_driveSystem, 0.5, 80)
-                // new WaitCommand(0.5), 
-                // new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-                // new AutoBalanceCommand(m_driveSystem, 0.25)
-
     public static void putShuffleBoardCommands(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
 
         // SmartDashboard.putBoolean("Auto Middle", false);
