@@ -42,20 +42,15 @@ public class TurnInPlaceCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        // if (time.get() <= 0.8) {
-        //     return false;
-        // }        m_drive.resetEncoders();
 
-        // return true;
 
         // m_drive.getAverageEncoderPosition() / gearBoxRatio * wheelCircumference
         // This code ^: if motor spins once, wheel will spin 1/8.28 times * circumfrence = distance traveled <= this is wrong?
         // Check encoders if # of actual rotations is greather than or equal to # of wanted rotations
-        if (rotations <= m_drive.getAverageEncoderPosition() / gearBoxRatio /** wheelCircumference*/){
+        if (time.get() >= 0.4) {
             return true;
         }
         return false;
-
     }
 
     @Override

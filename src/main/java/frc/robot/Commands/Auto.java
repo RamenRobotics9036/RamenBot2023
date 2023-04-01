@@ -19,16 +19,28 @@ public class Auto {
                 // m_armSystem.rotateWinchMotor(1, 1, 1, 1), // Rotate winch for scoring , putting circumfrence as 1 gets rotations
                 
                 
-                // new SetWinchToAngle(m_armSystem, 0.74, 0.5),
-                // new SetExtenderToLength(m_armSystem, -100, 0.5),
-                // new GrabberToggleCommand(m_grabSystem)
-                // new WaitCommand(1),
-                // Comment next line out if going middle
-                // new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+                new SetWinchToAngle(m_armSystem, 0.75, 0.9),
+                // // // Not autobalance
+                new SetExtenderToLength(m_armSystem, -100, 0.9),
+                new WaitCommand(0.5),
+                new GrabberToggleCommand(m_grabSystem),
+                new WaitCommand(0.5),
 
-                // new DriveCommand(m_driveSystem, 9 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.8, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-                new AutoBalanceCommand(m_driveSystem, 0.25)
+                // new TurnInPlaceCommand(m_driveSystem, 5, 8, 0.4, false, 6),
 
+                // // Not autobalance
+                new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
+
+                // Autobalnace
+                // to deploy press ctrl + k, all hands off keys press s, shift + f5
+
+                // new DriveCommand(m_driveSystem, 9 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+                // new DriveCommand(m_driveSystem, -2 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+                // new TurnInPlaceCommand(m_driveSystem, 5, 8, -0.6, false, 6),
+
+                // Get the rate of change of gyro and if it is more than 2 stop 
+                // new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+                // new AutoBalanceCommand(m_driveSystem, 0.25)
 
             );
     }

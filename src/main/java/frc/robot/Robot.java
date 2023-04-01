@@ -85,6 +85,7 @@ public class Robot extends TimedRobot {
   /** This function is called once when the robot is first started up. */
   @Override
   public void simulationInit() {
+    CommandScheduler.getInstance().cancelAll();
   }
 
   /** This function is called periodically whilst in simulation. */
@@ -94,6 +95,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+      CommandScheduler.getInstance().cancelAll();
       m_robotContainer.m_driveSystem.calibrate();
   }
 }
