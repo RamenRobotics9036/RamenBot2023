@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     m_robotContainer.initDashboard();
     SmartDashboard.putBoolean("Get Cube", true);
+    SmartDashboard.putBoolean("Use AutoBalance", false);
   }
 
   /**

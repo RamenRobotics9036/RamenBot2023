@@ -117,6 +117,7 @@ public class ArmSystem extends SubsystemBase{
     @Override
     public void periodic() {
         Double winchAbsoluteEncoder = Double.valueOf(getWinchAbsoluteEncoderPrivate());
+        // SmartDashboard.putNumber("Winch Absolute Position", getWinchAbsoluteEncoderPrivate());
         SmartDashboard.putBoolean("Winch Absolute Encoder", !(winchAbsoluteEncoder == 0.0));
 
         if (!RobotState.isAutonomous()) {
