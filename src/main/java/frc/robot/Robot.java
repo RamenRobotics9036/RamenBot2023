@@ -23,6 +23,8 @@ public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
   private AddressableLED m_LEDLight = new AddressableLED(Constants.OperatorConstants.kLEDLightsChannel);
   private AddressableLEDBuffer m_LEDBuffer = new AddressableLEDBuffer(Constants.OperatorConstants.kLEDLightsLength);
+  private VerifyJoysticks m_verifyJoysticks = new VerifyJoysticks();
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -44,6 +46,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+
+    m_verifyJoysticks.VerifyJoysticksPeriodically();
   }
 
   @Override
