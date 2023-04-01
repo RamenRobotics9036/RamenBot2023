@@ -41,7 +41,8 @@ public class RobotContainer {
     Constants.OperatorConstants.kDeadband,
     Constants.OperatorConstants.kGearBoxRatioDrive,
     Constants.OperatorConstants.kWheelDiameterMetersDrive,
-    Constants.OperatorConstants.kSlewLimit
+    Constants.OperatorConstants.kSlewLimit,
+    Constants.OperatorConstants.kTurboSlew
   );
 
   public final ArmSystem m_armSystem = new ArmSystem(

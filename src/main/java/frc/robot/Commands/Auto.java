@@ -3,6 +3,7 @@ package frc.robot.Commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Subsystems.ArmSystem;
@@ -14,8 +15,38 @@ public class Auto {
         throw new Error("Auto is a utility class and should not be constructed. One should utilize this class via static methods.");
     }
 
-    public static CommandBase getAutoCommand(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
-            return Commands.sequence(                
+    public static CommandBase getAutoCommand(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {              
+                if (!SmartDashboard.getBoolean("Use AutoBalance", false)) {
+                    return Commands.sequence(
+                        new SetWinchToAngle(m_armSystem, 0.75, 0.9),
+                        new SetExtenderToLength(m_armSystem, -100, 0.9),
+                        new WaitCommand(0.5),
+                        new GrabberToggleCommand(m_grabSystem),
+                        new WaitCommand(0.5),
+                        new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)    
+                    );
+                }
+
+                    // new SetWinchToAngle(m_armSystem, 0.75, 0.9),
+                    // new SetExtenderToLength(m_armSystem, -100, 0.9),
+                    // new WaitCommand(0.5),
+                    // new GrabberToggleCommand(m_grabSystem),
+                    // new TurnDegrees(m_driveSystem, 0.5, 80),
+                    // new WaitCommand(0.5),
+                    // new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+                    // new AutoBalanceCommand(m_driveSystem, 0.25)
+
+                    return Commands.sequence(
+                        new SetWinchToAngle(m_armSystem, 0.75, 0.9),
+                        new SetExtenderToLength(m_armSystem, -100, 0.9),
+                        new WaitCommand(0.5),
+                        new GrabberToggleCommand(m_grabSystem),
+                        new TurnDegrees(m_driveSystem, 0.5, 80),
+                        new WaitCommand(0.5),
+                        new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+                        new AutoBalanceCommand(m_driveSystem, 0.25)
+                    );
+                }
                 
                 // Not Autobalance
                 // new SetWinchToAngle(m_armSystem, 0.75, 0.9),
@@ -34,9 +65,6 @@ public class Auto {
                 // new WaitCommand(0.5), 
                 // new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
                 // new AutoBalanceCommand(m_driveSystem, 0.25)
-
-            );
-    }
 
     public static void putShuffleBoardCommands(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
 
