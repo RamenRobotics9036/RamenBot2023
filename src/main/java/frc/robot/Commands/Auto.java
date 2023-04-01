@@ -26,8 +26,8 @@ public class Auto {
                 // Comment next line out if going middle
                 // new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
 
-                new DriveCommand(m_driveSystem, 9 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.8, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-                new AutoBalanceCommand(m_driveSystem, 0.2)
+                // new DriveCommand(m_driveSystem, 9 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.8, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+                new AutoBalanceCommand(m_driveSystem, 0.25)
 
 
             );
