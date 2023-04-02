@@ -8,9 +8,11 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Commands.RetractArmCommand;
+import frc.robot.Commands.Auto;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -24,6 +26,7 @@ public class Robot extends TimedRobot {
   private AddressableLED m_LEDLight = new AddressableLED(Constants.OperatorConstants.kLEDLightsChannel);
   private AddressableLEDBuffer m_LEDBuffer = new AddressableLEDBuffer(Constants.OperatorConstants.kLEDLightsLength);
   private VerifyJoysticks m_verifyJoysticks = new VerifyJoysticks();
+  private SendableChooser<String> m_chooser;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -34,7 +37,20 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     m_robotContainer.initDashboard();
     SmartDashboard.putBoolean("Get Cube", true);
-    SmartDashboard.putBoolean("Use AutoBalance", false);
+    addAutoModeChooser();
+  }
+
+  private void addAutoModeChooser() {
+    // Force the smartdashboard to update by first deleting all options in chooser
+    SendableChooser<String> emptyChooser = new SendableChooser<String>();
+    SmartDashboard.putData(Auto.kAutoModeKey, emptyChooser);
+
+    m_chooser = new SendableChooser<String>();
+    m_chooser.addOption(Auto.kDropAndDriveMode, Auto.kDropAndDriveMode);
+    m_chooser.addOption(Auto.kAutoBalanceMode, Auto.kAutoBalanceMode);
+    m_chooser.addOption(Auto.kSimpleMode, Auto.kSimpleMode);
+    m_chooser.setDefaultOption(Auto.kDefaultAutoModeValue, Auto.kDefaultAutoModeValue);
+    SmartDashboard.putData(Auto.kAutoModeKey, m_chooser);
   }
 
   /**
