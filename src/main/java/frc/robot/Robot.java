@@ -85,16 +85,19 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    if (SmartDashboard.getBoolean("Get Cube", true)) {
+    if (m_robotContainer.m_controller2.getLeftTriggerAxis() > 0.05) {
+      SmartDashboard.putBoolean("Get Cube", true);
 
       for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
         m_LEDBuffer.setRGB(i, 0, 255, 255);
       }
       m_LEDLight.setData(m_LEDBuffer);
       m_LEDLight.start();
-    } else {
+    } else if (m_robotContainer.m_controller2.getRightTriggerAxis() > 0.05) {
+      SmartDashboard.putBoolean("Get Cube", false);
+
       for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
-        m_LEDBuffer.setRGB(i, 170, 255, 0);
+        m_LEDBuffer.setRGB(i, 150, 255, 0);
       }
       m_LEDLight.setData(m_LEDBuffer);
       m_LEDLight.start();
