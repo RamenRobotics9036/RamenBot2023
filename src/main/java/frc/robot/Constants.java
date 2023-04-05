@@ -80,6 +80,6 @@ public final class Constants {
     public static int kHallEffectExtenderChannel = 4;
 
     public static int kLEDLightsChannel = 9;
-    public static int kLEDLightsLength = 14;
+    public static int kLEDLightsLength = 40;
   }
 }
