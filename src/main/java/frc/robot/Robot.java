@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     m_robotContainer.initDashboard();
     SmartDashboard.putBoolean("Get Cube", true);
+    SmartDashboard.putBoolean("Lights On", true);
     SmartDashboard.putBoolean("Use AutoBalance", false);
   }
 
@@ -85,27 +86,31 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    if (m_robotContainer.m_controller2.getLeftTriggerAxis() > 0.05) {
-      SmartDashboard.putBoolean("Get Cube", true);
+    if (SmartDashboard.getBoolean("Lights On", true)) {
+      if (SmartDashboard.getBoolean("Get Cube", true)) {
 
-      for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
-        m_LEDBuffer.setRGB(i, 0, 255, 255);
+        for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
+          m_LEDBuffer.setRGB(i, 0, 255, 255);
+        }
+        m_LEDLight.setData(m_LEDBuffer);
+        m_LEDLight.start();
+      } else {
+        for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
+          m_LEDBuffer.setRGB(i, 170, 255, 0);
+        }
+        m_LEDLight.setData(m_LEDBuffer);
+        m_LEDLight.start();
       }
-      m_LEDLight.setData(m_LEDBuffer);
-      m_LEDLight.start();
-    } else if (m_robotContainer.m_controller2.getRightTriggerAxis() > 0.05) {
-      SmartDashboard.putBoolean("Get Cube", false);
-
-      for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
-        m_LEDBuffer.setRGB(i, 150, 255, 0);
-      }
-      m_LEDLight.setData(m_LEDBuffer);
-      m_LEDLight.start();
+    } else {
+        for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
+          m_LEDBuffer.setRGB(i, 0, 0, 0);
+        }
+        m_LEDLight.setData(m_LEDBuffer);
+        m_LEDLight.start();
     }
   }
 
   @Override
-
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
