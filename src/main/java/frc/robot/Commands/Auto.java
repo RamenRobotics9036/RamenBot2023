@@ -1,6 +1,8 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -11,63 +13,70 @@ import frc.robot.Subsystems.GrabberSystem;
 import frc.robot.Subsystems.TankDriveSystem;
 
 public class Auto {
+    public static final String kAutoModeKey = "Auto Mode";
+    public static final String kDropAndDriveMode = "Drop and Drive";
+    public static final String kAutoBalanceMode = "Auto Balance";
+    public static final String kSimpleMode = "Simple Drive Test";
+    public static final String kDefaultAutoModeValue = kSimpleMode;
+
     private Auto() {
         throw new Error("Auto is a utility class and should not be constructed. One should utilize this class via static methods.");
     }
 
-    public static CommandBase getAutoCommand(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {              
-                if (!SmartDashboard.getBoolean("Use AutoBalance", false)) {
-                    return Commands.sequence(
-                        new SetWinchToAngle(m_armSystem, 0.75, 0.9),
-                        new SetExtenderToLength(m_armSystem, -100, 0.9),
-                        new WaitCommand(0.5),
-                        new GrabberToggleCommand(m_grabSystem),
-                        new WaitCommand(0.5),
-                        new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)    
-                    );
-                }
+    private static String getSelectedAutoMode() {
+      Sendable retrievedChooserVal = SmartDashboard.getData(Auto.kAutoModeKey);
 
-                    // new SetWinchToAngle(m_armSystem, 0.75, 0.9),
-                    // new SetExtenderToLength(m_armSystem, -100, 0.9),
-                    // new WaitCommand(0.5),
-                    // new GrabberToggleCommand(m_grabSystem),
-                    // new TurnDegrees(m_driveSystem, 0.5, 80),
-                    // new WaitCommand(0.5),
-                    // new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-                    // new AutoBalanceCommand(m_driveSystem, 0.25)
+      if (retrievedChooserVal == null) {
+        System.out.println("UNEXPECTED: Got back null for smartdash chooser");
+        return "";
+      }
+    
+      SendableChooser<String> retrievedChooser = (SendableChooser<String>)retrievedChooserVal;
+      return retrievedChooser.getSelected();
+    }
 
-                    return Commands.sequence(
-                        new SetWinchToAngle(m_armSystem, 0.75, 0.9),
-                        new SetExtenderToLength(m_armSystem, -100, 0.9),
-                        new WaitCommand(0.5),
-                        new GrabberToggleCommand(m_grabSystem),
-                        new WaitCommand(0.5),
-                        new DriveCommand(m_driveSystem, 0.5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-                        new TurnDegrees(m_driveSystem, 0.5, 75),
-                        new WaitCommand(0.5),
-                        new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-                        new AutoBalanceCommand(m_driveSystem, 0.25)
-                    );
-                }
+    public static CommandBase getAutoCommand(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
+      String autoMode = getSelectedAutoMode();
+      System.out.println("Auto mode selected: " + autoMode);
+
+      switch (autoMode) {
+
+        case kAutoBalanceMode:
+            return Commands.sequence(
+                new SetWinchToAngle(m_armSystem, 0.75, 0.9),
+                new SetExtenderToLength(m_armSystem, -100, 0.9),
+                new WaitCommand(0.5),
+                new GrabberToggleCommand(m_grabSystem),
+                new TurnDegrees(m_driveSystem, 0.5, 80),
+                new WaitCommand(0.5),
+                new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+                new AutoBalanceCommand(m_driveSystem, 0.25)
+            );
+
+
+        case kDropAndDriveMode:
+            return Commands.sequence(
+                new SetWinchToAngle(m_armSystem, 0.75, 0.9),
+                new SetExtenderToLength(m_armSystem, -100, 0.9),
+                new WaitCommand(0.5),
+                new GrabberToggleCommand(m_grabSystem),
+                new WaitCommand(0.5),
+                new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)    
+            );
+
+        case kSimpleMode:
+          return Commands.sequence(
+              new WaitCommand(0.5),
+              new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)    
+          );
+
+        default:
+            System.out.println("UNEXPECTED AUTO MODE - auto mode will do nothing");
+            return new InstantCommand();        
+      }
+
+    }
                 
-                // Not Autobalance
-                // new SetWinchToAngle(m_armSystem, 0.75, 0.9),
-                // new SetExtenderToLength(m_armSystem, -100, 0.9),
-                // new WaitCommand(0.5),
-                // new GrabberToggleCommand(m_grabSystem),
-                // new WaitCommand(0.5),
-                // new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
-
-                // Autobalance
-                // new SetWinchToAngle(m_armSystem, 0.75, 0.9),
-                // new SetExtenderToLength(m_armSystem, -100, 0.9),
-                // new WaitCommand(0.5),
-                // new GrabberToggleCommand(m_grabSystem),
-                // new TurnDegrees(m_driveSystem, 0.5, 80)
-                // new WaitCommand(0.5), 
-                // new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-                // new AutoBalanceCommand(m_driveSystem, 0.25)
-
     public static void putShuffleBoardCommands(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
 
         // SmartDashboard.putBoolean("Auto Middle", false);
