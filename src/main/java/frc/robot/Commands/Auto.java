@@ -53,16 +53,16 @@ public class Auto {
 
           case kAutoBalanceMode:
             return Commands.sequence(
-              new SetWinchToAngle(m_armSystem, 0.75, 0.9),
-              new SetExtenderToLength(m_armSystem, -100, 0.9),
-              new WaitCommand(0.5),
-              new GrabberToggleCommand(m_grabSystem),
-              new WaitCommand(0.5),
-              new DriveCommand(m_driveSystem, 0.5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-              new TurnDegrees(m_driveSystem, 0.5, 75),
-              new WaitCommand(0.5),
+              new SetWinchToAngle(m_armSystem, 0.75, 1),
+              // new SetExtenderToLength(m_armSystem, -100, 1),
+              new WaitCommand(0.25),
+              // new GrabberToggleCommand(m_grabSystem),
+              // new WaitCommand(0.25),
+              // new DriveCommand(m_driveSystem, -0.5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.6, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+              // new TurnDegrees(m_driveSystem, 0.7, 75),
+              // new WaitCommand(0.25),
               new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-              new AutoBalanceCommand(m_driveSystem, 0.25) 
+              new AutoBalanceCommand(m_driveSystem, 0.25)
           );
 
         case kSimpleMode:
