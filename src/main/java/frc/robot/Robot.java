@@ -53,7 +53,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData(Auto.kAutoModeKey, m_chooser);
   }
 
-  /**
+    /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
    *
@@ -98,19 +98,22 @@ public class Robot extends TimedRobot {
   }
 
   /** This function is called periodically during operator control. */
-  @Override
+ s @Override
   public void teleopPeriodic() {
 
-    if (SmartDashboard.getBoolean("Get Cube", true)) {
+    if (m_robotContainer.m_controller2.getLeftTriggerAxis() > 0.05) {
+      SmartDashboard.putBoolean("Get Cube", true);
 
       for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
         m_LEDBuffer.setRGB(i, 0, 255, 255);
       }
       m_LEDLight.setData(m_LEDBuffer);
       m_LEDLight.start();
-    } else {
+    } else if (m_robotContainer.m_controller2.getRightTriggerAxis() > 0.05) {
+      SmartDashboard.putBoolean("Get Cube", false);
+
       for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
-        m_LEDBuffer.setRGB(i, 170, 255, 0);
+        m_LEDBuffer.setRGB(i, 150, 255, 0);
       }
       m_LEDLight.setData(m_LEDBuffer);
       m_LEDLight.start();
@@ -118,6 +121,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
+
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
