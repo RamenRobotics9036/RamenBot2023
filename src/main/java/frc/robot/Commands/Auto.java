@@ -41,9 +41,11 @@ public class Auto {
                         new SetExtenderToLength(m_armSystem, -100, 0.9),
                         new WaitCommand(0.5),
                         new GrabberToggleCommand(m_grabSystem),
-                        new TurnDegrees(m_driveSystem, 0.5, 80),
                         new WaitCommand(0.5),
-                        new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+                        new DriveCommand(m_driveSystem, 0.5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+                        new TurnDegrees(m_driveSystem, 0.5, 75),
+                        new WaitCommand(0.5),
+                        new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
                         new AutoBalanceCommand(m_driveSystem, 0.25)
                     );
                 }

@@ -29,17 +29,26 @@ public class AutoBalanceCommand extends CommandBase{
     @Override
     public void execute() {
         double executeRate = rate  / cycle;
-        if (MathUtil.applyDeadband(m_driveSystem.getGyroAngle() + 2.5, 2) > 0) {
+
+        if (MathUtil.applyDeadband(m_driveSystem.getGyroRate(), 3) > 0) {
+            m_driveSystem.tankDrive(0, 0, false);
+            if (timer.get() >= 0.5) {
+                cycle += 0.5;
+                timer.reset();
+            }
+        } else if (MathUtil.applyDeadband(m_driveSystem.getGyroAngle() + 2.5, 2) > 0) {
             m_driveSystem.tankDrive(executeRate, executeRate, false);
         } else if (MathUtil.applyDeadband(m_driveSystem.getGyroAngle() + 2.5, 2) < 0) {
             m_driveSystem.tankDrive(-executeRate, -executeRate, false);
         } else {
             m_driveSystem.tankDrive(0, 0, false);
             if (timer.get() >= 0.5) {
-                cycle += 0.5;
+                cycle += 0.5; // Changed from 0.5
                 timer.reset();
             }
         }
+
+        m_driveSystem.setRate();
         // new WaitCommand(0.5).schedule();
     }
 
