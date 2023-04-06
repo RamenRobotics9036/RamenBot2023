@@ -98,7 +98,7 @@ public class Robot extends TimedRobot {
   }
 
   /** This function is called periodically during operator control. */
- s @Override
+  @Override
   public void teleopPeriodic() {
 
     if (m_robotContainer.m_controller2.getLeftTriggerAxis() > 0.05) {
