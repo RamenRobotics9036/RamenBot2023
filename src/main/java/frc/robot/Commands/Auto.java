@@ -41,7 +41,17 @@ public class Auto {
 
       switch (autoMode) {
 
-        case kAutoBalanceMode:
+        case kDropAndDriveMode:
+            return Commands.sequence(
+              new SetWinchToAngle(m_armSystem, 0.75, 0.9),
+              new SetExtenderToLength(m_armSystem, -100, 0.9),
+              new WaitCommand(0.5),
+              new GrabberToggleCommand(m_grabSystem),
+              new WaitCommand(0.5),
+              new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)      
+            );
+
+          case kAutoBalanceMode:
             return Commands.sequence(
               new SetWinchToAngle(m_armSystem, 0.75, 0.9),
               new SetExtenderToLength(m_armSystem, -100, 0.9),
@@ -54,16 +64,6 @@ public class Auto {
               new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
               new AutoBalanceCommand(m_driveSystem, 0.25) 
           );
-
-        case kDropAndDriveMode:
-            return Commands.sequence(
-              new SetWinchToAngle(m_armSystem, 0.75, 0.9),
-              new SetExtenderToLength(m_armSystem, -100, 0.9),
-              new WaitCommand(0.5),
-              new GrabberToggleCommand(m_grabSystem),
-              new WaitCommand(0.5),
-              new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)      
-            );
 
         case kSimpleMode:
           return Commands.sequence(
