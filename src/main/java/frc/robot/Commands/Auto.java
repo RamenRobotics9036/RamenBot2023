@@ -14,9 +14,9 @@ import frc.robot.Subsystems.TankDriveSystem;
 
 public class Auto {
     public static final String kAutoModeKey = "Auto Mode";
-    public static final String kDropAndDriveMode = "Drop and Drive";
+    public static final String kDropAndDriveMode = "Score and Move";
     public static final String kAutoBalanceMode = "Auto Balance";
-    public static final String kSimpleMode = "Simple Drive Test";
+    public static final String kSimpleMode = "Only Score";
     public static final String kDefaultAutoModeValue = kSimpleMode;
 
     private Auto() {
@@ -43,32 +43,35 @@ public class Auto {
 
         case kAutoBalanceMode:
             return Commands.sequence(
-                new SetWinchToAngle(m_armSystem, 0.75, 0.9),
-                new SetExtenderToLength(m_armSystem, -100, 0.9),
-                new WaitCommand(0.5),
-                new GrabberToggleCommand(m_grabSystem),
-                new TurnDegrees(m_driveSystem, 0.5, 80),
-                new WaitCommand(0.5),
-                new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-                new AutoBalanceCommand(m_driveSystem, 0.25)
-            );
-
+              new SetWinchToAngle(m_armSystem, 0.75, 0.9),
+              new SetExtenderToLength(m_armSystem, -100, 0.9),
+              new WaitCommand(0.5),
+              new GrabberToggleCommand(m_grabSystem),
+              new WaitCommand(0.5),
+              new DriveCommand(m_driveSystem, 0.5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+              new TurnDegrees(m_driveSystem, 0.5, 75),
+              new WaitCommand(0.5),
+              new DriveCommand(m_driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+              new AutoBalanceCommand(m_driveSystem, 0.25) 
+          );
 
         case kDropAndDriveMode:
             return Commands.sequence(
-                new SetWinchToAngle(m_armSystem, 0.75, 0.9),
-                new SetExtenderToLength(m_armSystem, -100, 0.9),
-                new WaitCommand(0.5),
-                new GrabberToggleCommand(m_grabSystem),
-                new WaitCommand(0.5),
-                new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)    
+              new SetWinchToAngle(m_armSystem, 0.75, 0.9),
+              new SetExtenderToLength(m_armSystem, -100, 0.9),
+              new WaitCommand(0.5),
+              new GrabberToggleCommand(m_grabSystem),
+              new WaitCommand(0.5),
+              new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)      
             );
 
         case kSimpleMode:
           return Commands.sequence(
+              new SetWinchToAngle(m_armSystem, 0.75, 0.9),
+              new SetExtenderToLength(m_armSystem, -100, 0.9),
               new WaitCommand(0.5),
-              new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)    
-          );
+              new GrabberToggleCommand(m_grabSystem)
+         );
 
         default:
             System.out.println("UNEXPECTED AUTO MODE - auto mode will do nothing");
