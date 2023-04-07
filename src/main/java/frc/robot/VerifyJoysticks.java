@@ -40,7 +40,7 @@ public class VerifyJoysticks {
       new JoystickConfig(
         1,    // port
         6,    // expectedAxisCount
-        10,    // expectedButtonCount
+        16,    // expectedButtonCount
         1,    // expectedPOVCountt
         "Controller (Xbox One For Windows)",
         1),   // expectedJoystickType

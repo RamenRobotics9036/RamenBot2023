@@ -43,8 +43,9 @@ public final class Constants {
     public static double kWheelDiameterMetersDrive = 0.1524;
     public static double kWheelDiameterInchesDrive = 6;
     public static double kWheelCircumferenceInchesDrive = kWheelDiameterInchesDrive * Math.PI;
+
     public static double kSlewLimit = 3;
-    public static double kTurboSlew = 1;
+    public static double kTurboSlew = 4;
 
     public static double kWheelDiameterInchWinch = 0.75;
     public static double kWheelCircumferenceInchesWinch = 0.75 * Math.PI;
@@ -79,6 +80,6 @@ public final class Constants {
     public static int kHallEffectExtenderChannel = 4;
 
     public static int kLEDLightsChannel = 9;
-    public static int kLEDLightsLength = 4;
+    public static int kLEDLightsLength = 40;
   }
 }

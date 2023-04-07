@@ -29,7 +29,6 @@
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/SmartDashboard/Auto Mode": "String Chooser",
-      "/SmartDashboard/Auto Mode IDO": "String Chooser",
       "/SmartDashboard/Drive Backwards": "Command",
       "/SmartDashboard/Drive Forwards": "Command",
       "/SmartDashboard/Field": "Field2d",

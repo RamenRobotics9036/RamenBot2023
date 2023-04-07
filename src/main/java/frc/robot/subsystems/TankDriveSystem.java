@@ -44,6 +44,7 @@ public class TankDriveSystem extends SubsystemBase {
     private RelativeEncoder m_rightEncoder;
 
     private final Pigeon2 m_gyro = new Pigeon2(7);
+    private double m_prevRate = 0;
 
     public TankDriveSystem(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
      int rightMotorForwardChannel, XboxController m_controller, boolean squareInputs,
@@ -124,21 +125,24 @@ public class TankDriveSystem extends SubsystemBase {
             double leftAxis = m_controller.getLeftY();
             double rightAxis = m_controller.getRightY();
 
+            double xSpeed = (m_controller.getLeftY() + m_controller.getRightY()) / 2;
+            double zRotation = (m_controller.getLeftY() - m_controller.getRightY()) / 2;
+
             if (m_controller.getRightTriggerAxis() > Constants.OperatorConstants.kDeadband) {
                 m_drive.setMaxOutput(1);
-                double slewLimit1 = turboLimiter1.calculate(leftAxis);
-                double slewLimit2 = turboLimiter2.calculate(rightAxis);
+                double slewLimit1 = turboLimiter1.calculate(xSpeed);
+                double slewLimit2 = turboLimiter2.calculate(zRotation);
 
-                m_drive.tankDrive(slewLimit2, slewLimit1, squareInputs);
+                m_drive.arcadeDrive(slewLimit1, slewLimit2 * Constants.OperatorConstants.kRotationDilation, squareInputs);
                 slewLimiter1.reset(slewLimit1);
                 slewLimiter2.reset(slewLimit2);
             } else {
 
                 m_drive.setMaxOutput(maxOutput);
-                double slewLimit1 = slewLimiter1.calculate(leftAxis);
-                double slewLimit2 = slewLimiter2.calculate(rightAxis);
+                double slewLimit1 = slewLimiter1.calculate(xSpeed);
+                double slewLimit2 = slewLimiter2.calculate(zRotation);
 
-                m_drive.tankDrive(slewLimit2, slewLimit1, squareInputs);
+                m_drive.arcadeDrive(slewLimit1, slewLimit2 * Constants.OperatorConstants.kRotationDilation, squareInputs);
                 turboLimiter1.reset(slewLimit1);
                 turboLimiter2.reset(slewLimit2);
             }
@@ -200,5 +204,13 @@ public class TankDriveSystem extends SubsystemBase {
 
     public double getGyroYaw() {
         return m_gyro.getYaw();
+    }
+
+    public double getGyroRate() {
+        return Math.abs(m_prevRate - m_gyro.getRoll());
+    }
+
+    public void setRate() {
+        m_prevRate = m_gyro.getRoll();
     }
 }

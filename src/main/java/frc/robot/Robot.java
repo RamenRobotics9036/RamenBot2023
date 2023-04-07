@@ -27,6 +27,10 @@ public class Robot extends TimedRobot {
   private AddressableLEDBuffer m_LEDBuffer = new AddressableLEDBuffer(Constants.OperatorConstants.kLEDLightsLength);
   private VerifyJoysticks m_verifyJoysticks = new VerifyJoysticks();
   private SendableChooser<String> m_chooser;
+  private int m_ledLoop;
+  private int m_ledR;
+  private int m_ledG;
+  private int m_ledB;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -38,6 +42,10 @@ public class Robot extends TimedRobot {
     m_robotContainer.initDashboard();
     SmartDashboard.putBoolean("Get Cube", true);
     addAutoModeChooser();
+    m_ledLoop = 0;
+    m_ledR = 10;
+    m_ledG = 0;
+    m_ledB = 0;
   }
 
   private void addAutoModeChooser() {
@@ -53,7 +61,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData(Auto.kAutoModeKey, m_chooser);
   }
 
-  /**
+    /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
    *
@@ -101,23 +109,59 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
 
-    if (SmartDashboard.getBoolean("Get Cube", true)) {
+    if (m_robotContainer.m_controller2.getLeftTriggerAxis() > 0.05) {
+      SmartDashboard.putBoolean("Get Cube", true);
+      m_ledR = 255;
+      m_ledG = 255;
+      m_ledB = 0;
 
-      for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
-        m_LEDBuffer.setRGB(i, 0, 255, 255);
+      //for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
+      //  if(i==m_loop) {
+      //    m_LEDBuffer.setRGB(i, 0, 0, 0);
+      //  } else {
+      //    m_LEDBuffer.setRGB(i, 0, 255, 255);
+      //  }
+      //} 
+      //m_LEDLight.setData(m_LEDBuffer);
+      //m_LEDLight.start();
+    } else if (m_robotContainer.m_controller2.getRightTriggerAxis() > 0.05) {
+      SmartDashboard.putBoolean("Get Cube", false);
+
+      m_ledR = 255;
+      m_ledG = 0;
+      m_ledB = 255;
+
+      //for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
+      //  if(i==m_loop) {
+      //    m_LEDBuffer.setRGB(i, 0, 0, 0);
+      //  } else {
+      //    m_LEDBuffer.setRGB(i, 150, 255, 0);
+      //  }
+      //}
+      //m_LEDLight.setData(m_LEDBuffer);
+      //m_LEDLight.start();
+    }
+
+    for (var i = 0; i < m_LEDBuffer.getLength()/2; i++) {
+      if(i==m_ledLoop) {
+        m_LEDBuffer.setRGB(i, 0, 0, 0);
+        m_LEDBuffer.setRGB(m_LEDBuffer.getLength()-i-1, 0, 0, 0);
+      } else {
+        m_LEDBuffer.setRGB(i, m_ledG, m_ledR, m_ledB);
+        m_LEDBuffer.setRGB(m_LEDBuffer.getLength()-i-1, m_ledG, m_ledR, m_ledB);
       }
-      m_LEDLight.setData(m_LEDBuffer);
-      m_LEDLight.start();
-    } else {
-      for (var i = 0; i < m_LEDBuffer.getLength(); i++) {
-        m_LEDBuffer.setRGB(i, 170, 255, 0);
-      }
-      m_LEDLight.setData(m_LEDBuffer);
-      m_LEDLight.start();
+    }
+    m_LEDLight.setData(m_LEDBuffer);
+    m_LEDLight.start();
+
+    m_ledLoop -= 1;
+    if (m_ledLoop<0) {
+      m_ledLoop = m_LEDBuffer.getLength()/2;
     }
   }
 
   @Override
+
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
