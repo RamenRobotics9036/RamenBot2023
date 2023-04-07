@@ -32,7 +32,7 @@ public class AutoBalanceCommandSlow extends CommandBase{
     public void execute() {
         double executeRate = rate  / cycle;
 
-        if (MathUtil.applyDeadband(m_driveSystem.getGyroRate(), 3) > 0) {
+        if (MathUtil.applyDeadband(m_driveSystem.getGyroRate(), 1) > 0) {
             m_driveSystem.tankDrive(0, 0, false);
             if (timer.get() >= 0.5) {
                 cycle += changeRate;

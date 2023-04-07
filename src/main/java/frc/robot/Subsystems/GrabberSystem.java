@@ -70,4 +70,10 @@ public class GrabberSystem extends SubsystemBase {
             m_solenoid.set(Value.kForward);
         }
     }
+
+    public void closeGrabber(){
+        if (RobotState.isAutonomous()) {
+            m_solenoid.set(Value.kReverse);
+        }
+    }
 }

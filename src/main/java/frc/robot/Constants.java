@@ -34,7 +34,7 @@ public final class Constants {
     public static double kMaxOutputDrive = 0.7;
     public static double kMaxOutputWinch = 0.8;
     
-    public static double kDeadband = 0.05;
+    public static double kDeadband = 0.14;
     public static boolean kUseArcadeDrive = false;
 
     public static double kGearBoxRatioDrive = 8.28;
@@ -73,7 +73,7 @@ public final class Constants {
     public static double kWinchMiddleNodeCone = 0.77;
     public static double kWinchMiddleNodeCube = 0.75;
     public static double kWinchRetractAngle = 0.56;
-    public static double kWinchGroundAngle = 0.59;
+    public static double kWinchGroundAngle = 0.57;
     public static double kEmergencyAngle = 0.72;
 
     public static float kExtenderSoftLimitTurns = (float)-125; // Max is 155

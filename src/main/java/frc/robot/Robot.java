@@ -60,6 +60,8 @@ public class Robot extends TimedRobot {
     m_chooser.addOption(Auto.kScoreLow, Auto.kScoreLow);
     m_chooser.addOption(Auto.kAutoTestSlow, Auto.kAutoTestSlow);
     m_chooser.addOption(Auto.kAutoTestBackUp, Auto.kAutoTestBackUp);
+    m_chooser.addOption(Auto.kPrestonAuto, Auto.kPrestonAuto);
+    m_chooser.addOption(Auto.kAutoBalanceWithMobility, Auto.kAutoBalanceWithMobility);
 
     m_chooser.setDefaultOption(Auto.kDefaultAutoModeValue, Auto.kDefaultAutoModeValue);
     SmartDashboard.putData(Auto.kAutoModeKey, m_chooser);
@@ -107,6 +109,7 @@ public class Robot extends TimedRobot {
     new RetractArmCommand(m_robotContainer.m_armSystem).schedule();
 
     m_LEDLight.setLength(m_LEDBuffer.getLength());
+    SmartDashboard.putNumber("Winch Encoder", m_robotContainer.m_armSystem.getWinchAbsoluteEncoder());
   }
 
   /** This function is called periodically during operator control. */
