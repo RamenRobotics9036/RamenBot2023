@@ -54,9 +54,13 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData(Auto.kAutoModeKey, emptyChooser);
 
     m_chooser = new SendableChooser<String>();
-    m_chooser.addOption(Auto.kDropAndDriveMode, Auto.kDropAndDriveMode);
+    m_chooser.addOption(Auto.kDropAndDriveMode, Auto.kDropAndDriveMode); //adding options
     m_chooser.addOption(Auto.kAutoBalanceMode, Auto.kAutoBalanceMode);
     m_chooser.addOption(Auto.kSimpleMode, Auto.kSimpleMode);
+    m_chooser.addOption(Auto.kScoreLow, Auto.kScoreLow);
+    m_chooser.addOption(Auto.kAutoTestSlow, Auto.kAutoTestSlow);
+    m_chooser.addOption(Auto.kAutoTestBackUp, Auto.kAutoTestBackUp);
+
     m_chooser.setDefaultOption(Auto.kDefaultAutoModeValue, Auto.kDefaultAutoModeValue);
     SmartDashboard.putData(Auto.kAutoModeKey, m_chooser);
   }
