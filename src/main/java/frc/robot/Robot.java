@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
   private int m_ledR;
   private int m_ledG;
   private int m_ledB;
+  private int m_ledHue;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -43,9 +44,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Get Cube", true);
     addAutoModeChooser();
     m_ledLoop = 0;
-    m_ledR = 10;
+    m_ledR = 0;
     m_ledG = 0;
     m_ledB = 0;
+    m_ledHue = 0;
+    m_LEDLight.setLength(m_LEDBuffer.getLength());
   }
 
   private void addAutoModeChooser() {
@@ -79,6 +82,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     m_verifyJoysticks.VerifyJoysticksPeriodically();
+    updateLeds();
   }
 
   @Override
@@ -87,6 +91,10 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    m_ledR = 0;
+    m_ledG = 0;
+    m_ledB = 0;
+
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.putShuffleBoardAutoCommands();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -100,6 +108,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_ledR = 0;
+    m_ledG = 0;
+    m_ledB = 0;
+
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.configureBindings();
 
@@ -108,14 +120,14 @@ public class Robot extends TimedRobot {
 
     new RetractArmCommand(m_robotContainer.m_armSystem).schedule();
 
-    m_LEDLight.setLength(m_LEDBuffer.getLength());
+    //m_LEDLight.setLength(m_LEDBuffer.getLength());
     SmartDashboard.putNumber("Winch Encoder", m_robotContainer.m_armSystem.getWinchAbsoluteEncoder());
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
+    
     if (m_robotContainer.m_controller2.getLeftTriggerAxis() > 0.05) {
       SmartDashboard.putBoolean("Get Cube", true);
       m_ledR = 255;
@@ -148,14 +160,28 @@ public class Robot extends TimedRobot {
       //m_LEDLight.setData(m_LEDBuffer);
       //m_LEDLight.start();
     }
+    //updateLeds();
+  }
 
-    for (var i = 0; i < m_LEDBuffer.getLength()/2; i++) {
-      if(i==m_ledLoop) {
-        m_LEDBuffer.setRGB(i, 0, 0, 0);
-        m_LEDBuffer.setRGB(m_LEDBuffer.getLength()-i-1, 0, 0, 0);
-      } else {
-        m_LEDBuffer.setRGB(i, m_ledG, m_ledR, m_ledB);
-        m_LEDBuffer.setRGB(m_LEDBuffer.getLength()-i-1, m_ledG, m_ledR, m_ledB);
+  private void updateLeds() {
+    if (0==m_ledR && 0==m_ledG && 0==m_ledB) {
+      for(var i=0; i<m_LEDBuffer.getLength()/2; i++) {
+        var hue = (m_ledHue + (i * 180 / (m_LEDBuffer.getLength()/2)))%180;
+        m_LEDBuffer.setHSV(i, hue, 255, 128);
+        m_LEDBuffer.setHSV(m_LEDBuffer.getLength()-i-1, hue, 255, 128);
+      }
+      m_ledHue += 2;
+      m_ledHue %= 180;
+
+    } else {
+      for (var i = 0; i < m_LEDBuffer.getLength()/2; i++) {
+        if(i==m_ledLoop) {
+          m_LEDBuffer.setRGB(i, 0, 0, 0);
+          m_LEDBuffer.setRGB(m_LEDBuffer.getLength()-i-1, 0, 0, 0);
+        } else {
+          m_LEDBuffer.setRGB(i, m_ledG, m_ledR, m_ledB);
+          m_LEDBuffer.setRGB(m_LEDBuffer.getLength()-i-1, m_ledG, m_ledR, m_ledB);
+        }
       }
     }
     m_LEDLight.setData(m_LEDBuffer);
@@ -191,6 +217,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
+      m_ledR = 0;
+      m_ledG = 0;
+      m_ledB = 0;
       CommandScheduler.getInstance().cancelAll();
       m_robotContainer.m_driveSystem.calibrate();
   }
