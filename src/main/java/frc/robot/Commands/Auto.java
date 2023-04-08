@@ -13,10 +13,17 @@ import frc.robot.Subsystems.GrabberSystem;
 import frc.robot.Subsystems.TankDriveSystem;
 
 public class Auto {
-    public static final String kAutoModeKey = "Auto Mode";
+    public static final String kAutoModeKey = "Auto Mode"; //values shown in shuffleboard
     public static final String kDropAndDriveMode = "Score and Move";
     public static final String kAutoBalanceMode = "Auto Balance";
     public static final String kSimpleMode = "Only Score";
+    public static final String kScoreLow = "Score Low";
+
+    public static final String kAutoTestBackUp = "DO NOT USE (Auto Test Back Up)";
+    public static final String kAutoBalanceWithMobility = "DO NOT USE (Auto Balance with Mobility)";
+    public static final String kAutoTestSlow = "DO NOT USE (Auto Test Slow Auto Balance)";
+    public static final String kPrestonAuto = "DO NOT USE (Preston Autobalance)";
+
     public static final String kDefaultAutoModeValue = kSimpleMode;
 
     private Auto() {
@@ -41,7 +48,7 @@ public class Auto {
 
       switch (autoMode) {
 
-        case kDropAndDriveMode:
+        case kDropAndDriveMode: //switch statement to use specific autoroutines based on sendable dropdown
             return Commands.sequence(
               new SetWinchToAngle(m_armSystem, 0.75, 0.9),
               new SetExtenderToLength(m_armSystem, -100, 0.9),
@@ -72,6 +79,65 @@ public class Auto {
               new WaitCommand(0.5),
               new GrabberToggleCommand(m_grabSystem)
          );
+
+         case kAutoTestBackUp: // Good and no overshoots but takes too long | Needs tuning
+          return Commands.sequence(
+            new SetWinchToAngle(m_armSystem, 0.75, 1),
+            // new SetExtenderToLength(m_armSystem, -100, 1),
+            new WaitCommand(0.25),
+            // new GrabberToggleCommand(m_grabSystem),
+            // new WaitCommand(0.25),
+            // new DriveCommand(m_driveSystem, -0.5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.6, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+            // new TurnDegrees(m_driveSystem, 0.7, 75),
+            // new WaitCommand(0.25),
+            new DriveUntilTiltCommand(m_driveSystem, -0.4),
+            new DriveCommand(m_driveSystem, 1.5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+            new AutoBalanceCommandSlow(m_driveSystem, 0.25, 0.75)
+          );
+
+        case kAutoTestSlow: // Works well and might get mobility
+          return Commands.sequence(
+            new SetWinchToAngle(m_armSystem, 0.75, 1),
+            // new SetExtenderToLength(m_armSystem, -100, 1),
+            new WaitCommand(0.25),
+            // new GrabberToggleCommand(m_grabSystem),
+            // new WaitCommand(0.25),
+            // new DriveCommand(m_driveSystem, -0.5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.6, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+            // new TurnDegrees(m_driveSystem, 0.7, 75),
+            new WaitCommand(0.25),
+            new DriveUntilTiltCommand(m_driveSystem, -0.4),
+            new DriveCommand(m_driveSystem, 1.5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+            new AutoBalanceCommand(m_driveSystem, 0.25)
+          );
+
+        case kScoreLow:
+          return Commands.sequence(
+            new SetWinchToAngle(m_armSystem, 0.75, 1),
+            new WaitCommand(0.5),
+            new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
+          );
+
+        case kAutoBalanceWithMobility:
+          return Commands.sequence(
+            new SetWinchToAngle(m_armSystem, 0.75, 1),
+            // new SetExtenderToLength(m_armSystem, -100, 1),
+            new WaitCommand(0.25),
+            // new GrabberToggleCommand(m_grabSystem),
+            // new WaitCommand(0.25),
+            // new DriveCommand(m_driveSystem, -0.5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.6, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+            // new TurnDegrees(m_driveSystem, 0.7, 75),
+            // new WaitCommand(0.25),
+            new DriveCommand(m_driveSystem, 14 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+            new TurnDegrees(m_driveSystem, 0.6, 75),
+            new DriveCommand(m_driveSystem, 3 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+
+            new AutoBalanceCommand(m_driveSystem, 0.25)
+          );
+        case kPrestonAuto:
+          return Commands.sequence(
+            new DriveCommand(m_driveSystem, -7*12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+            new AutoBalanceCommandSlow(m_driveSystem, 0.1, 0.1)
+          );
 
         default:
             System.out.println("UNEXPECTED AUTO MODE - auto mode will do nothing");
