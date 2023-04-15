@@ -139,7 +139,7 @@ public class TankDriveSystem extends SubsystemBase {
           double slewLimit1 = turboLimiter1.calculate(xSpeed);
           double slewLimit2 = turboLimiter2.calculate(zRotation);
       
-          m_drive.arcadeDrive(slewLimit1, slewLimit2 * Constants.OperatorConstants.kRotationDilation, squareInputs);
+          arcadeDrive(slewLimit1, slewLimit2 * Constants.OperatorConstants.kRotationDilation, squareInputs);
           slewLimiter1.reset(slewLimit1);
           slewLimiter2.reset(slewLimit2);
       } else {
@@ -148,7 +148,7 @@ public class TankDriveSystem extends SubsystemBase {
           double slewLimit1 = slewLimiter1.calculate(xSpeed);
           double slewLimit2 = slewLimiter2.calculate(zRotation);
       
-          m_drive.arcadeDrive(slewLimit1, slewLimit2 * Constants.OperatorConstants.kRotationDilation, squareInputs);
+          arcadeDrive(slewLimit1, slewLimit2 * Constants.OperatorConstants.kRotationDilation, squareInputs);
           turboLimiter1.reset(slewLimit1);
           turboLimiter2.reset(slewLimit2);
       }
@@ -163,6 +163,9 @@ public class TankDriveSystem extends SubsystemBase {
       // }
     }
 
+    public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
+      m_drive.arcadeDrive(xSpeed, zRotation, squareInputs);
+    }
     public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
         m_drive.tankDrive(leftSpeed, rightSpeed, squareInputs);
     }
