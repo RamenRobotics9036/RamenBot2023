@@ -75,7 +75,7 @@ public class RobotContainer {
    * joysticks}.
    */
   public void configureBindings() {
-    new Trigger(m_driveSystem::getCondition).whileTrue(m_driveSystem.driveCommand());
+    // $TODO - Are these armCommand and grabCommand even being called?  The work is already done in Periodic of those robot systems today
     new Trigger(m_armSystem::getCondition).whileTrue(m_armSystem.armCommand());
     new Trigger(m_grabSystem::getCondition).whileTrue(m_grabSystem.grabCommand());
 
