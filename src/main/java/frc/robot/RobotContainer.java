@@ -31,8 +31,8 @@ public class RobotContainer {
   public final XboxController m_controller2 = new XboxController(Constants.OperatorConstants.kDriverControllerPort2);
 
   public final TankDriveSystem m_driveSystem = new TankDriveSystem(
-    Constants.OperatorConstants.kLeftMotorForwardChannel,
     Constants.OperatorConstants.kLeftMotorBackChannel,
+    Constants.OperatorConstants.kLeftMotorForwardChannel,
     Constants.OperatorConstants.kRightMotorBackChannel,
     Constants.OperatorConstants.kRightMotorForwardChannel,
     m_controller1,
