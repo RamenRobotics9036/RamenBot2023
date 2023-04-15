@@ -46,11 +46,36 @@ public class TankDriveSystem extends SubsystemBase {
     private final Pigeon2 m_gyro = new Pigeon2(7);
     private double m_prevRate = 0;
 
+    public static TankDriveSystem CreateTankDriveSystemInstance(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
+      int rightMotorForwardChannel, XboxController controller, boolean squareInputs,
+      double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters,
+      double slewLimit, double turboSlew)
+    {
+      TankDriveSystem result;
+
+      result = new TankDriveSystem(
+        Constants.OperatorConstants.kLeftMotorBackChannel,
+        Constants.OperatorConstants.kLeftMotorForwardChannel,
+        Constants.OperatorConstants.kRightMotorBackChannel,
+        Constants.OperatorConstants.kRightMotorForwardChannel,
+        controller,
+        Constants.OperatorConstants.kSquareInputsDrive,
+        Constants.OperatorConstants.kMaxOutputDrive,
+        Constants.OperatorConstants.kDeadband,
+        Constants.OperatorConstants.kGearBoxRatioDrive,
+        Constants.OperatorConstants.kWheelDiameterMetersDrive,
+        Constants.OperatorConstants.kSlewLimit,
+        Constants.OperatorConstants.kTurboSlew
+      );
+
+      return result;
+    }
+
     // Constructor
     public TankDriveSystem(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
-     int rightMotorForwardChannel, XboxController m_controller, boolean squareInputs,
-    double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters,
-    double slewLimit, double turboSlew)
+      int rightMotorForwardChannel, XboxController controller, boolean squareInputs,
+      double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters,
+      double slewLimit, double turboSlew)
     {
         m_leftMotor1 = new CANSparkMax(leftMotorBackChannel, MotorType.kBrushless);
         m_leftMotor2 = new CANSparkMax(leftMotorForwardChannel, MotorType.kBrushless);
@@ -68,7 +93,7 @@ public class TankDriveSystem extends SubsystemBase {
         m_leftEncoder = m_leftMotor1.getEncoder();
         m_rightEncoder = m_rightMotor1.getEncoder();
 
-        this.m_controller = m_controller;
+        this.m_controller = controller;
 
         this.squareInputs = squareInputs;
         this.maxOutput = maxOutput;
