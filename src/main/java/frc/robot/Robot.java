@@ -42,32 +42,13 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     m_robotContainer.initDashboard();
     SmartDashboard.putBoolean("Get Cube", true);
-    addAutoModeChooser();
+    m_chooser = Auto.addAutoModeChooser();
     m_ledLoop = 0;
     m_ledR = 0;
     m_ledG = 0;
     m_ledB = 0;
     m_ledHue = 0;
     m_LEDLight.setLength(m_LEDBuffer.getLength());
-  }
-
-  private void addAutoModeChooser() {
-    // Force the smartdashboard to update by first deleting all options in chooser
-    SendableChooser<String> emptyChooser = new SendableChooser<String>();
-    SmartDashboard.putData(Auto.kAutoModeKey, emptyChooser);
-
-    m_chooser = new SendableChooser<String>();
-    m_chooser.addOption(Auto.kDropAndDriveMode, Auto.kDropAndDriveMode); //adding options
-    m_chooser.addOption(Auto.kAutoBalanceMode, Auto.kAutoBalanceMode);
-    m_chooser.addOption(Auto.kSimpleMode, Auto.kSimpleMode);
-    m_chooser.addOption(Auto.kScoreLow, Auto.kScoreLow);
-    m_chooser.addOption(Auto.kAutoTestSlow, Auto.kAutoTestSlow);
-    m_chooser.addOption(Auto.kAutoTestBackUp, Auto.kAutoTestBackUp);
-    m_chooser.addOption(Auto.kPrestonAuto, Auto.kPrestonAuto);
-    m_chooser.addOption(Auto.kAutoBalanceWithMobility, Auto.kAutoBalanceWithMobility);
-
-    m_chooser.setDefaultOption(Auto.kDefaultAutoModeValue, Auto.kDefaultAutoModeValue);
-    SmartDashboard.putData(Auto.kAutoModeKey, m_chooser);
   }
 
     /**
