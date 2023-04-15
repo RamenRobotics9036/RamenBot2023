@@ -103,76 +103,12 @@ public class TankDriveSystem extends SubsystemBase {
         return true;
     }
 
-    public CommandBase driveCommand() {
-        return run(
-            () -> {
-                double leftAxis = m_controller.getLeftY();
-                double rightAxis = m_controller.getRightY();
-                double xForward = (leftAxis + rightAxis) / 2;
-                double zRotation = (leftAxis - rightAxis) / 2;
-
-                if (Constants.OperatorConstants.kUseArcadeDrive == false){
-                    m_drive.arcadeDrive(slewLimiter1.calculate(xForward), slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
-                }
-                System.out.println("Command called");
-            }
-        );
-    }
-
     @Override
     public void periodic() {
         if (!RobotState.isAutonomous()) {
-            double leftAxis = m_controller.getLeftY();
-            double rightAxis = m_controller.getRightY();
-
-            double xSpeed = (m_controller.getLeftY() + m_controller.getRightY()) / 2;
-            double zRotation = (m_controller.getLeftY() - m_controller.getRightY()) / 2;
-
-            if (m_controller.getRightTriggerAxis() > Constants.OperatorConstants.kDeadband) {
-                m_drive.setMaxOutput(1);
-                double slewLimit1 = turboLimiter1.calculate(xSpeed);
-                double slewLimit2 = turboLimiter2.calculate(zRotation);
-
-                m_drive.arcadeDrive(slewLimit1, slewLimit2 * Constants.OperatorConstants.kRotationDilation, squareInputs);
-                slewLimiter1.reset(slewLimit1);
-                slewLimiter2.reset(slewLimit2);
-            } else {
-
-                m_drive.setMaxOutput(maxOutput);
-                double slewLimit1 = slewLimiter1.calculate(xSpeed);
-                double slewLimit2 = slewLimiter2.calculate(zRotation);
-
-                m_drive.arcadeDrive(slewLimit1, slewLimit2 * Constants.OperatorConstants.kRotationDilation, squareInputs);
-                turboLimiter1.reset(slewLimit1);
-                turboLimiter2.reset(slewLimit2);
-            }
-            SmartDashboard.putNumber("Left Motor", m_leftMotors.get());
-            SmartDashboard.putNumber("Right Motor", m_rightMotors.get());
-            
-            // if (m_controller.getRightTriggerAxis() > 0) {
-            //     m_drive.tankDrive(1, 0, false);
-            // }
-            // if (m_controller.getLeftTriggerAxis() > 0) {
-            //     m_drive.tankDrive(0, 1, false);
-            // }
+          ProcessJoystickInput();
         }
     }
-
-
-    @Override
-    public void simulationPeriodic() {
-        double leftAxis = m_controller.getLeftY();
-        double rightAxis = m_controller.getRightY(); 
-        double xForward = (leftAxis + rightAxis) / 2;
-        double zRotation = (leftAxis - rightAxis) / 2;
-
-        if (Constants.OperatorConstants.kUseArcadeDrive == false){
-            m_drive.arcadeDrive(slewLimiter1.calculate(xForward),
-            slewLimiter2.calculate(zRotation) * Constants.OperatorConstants.kRotationDilation, squareInputs);
-        }
-    }
-
-
 
     public void resetEncoders() {
         m_leftEncoder.setPosition(0);
@@ -189,6 +125,42 @@ public class TankDriveSystem extends SubsystemBase {
 
     public double getAverageEncoderPosition() {
         return (Math.abs(m_leftEncoder.getPosition()) + Math.abs(m_rightEncoder.getPosition())) / 2;
+    }
+
+    public void ProcessJoystickInput() {    
+      double leftAxis = m_controller.getLeftY();
+      double rightAxis = m_controller.getRightY();
+      
+      double xSpeed = (m_controller.getLeftY() + m_controller.getRightY()) / 2;
+      double zRotation = (m_controller.getLeftY() - m_controller.getRightY()) / 2;
+      
+      if (m_controller.getRightTriggerAxis() > Constants.OperatorConstants.kDeadband) {
+          m_drive.setMaxOutput(1);
+          double slewLimit1 = turboLimiter1.calculate(xSpeed);
+          double slewLimit2 = turboLimiter2.calculate(zRotation);
+      
+          m_drive.arcadeDrive(slewLimit1, slewLimit2 * Constants.OperatorConstants.kRotationDilation, squareInputs);
+          slewLimiter1.reset(slewLimit1);
+          slewLimiter2.reset(slewLimit2);
+      } else {
+      
+          m_drive.setMaxOutput(maxOutput);
+          double slewLimit1 = slewLimiter1.calculate(xSpeed);
+          double slewLimit2 = slewLimiter2.calculate(zRotation);
+      
+          m_drive.arcadeDrive(slewLimit1, slewLimit2 * Constants.OperatorConstants.kRotationDilation, squareInputs);
+          turboLimiter1.reset(slewLimit1);
+          turboLimiter2.reset(slewLimit2);
+      }
+      SmartDashboard.putNumber("Left Motor", m_leftMotors.get());
+      SmartDashboard.putNumber("Right Motor", m_rightMotors.get());
+      
+      // if (m_controller.getRightTriggerAxis() > 0) {
+      //     m_drive.tankDrive(1, 0, false);
+      // }
+      // if (m_controller.getLeftTriggerAxis() > 0) {
+      //     m_drive.tankDrive(0, 1, false);
+      // }
     }
 
     public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
