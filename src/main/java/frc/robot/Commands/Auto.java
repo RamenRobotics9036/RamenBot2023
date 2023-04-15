@@ -166,9 +166,7 @@ public class Auto {
         case kTestDriveOnly:
           return Commands.sequence(
             new WaitCommand(0.25),
-            new DriveCommand(m_driveSystem, 14 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-            new TurnDegrees(m_driveSystem, 0.6, 75),
-            new DriveCommand(m_driveSystem, 3 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
+            new DriveCommand(m_driveSystem, 5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
           );
 
         default:
