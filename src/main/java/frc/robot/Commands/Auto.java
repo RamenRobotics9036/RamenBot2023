@@ -16,15 +16,16 @@ public class Auto {
     public static final String kAutoModeKey = "Auto Mode"; //values shown in shuffleboard
     public static final String kDropAndDriveMode = "Score and Move";
     public static final String kAutoBalanceMode = "Auto Balance";
-    public static final String kSimpleMode = "Only Score";
+    public static final String kOnlyScore = "Only Score";
     public static final String kScoreLow = "Score Low";
 
     public static final String kAutoTestBackUp = "DO NOT USE (Auto Test Back Up)";
     public static final String kAutoBalanceWithMobility = "DO NOT USE (Auto Balance with Mobility)";
     public static final String kAutoTestSlow = "DO NOT USE (Auto Test Slow Auto Balance)";
     public static final String kPrestonAuto = "DO NOT USE (Preston Autobalance)";
+    public static final String kTestDriveOnly = "DO NOT USE (Simple test of drive only)";
 
-    public static final String kDefaultAutoModeValue = kSimpleMode;
+    public static final String kDefaultAutoModeValue = kOnlyScore;
 
     private Auto() {
         throw new Error("Auto is a utility class and should not be constructed. One should utilize this class via static methods.");
@@ -40,6 +41,29 @@ public class Auto {
     
       SendableChooser<String> retrievedChooser = (SendableChooser<String>)retrievedChooserVal;
       return retrievedChooser.getSelected();
+    }
+
+
+    public static SendableChooser<String> addAutoModeChooser() {
+      // Force the smartdashboard to update by first deleting all options in chooser
+      SendableChooser<String> emptyChooser = new SendableChooser<String>();
+      SmartDashboard.putData(Auto.kAutoModeKey, emptyChooser);
+    
+      SendableChooser<String> resultChooser = new SendableChooser<String>();
+      resultChooser.addOption(Auto.kDropAndDriveMode, Auto.kDropAndDriveMode); //adding options
+      resultChooser.addOption(Auto.kAutoBalanceMode, Auto.kAutoBalanceMode);
+      resultChooser.addOption(Auto.kOnlyScore, Auto.kOnlyScore);
+      resultChooser.addOption(Auto.kScoreLow, Auto.kScoreLow);
+      resultChooser.addOption(Auto.kAutoTestSlow, Auto.kAutoTestSlow);
+      resultChooser.addOption(Auto.kAutoTestBackUp, Auto.kAutoTestBackUp);
+      resultChooser.addOption(Auto.kPrestonAuto, Auto.kPrestonAuto);
+      resultChooser.addOption(Auto.kAutoBalanceWithMobility, Auto.kAutoBalanceWithMobility);
+      resultChooser.addOption(Auto.kTestDriveOnly, Auto.kTestDriveOnly);
+    
+      resultChooser.setDefaultOption(Auto.kDefaultAutoModeValue, Auto.kDefaultAutoModeValue);
+      SmartDashboard.putData(Auto.kAutoModeKey, resultChooser);
+
+      return resultChooser;
     }
 
     public static CommandBase getAutoCommand(TankDriveSystem m_driveSystem, ArmSystem m_armSystem, GrabberSystem m_grabSystem) {
@@ -72,7 +96,7 @@ public class Auto {
               new AutoBalanceCommand(m_driveSystem, 0.25)
           );
 
-        case kSimpleMode:
+        case kOnlyScore:
           return Commands.sequence(
               new SetWinchToAngle(m_armSystem, 0.75, 0.9),
               new SetExtenderToLength(m_armSystem, -100, 0.9),
@@ -137,6 +161,14 @@ public class Auto {
           return Commands.sequence(
             new DriveCommand(m_driveSystem, -7*12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
             new AutoBalanceCommandSlow(m_driveSystem, 0.1, 0.1)
+          );
+
+        case kTestDriveOnly:
+          return Commands.sequence(
+            new WaitCommand(0.25),
+            new DriveCommand(m_driveSystem, 14 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+            new TurnDegrees(m_driveSystem, 0.6, 75),
+            new DriveCommand(m_driveSystem, 3 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
           );
 
         default:
