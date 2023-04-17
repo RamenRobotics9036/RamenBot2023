@@ -9,7 +9,7 @@ import frc.robot.Subsystems.TankDriveSystem;
 public class TurnDegrees extends CommandBase {
     private double percentOutput;
     private double degrees;
-    private double tolerance;
+    private double initialHeading;
 
     TankDriveSystem m_drive;
 
@@ -17,28 +17,34 @@ public class TurnDegrees extends CommandBase {
         this.percentOutput = percentOutput;
         this.degrees = degrees;
         this.m_drive = m_drive;
-        this.tolerance = m_drive.getGyroYaw();
         
         addRequirements(m_drive);
     }
 
     @Override
     public void initialize() {
+      this.initialHeading = m_drive.getGyroYaw();
     }
 
     @Override
     public void execute() {
-        m_drive.tankDrive(percentOutput, -percentOutput, true);
-        // SmartDashboard.putNumber("Gyro Yaw", MathUtil.applyDeadband(m_drive.getGyroYaw() + 2.5 - tolerance, 2));
+        // Calculate the error
+        double error = degrees - (m_drive.getGyroYaw() - initialHeading);
+        
+        // Wrap error to be within -180 to 180 degrees
+        error = ((error + 180) % 360) - 180;
+        if (error < -180) {
+            error += 360;
+        }
+
+        double direction = Math.signum(error);
+        m_drive.tankDrive(-1 * direction * percentOutput, direction * percentOutput, true);
     }
 
     @Override
     public boolean isFinished() {
-           if (MathUtil.applyDeadband(m_drive.getGyroYaw() + 2.5 - tolerance, 2) > 180) {
-                return true;
-           }
-
-        return false;
+        // Check if the robot is within an acceptable error range (e.g., 2 degrees)
+        return Math.abs(degrees - (m_drive.getGyroYaw() - initialHeading)) < 2;
     }
 
     @Override
@@ -46,3 +52,4 @@ public class TurnDegrees extends CommandBase {
         m_drive.tankDrive(0, 0, false);
     }
 }
+
