@@ -164,10 +164,13 @@ public class Auto {
           );
 
         case kTestDriveOnly:
-          return Commands.sequence(
-            new WaitCommand(0.25),
-            new DriveCommand(m_driveSystem, 5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
-          );
+           return Commands.sequence(
+             new WaitCommand(0.25),
+             new DriveCommand(m_driveSystem, 5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
+             new TurnDegrees(m_driveSystem, 0.6, 90),
+             new TurnDegrees(m_driveSystem, 0.6, -90),
+             new DriveCommand(m_driveSystem, 5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive, 0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive)
+        );
 
         default:
             System.out.println("UNEXPECTED AUTO MODE - auto mode will do nothing");

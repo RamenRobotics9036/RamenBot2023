@@ -18,6 +18,7 @@ import frc.robot.Commands.RetractArmCommand;
 import frc.robot.Subsystems.ArmSystem;
 import frc.robot.Subsystems.GrabberSystem;
 import frc.robot.Subsystems.TankDriveSystem;
+import frc.robot.Subsystems.TankDriveSystemSim;
 
 
 /**
@@ -30,7 +31,7 @@ public class RobotContainer {
   public final XboxController m_controller1 = new XboxController(Constants.OperatorConstants.kDriverControllerPort1);
   public final XboxController m_controller2 = new XboxController(Constants.OperatorConstants.kDriverControllerPort2);
 
-  public final TankDriveSystem m_driveSystem = TankDriveSystem.CreateTankDriveSystemInstance(
+  public final TankDriveSystem m_driveSystem = TankDriveSystemSim.CreateTankDriveSystemInstance(
     Constants.OperatorConstants.kLeftMotorBackChannel,
     Constants.OperatorConstants.kLeftMotorForwardChannel,
     Constants.OperatorConstants.kRightMotorBackChannel,
