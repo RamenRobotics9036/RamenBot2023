@@ -34,7 +34,7 @@ public class TankDriveSystemSim extends TankDriveSystem {
         Constants.OperatorConstants.kTurboSlew
       );
     
-      System.out.println("TANKDRIVESYSTTEM: **** Simulation ****");
+      System.out.println("TANKDRIVESYSTEM: **** Simulation ****");
   
     } else {
       result = new TankDriveSystem(
@@ -52,7 +52,7 @@ public class TankDriveSystemSim extends TankDriveSystem {
         Constants.OperatorConstants.kTurboSlew
       );
   
-      System.out.println("TANKDRIVESYSTTEM: Physical Robot version");
+      System.out.println("TANKDRIVESYSTEM: Physical Robot version");
     }
   
     return result;

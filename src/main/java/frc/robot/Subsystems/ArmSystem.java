@@ -24,10 +24,10 @@ public class ArmSystem extends SubsystemBase{
     private double maxOutputWinch;
     private DigitalInput sensor = new DigitalInput(Constants.OperatorConstants.kHallEffectExtenderChannel);
 
-    private CANSparkMax m_armWinch;
+    protected CANSparkMax m_armWinch;
     private CANSparkMax m_armExtender;
 
-    private RelativeEncoder m_winchEncoder;
+    protected RelativeEncoder m_winchEncoder;
     private RelativeEncoder m_extenderEncoder;
 
     private DutyCycleEncoder m_winchAbsoluteEncoder;
