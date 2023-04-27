@@ -16,19 +16,10 @@ public class WinchSimulationTest {
     private final boolean m_invertMotor = false;
 
     private RelativeEncoderSim m_relEncoderSim;
-    private WinchSimulation m_winchSimulation;
 
     @BeforeEach
     public void setUp() {
         m_relEncoderSim = new RelativeEncoderSim(null, true); // test-mode
-
-        m_winchSimulation = new WinchSimulation(
-          m_relEncoderSim,
-          m_SpoolDiameterMeters,
-          m_TotalStringLenMeters,
-          m_InitialLenSpooled,
-          m_InitialStringOrientation,
-          m_invertMotor);
     }
 
     @Test
