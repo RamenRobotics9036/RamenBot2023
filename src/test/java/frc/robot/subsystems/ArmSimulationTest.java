@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ArmSimulationTest {
-    private WinchSimulation m_winchSimulation;
     private final double m_armTopAngleDegrees = 78;
     private final double m_armBottomAngleDegrees = 56;
     private final double m_armDeltaDegreesBeforeBroken = 10;
@@ -19,6 +18,7 @@ public class ArmSimulationTest {
     private final StringOrientation m_winchInitialStringOrientation = StringOrientation.BackOfRobot;
     private final boolean m_winchinvertMotor = false;
 
+    private WinchSimulation m_winchSimulation;
     private RelativeEncoderSim m_winchRelEncoderSim;
 
     @BeforeEach
@@ -36,6 +36,13 @@ public class ArmSimulationTest {
 
     @Test
     public void CreateArmSimulationShouldSucceed() {
+      ArmSimulation tempArmSimulation = new ArmSimulation(
+        m_winchSimulation,
+        m_armTopAngleDegrees,
+        m_armBottomAngleDegrees,
+        m_armDeltaDegreesBeforeBroken);
+
+      assertTrue(tempArmSimulation != null);
     }
 }
 
