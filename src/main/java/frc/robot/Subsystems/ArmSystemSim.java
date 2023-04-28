@@ -117,12 +117,15 @@ public class ArmSystemSim extends ArmSystem {
   public void periodic() {
       super.periodic();
 
+      // $TODO - The entire simulation should freeze during disabled
       m_WinchSimulation.periodic();
   }
 
   @Override
   public void simulationPeriodic() {
     super.simulationPeriodic();
+
+    // $TODO - The entire simulation should freeze during disabled
 
     // Get the motor controller output percentage
     m_winchMotorOutputPercentage = m_armWinch.get();
