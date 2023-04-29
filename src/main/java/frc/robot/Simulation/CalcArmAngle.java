@@ -10,9 +10,8 @@ package frc.robot.Simulation;
  */
 
 public class CalcArmAngle {
-  private final double m_armLengthMeters = 1.0; // For simulation, hardcoded length of arm
-  private final double m_armLengthFromEdgeToPivot = 0.2;
-  private final double m_armHeightFromWinchToPivotPoint = 1.0;
+  public static final double m_armLengthFromEdgeToPivot = 0.1;
+  public static final double m_armHeightFromWinchToPivotPoint = 1.0;
 
   // Constructor
   public CalcArmAngle() {
@@ -24,27 +23,28 @@ public class CalcArmAngle {
   //    /  |
   //  /    |
   // -----------
-  private double RightTriangleAngleGivenHeight(double lenHypotenuse, double height) {
-    return Math.asin(height / lenHypotenuse);
+  private static double RightTriangleAngleGivenHeight(double lenHypotenuse, double height) {
+    return Math.toDegrees(Math.asin(height / lenHypotenuse));
   }
 
   // Returns a value between 0-360
   // Returns -1 if invalid string length
-  public double GetDegreesForStringLength(double stringLen) {
+  public static double GetDegreesForStringLength(double stringLen) {
     double backOfArmHeightAbovePivot = stringLen - m_armHeightFromWinchToPivotPoint;
+    double tinyVariance = 0.0000001;
 
     // Is arm beyond lowest possible point?
-    if (backOfArmHeightAbovePivot >= m_armLengthFromEdgeToPivot) {
+    if (backOfArmHeightAbovePivot + tinyVariance > m_armLengthFromEdgeToPivot) {
       return -1;
     }
 
     // Is arm beyond highest possible point?
-    if (backOfArmHeightAbovePivot <= -1 * m_armLengthFromEdgeToPivot) {
+    if (backOfArmHeightAbovePivot - tinyVariance < -1 * m_armLengthFromEdgeToPivot) {
       return -1;
     }
 
     // Level arm?
-    if (backOfArmHeightAbovePivot == 0) {
+    if (Math.abs(backOfArmHeightAbovePivot) < tinyVariance) {
       return 0;
     }
     else if (backOfArmHeightAbovePivot > 0) {

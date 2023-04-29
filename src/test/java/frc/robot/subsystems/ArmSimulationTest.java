@@ -56,7 +56,6 @@ public class ArmSimulationTest {
       }
     }
 
-
     @Test
     public void CreateArmSimulationShouldSucceed() {
       ArmSimulation tempArmSimulation = new ArmSimulation(
