@@ -1,12 +1,17 @@
 package frc.robot.Simulation;
 
+import edu.wpi.first.hal.HAL;
 import frc.robot.Subsystems.RelativeEncoderSim;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import frc.robot.Simulation.WinchSimulation.StringOrientation;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import frc.robot.Constants;
 
 public class ArmSimulationTest {
     private final double m_armTopRotationsLimit = 0.78;
@@ -21,9 +26,13 @@ public class ArmSimulationTest {
 
     private WinchSimulation m_winchSimulation;
     private RelativeEncoderSim m_winchRelEncoderSim;
+    private DutyCycleEncoder m_winchAbsoluteEncoder = null;
+    private DutyCycleEncoderSim m_winchAbsoluteEncoderSim = null;
 
     @BeforeEach
     public void setUp() {
+      assert HAL.initialize(500, 0); // initialize the HAL, crash if failed
+
       m_winchRelEncoderSim = new RelativeEncoderSim(null, true); // test-mode
 
       m_winchSimulation = new WinchSimulation(
@@ -33,12 +42,26 @@ public class ArmSimulationTest {
         m_winchInitialLenSpooled,
         m_winchInitialStringOrientation,
         m_winchinvertMotor);
+
+      m_winchAbsoluteEncoder = new DutyCycleEncoder(Constants.OperatorConstants.kAbsoluteEncoderWinchChannel);
+      m_winchAbsoluteEncoderSim = new DutyCycleEncoderSim(m_winchAbsoluteEncoder);
     }
+
+    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
+    @AfterEach
+    void shutdown() throws Exception {
+      if (m_winchAbsoluteEncoder != null) {
+        m_winchAbsoluteEncoder.close();
+        m_winchAbsoluteEncoder = null;
+      }
+    }
+
 
     @Test
     public void CreateArmSimulationShouldSucceed() {
       ArmSimulation tempArmSimulation = new ArmSimulation(
         m_winchSimulation,
+        m_winchAbsoluteEncoderSim,
         m_armTopRotationsLimit,
         m_armBottomRotationsLimit,
         m_armDeltaRotationsBeforeBroken,
@@ -52,6 +75,7 @@ public class ArmSimulationTest {
       assertThrows(IllegalArgumentException.class, () -> {
         ArmSimulation tempArmSimulation = new ArmSimulation(
           null,
+          m_winchAbsoluteEncoderSim,
           m_armTopRotationsLimit,
           m_armBottomRotationsLimit,
           m_armDeltaRotationsBeforeBroken,
@@ -64,6 +88,7 @@ public class ArmSimulationTest {
       assertThrows(IllegalArgumentException.class, () -> {
         ArmSimulation tempArmSimulation = new ArmSimulation(
           m_winchSimulation,
+          m_winchAbsoluteEncoderSim,
           m_armTopRotationsLimit,
           0.01,
           0.02,
@@ -76,6 +101,7 @@ public class ArmSimulationTest {
       assertThrows(IllegalArgumentException.class, () -> {
         ArmSimulation tempArmSimulation = new ArmSimulation(
           m_winchSimulation,
+          m_winchAbsoluteEncoderSim,
           0.99,
           m_armBottomRotationsLimit,
           0.02,
@@ -87,6 +113,7 @@ public class ArmSimulationTest {
     public void BottomLimitMinusDeltaEqualToZeroShouldSucceed() {
       ArmSimulation tempArmSimulation = new ArmSimulation(
         m_winchSimulation,
+        m_winchAbsoluteEncoderSim,
         m_armTopRotationsLimit,
         0.01,
         0.01,
@@ -99,6 +126,7 @@ public class ArmSimulationTest {
     public void TopLimitPlusDeltaEqualToOneShouldSucceed() {
       ArmSimulation tempArmSimulation = new ArmSimulation(
         m_winchSimulation,
+        m_winchAbsoluteEncoderSim,
         0.99,
         m_armBottomRotationsLimit,
         0.01,
