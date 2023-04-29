@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import java.util.Map;
+
+import frc.robot.Constants;
+import frc.robot.Simulation.ArmSimulation;
 import frc.robot.Simulation.WinchSimulation;
 import frc.robot.Simulation.WinchSimulation.StringOrientation;
 
@@ -17,6 +20,7 @@ public class ArmSystemSim extends ArmSystem {
   private DCMotorSim m_motorSim;
   private double m_winchMotorOutputPercentage = 0;
   private WinchSimulation m_WinchSimulation;
+  private ArmSimulation m_ArmSimulation;
 
   public static ArmSystem CreateArmSystemInstance(int armWinchChannel, int armExtenderChannel, XboxController m_controller, double m_deadband, boolean squareInputs, double maxOutputWinch)
   {
@@ -84,6 +88,13 @@ public class ArmSystemSim extends ArmSystem {
       StringOrientation.BackOfRobot,  // $TODO Initial string orientation
       false);
 
+    m_ArmSimulation = new ArmSimulation(
+      m_WinchSimulation,
+      Constants.OperatorConstants.kWinchEncoderUpperLimit,
+      Constants.OperatorConstants.kWinchEncoderLowerLimit,
+      0.02, // $TODO Delta until broken, move to constants
+      0.60); // $TODO Delta below which grabber cant be opened, move to constants
+  
     AddShuffleboardWidgets();
   }
 
@@ -125,6 +136,7 @@ public class ArmSystemSim extends ArmSystem {
       // When Robot is disabled, the entire simulation freezes
       if (isRobotEnabled()) {      
         m_WinchSimulation.periodic();
+        m_ArmSimulation.periodic();
       }
   }
 
@@ -152,6 +164,7 @@ public class ArmSystemSim extends ArmSystem {
       //System.out.println("Winch motor rotations: " + motorRotations);
 
       m_WinchSimulation.simulationPeriodic();
+      m_ArmSimulation.simulationPeriodic();
     }
   }
 }

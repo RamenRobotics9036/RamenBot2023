@@ -49,5 +49,12 @@ public class ArmSimulation {
     m_deltaRotationsBeforeBroken = deltaRotationsBeforeBroken;
     m_grabberBreaksIfOpenBelowThisLimit = grabberBreaksIfOpenBelowThisLimit;
   }
+
+  public void periodic() {
+  }
+
+  public void simulationPeriodic() {
+    // $TODO UpdateNewLenSpooled();
+  }
 }
 
