@@ -1,5 +1,6 @@
 package frc.robot.Simulation;
 
+import edu.wpi.first.hal.HAL;
 import frc.robot.Subsystems.RelativeEncoderSim;
 import frc.robot.Simulation.WinchSimulation.StringOrientation;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,8 @@ public class WinchSimulationTest {
 
     @BeforeEach
     public void setUp() {
+        assert HAL.initialize(500, 0); // initialize the HAL, crash if failed
+
         m_relEncoderSim = new RelativeEncoderSim(null, true); // test-mode
     }
 

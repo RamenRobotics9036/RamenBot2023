@@ -1,7 +1,10 @@
 package frc.robot.Simulation;
 
+import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
+
 public class ArmSimulation {
   private WinchSimulation m_winchSimulation;
+  private DutyCycleEncoderSim m_winchAbsoluteEncoderSim;
   private double m_topRotationsLimit;
   private double m_bottomRotationsLimit;
   private double m_deltaRotationsBeforeBroken;
@@ -10,6 +13,7 @@ public class ArmSimulation {
   // Constructor
   public ArmSimulation(
     WinchSimulation winchSimulation,
+    DutyCycleEncoderSim winchAbsoluteEncoderSim,
     double topRotationsLimit,
     double bottomRotationsLimit,
     double deltaRotationsBeforeBroken,
@@ -44,6 +48,7 @@ public class ArmSimulation {
     }
 
     m_winchSimulation = winchSimulation;
+    m_winchAbsoluteEncoderSim = winchAbsoluteEncoderSim;
     m_topRotationsLimit = topRotationsLimit;
     m_bottomRotationsLimit = bottomRotationsLimit;
     m_deltaRotationsBeforeBroken = deltaRotationsBeforeBroken;

@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import java.util.Map;
@@ -16,6 +17,7 @@ import frc.robot.Simulation.WinchSimulation.StringOrientation;
 
 public class ArmSystemSim extends ArmSystem {
   private RelativeEncoderSim m_winchEncoderSim;
+  private DutyCycleEncoderSim m_winchAbsoluteEncoderSim;
   private DCMotor m_motorModel;
   private DCMotorSim m_motorSim;
   private double m_winchMotorOutputPercentage = 0;
@@ -88,8 +90,13 @@ public class ArmSystemSim extends ArmSystem {
       StringOrientation.BackOfRobot,  // $TODO Initial string orientation
       false);
 
+    // Create simulated absolute encoder
+    m_winchAbsoluteEncoderSim = new DutyCycleEncoderSim(m_winchAbsoluteEncoder);
+    // $TODO - Under simulation, we need to set our robot's arm to some initial position, otherwise it would be 0 and out of bounds!  It needs to be "read" from the winchsimulation string-length
+
     m_ArmSimulation = new ArmSimulation(
       m_WinchSimulation,
+      m_winchAbsoluteEncoderSim,
       Constants.OperatorConstants.kWinchEncoderUpperLimit,
       Constants.OperatorConstants.kWinchEncoderLowerLimit,
       0.02, // $TODO Delta until broken, move to constants
