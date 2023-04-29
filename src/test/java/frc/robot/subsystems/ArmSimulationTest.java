@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ArmSimulationTest {
-    private final double m_armTopAngleRotations = 0.78;
-    private final double m_armBottomAngleRotations = 0.56;
+    private final double m_armTopRotationsLimit = 0.78;
+    private final double m_armBottomRotationsLimit = 0.56;
     private final double m_armDeltaRotationsBeforeBroken = 0.02;
     private final double m_winchSpoolDiameterMeters = 0.01; // (1 centimeter)
     private final double m_winchTotalStringLenMeters = 5;
@@ -38,11 +38,23 @@ public class ArmSimulationTest {
     public void CreateArmSimulationShouldSucceed() {
       ArmSimulation tempArmSimulation = new ArmSimulation(
         m_winchSimulation,
-        m_armTopAngleRotations,
-        m_armBottomAngleRotations,
+        m_armTopRotationsLimit,
+        m_armBottomRotationsLimit,
         m_armDeltaRotationsBeforeBroken);
 
       assertTrue(tempArmSimulation != null);
     }
+
+    @Test
+    public void NullWinchSimShouldThrowException() {
+      assertThrows(IllegalArgumentException.class, () -> {
+        ArmSimulation tempArmSimulation = new ArmSimulation(
+          null,
+          m_armTopRotationsLimit,
+          m_armBottomRotationsLimit,
+          m_armDeltaRotationsBeforeBroken);
+      });
+    }
+
 }
 
