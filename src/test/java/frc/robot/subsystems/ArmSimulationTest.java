@@ -56,5 +56,48 @@ public class ArmSimulationTest {
       });
     }
 
+    @Test
+    public void BottomLimitMinusDeltaLessThanZeroShouldThrowException() {
+      assertThrows(IllegalArgumentException.class, () -> {
+        ArmSimulation tempArmSimulation = new ArmSimulation(
+          m_winchSimulation,
+          m_armTopRotationsLimit,
+          0.01,
+          0.02);
+      });
+    }
+
+    @Test
+    public void TopLimitPlusDeltaGreaterThanOneShouldThrowException() {
+      assertThrows(IllegalArgumentException.class, () -> {
+        ArmSimulation tempArmSimulation = new ArmSimulation(
+          m_winchSimulation,
+          0.99,
+          m_armBottomRotationsLimit,
+          0.02);
+      });
+    }
+
+    @Test
+    public void BottomLimitMinusDeltaEqualToZeroShouldSucceed() {
+      ArmSimulation tempArmSimulation = new ArmSimulation(
+        m_winchSimulation,
+        m_armTopRotationsLimit,
+        0.01,
+        0.01);
+
+      assertTrue(tempArmSimulation != null);
+    }
+
+    @Test
+    public void TopLimitPlusDeltaEqualToOneShouldSucceed() {
+      ArmSimulation tempArmSimulation = new ArmSimulation(
+        m_winchSimulation,
+        0.99,
+        m_armBottomRotationsLimit,
+        0.01);
+
+      assertTrue(tempArmSimulation != null);
+    }
 }
 
