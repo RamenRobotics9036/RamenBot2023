@@ -2,44 +2,44 @@ package frc.robot.Simulation;
 
 public class ArmSimulation {
   private WinchSimulation m_winchSimulation;
-  private double m_topAngleDegrees;
-  private double m_bottomAngleDegrees;
-  private double m_deltaDegreesBeforeBroken;
+  private double m_topAngleRotations;
+  private double m_bottomAngleRotations;
+  private double m_deltaRotationsBeforeBroken;
 
   // Constructor
   public ArmSimulation(
     WinchSimulation winchSimulation,
-    double topAngleDegrees,
-    double bottomAngleDegrees,
-    double deltaDegreesBeforeBroken) {
+    double topAngleRotations,
+    double bottomAngleRotations,
+    double deltaRotationsBeforeBroken) {
 
     if (winchSimulation == null) {
       throw new IllegalArgumentException("winchSimulation");
     }
 
-    if (bottomAngleDegrees > 360 || bottomAngleDegrees < 0 || topAngleDegrees > 360 || topAngleDegrees < 0) {
-      throw new IllegalArgumentException("bottomAngleDegrees and topAngleDegrees must be <=360");
+    if (bottomAngleRotations > 1 || bottomAngleRotations < 0 || topAngleRotations > 1 || topAngleRotations < 0) {
+      throw new IllegalArgumentException("bottomAngleRotations and topAngleRotations must be <=1");
     }
 
-    if (deltaDegreesBeforeBroken > 360 || deltaDegreesBeforeBroken < 0) {
-      throw new IllegalArgumentException("deltaDegreesBeforeBroken must be <=360");
+    if (deltaRotationsBeforeBroken > 1 || deltaRotationsBeforeBroken < 0) {
+      throw new IllegalArgumentException("deltaRotationsBeforeBroken must be <=1");
     }
 
-    if (topAngleDegrees <= bottomAngleDegrees) {
-      throw new IllegalArgumentException("topAngleDegrees must be greater than bottomAngleDegrees");
+    if (topAngleRotations <= bottomAngleRotations) {
+      throw new IllegalArgumentException("topAngleRotations must be greater than bottomAngleRotations");
     }
 
-    if (topAngleDegrees + deltaDegreesBeforeBroken > 360) {
-      throw new IllegalArgumentException("topAngleDegrees + deltaDegreesBeforeBroken must be <=360");
+    if (topAngleRotations + deltaRotationsBeforeBroken > 1) {
+      throw new IllegalArgumentException("topAngleRotations + deltaRotationsBeforeBroken must be <=1");
     }
 
-    if (bottomAngleDegrees - deltaDegreesBeforeBroken < 0) {
-      throw new IllegalArgumentException("bottomAngleDegrees - deltaDegreesBeforeBroken must be >= 0");
+    if (bottomAngleRotations - deltaRotationsBeforeBroken < 0) {
+      throw new IllegalArgumentException("bottomAngleRotations - deltaRotationsBeforeBroken must be >= 0");
     }
 
     m_winchSimulation = winchSimulation;
-    m_topAngleDegrees = topAngleDegrees;
-    m_bottomAngleDegrees = bottomAngleDegrees;
-    m_deltaDegreesBeforeBroken = deltaDegreesBeforeBroken;
+    m_topAngleRotations = topAngleRotations;
+    m_bottomAngleRotations = bottomAngleRotations;
+    m_deltaRotationsBeforeBroken = deltaRotationsBeforeBroken;
   }
 }
