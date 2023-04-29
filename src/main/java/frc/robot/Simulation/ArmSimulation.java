@@ -5,13 +5,15 @@ public class ArmSimulation {
   private double m_topRotationsLimit;
   private double m_bottomRotationsLimit;
   private double m_deltaRotationsBeforeBroken;
+  private double m_grabberBreaksIfOpenBelowThisLimit;
 
   // Constructor
   public ArmSimulation(
     WinchSimulation winchSimulation,
     double topRotationsLimit,
     double bottomRotationsLimit,
-    double deltaRotationsBeforeBroken) {
+    double deltaRotationsBeforeBroken,
+    double grabberBreaksIfOpenBelowThisLimit) {
 
     if (winchSimulation == null) {
       throw new IllegalArgumentException("winchSimulation");
@@ -37,9 +39,15 @@ public class ArmSimulation {
       throw new IllegalArgumentException("bottomRotationsLimit - deltaRotationsBeforeBroken must be >= 0");
     }
 
+    if (grabberBreaksIfOpenBelowThisLimit <= bottomRotationsLimit || grabberBreaksIfOpenBelowThisLimit >= topRotationsLimit) {
+      throw new IllegalArgumentException("grabberBreaksIfOpenBelowThisLimit must be between bottomRotationsLimit and topRotationsLimit");
+    }
+
     m_winchSimulation = winchSimulation;
     m_topRotationsLimit = topRotationsLimit;
     m_bottomRotationsLimit = bottomRotationsLimit;
     m_deltaRotationsBeforeBroken = deltaRotationsBeforeBroken;
+    m_grabberBreaksIfOpenBelowThisLimit = grabberBreaksIfOpenBelowThisLimit;
   }
 }
+

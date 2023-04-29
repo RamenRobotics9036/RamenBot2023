@@ -12,6 +12,7 @@ public class ArmSimulationTest {
     private final double m_armTopRotationsLimit = 0.78;
     private final double m_armBottomRotationsLimit = 0.56;
     private final double m_armDeltaRotationsBeforeBroken = 0.02;
+    private final double m_grabberBreaksIfOpenBelowThisLimit = 0.60;
     private final double m_winchSpoolDiameterMeters = 0.01; // (1 centimeter)
     private final double m_winchTotalStringLenMeters = 5;
     private final double m_winchInitialLenSpooled = 1;
@@ -40,7 +41,8 @@ public class ArmSimulationTest {
         m_winchSimulation,
         m_armTopRotationsLimit,
         m_armBottomRotationsLimit,
-        m_armDeltaRotationsBeforeBroken);
+        m_armDeltaRotationsBeforeBroken,
+        m_grabberBreaksIfOpenBelowThisLimit);
 
       assertTrue(tempArmSimulation != null);
     }
@@ -52,7 +54,8 @@ public class ArmSimulationTest {
           null,
           m_armTopRotationsLimit,
           m_armBottomRotationsLimit,
-          m_armDeltaRotationsBeforeBroken);
+          m_armDeltaRotationsBeforeBroken,
+          m_grabberBreaksIfOpenBelowThisLimit);
       });
     }
 
@@ -63,7 +66,8 @@ public class ArmSimulationTest {
           m_winchSimulation,
           m_armTopRotationsLimit,
           0.01,
-          0.02);
+          0.02,
+          m_grabberBreaksIfOpenBelowThisLimit);
       });
     }
 
@@ -74,7 +78,8 @@ public class ArmSimulationTest {
           m_winchSimulation,
           0.99,
           m_armBottomRotationsLimit,
-          0.02);
+          0.02,
+          m_grabberBreaksIfOpenBelowThisLimit);
       });
     }
 
@@ -84,7 +89,8 @@ public class ArmSimulationTest {
         m_winchSimulation,
         m_armTopRotationsLimit,
         0.01,
-        0.01);
+        0.01,
+        m_grabberBreaksIfOpenBelowThisLimit);
 
       assertTrue(tempArmSimulation != null);
     }
@@ -95,7 +101,8 @@ public class ArmSimulationTest {
         m_winchSimulation,
         0.99,
         m_armBottomRotationsLimit,
-        0.01);
+        0.01,
+        m_grabberBreaksIfOpenBelowThisLimit);
 
       assertTrue(tempArmSimulation != null);
     }
