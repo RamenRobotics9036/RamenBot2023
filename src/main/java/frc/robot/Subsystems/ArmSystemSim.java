@@ -2,6 +2,7 @@ package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -113,38 +114,45 @@ public class ArmSystemSim extends ArmSystem {
       .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
   }
 
+  private boolean isRobotEnabled() {
+    return RobotState.isEnabled();
+  }
+
   @Override
   public void periodic() {
       super.periodic();
 
-      // $TODO - The entire simulation should freeze during disabled
-      m_WinchSimulation.periodic();
+      // When Robot is disabled, the entire simulation freezes
+      if (isRobotEnabled()) {      
+        m_WinchSimulation.periodic();
+      }
   }
 
   @Override
   public void simulationPeriodic() {
     super.simulationPeriodic();
 
-    // $TODO - The entire simulation should freeze during disabled
+    // When Robot is disabled, the entire simulation freezes
+    if (isRobotEnabled()) {
+      // Get the motor controller output percentage
+      m_winchMotorOutputPercentage = m_armWinch.get();
 
-    // Get the motor controller output percentage
-    m_winchMotorOutputPercentage = m_armWinch.get();
+      // Calculate the input voltage for the motor
+      double inputVoltageVolts = m_winchMotorOutputPercentage * 12.0;
+      
+      // Update the motor simulation
+      m_motorSim.setInput(inputVoltageVolts);
+      m_motorSim.update(0.02);
 
-    // Calculate the input voltage for the motor
-    double inputVoltageVolts = m_winchMotorOutputPercentage * 12.0;
-    
-    // Update the motor simulation
-    m_motorSim.setInput(inputVoltageVolts);
-    m_motorSim.update(0.02);
+      // Update the Encoder based on the simulation - the units are "number of rotations"
+      double motorRotations = m_motorSim.getAngularPositionRotations();
+      m_winchEncoderSim.setPosition(motorRotations);
 
-    // Update the Encoder based on the simulation - the units are "number of rotations"
-    double motorRotations = m_motorSim.getAngularPositionRotations();
-    m_winchEncoderSim.setPosition(motorRotations);
+      //System.out.println("Input volts:           " + inputVoltageVolts);
+      //System.out.println("Winch motor rotations: " + motorRotations);
 
-    //System.out.println("Input volts:           " + inputVoltageVolts);
-    //System.out.println("Winch motor rotations: " + motorRotations);
-
-    m_WinchSimulation.simulationPeriodic();
+      m_WinchSimulation.simulationPeriodic();
+    }
   }
 }
 
