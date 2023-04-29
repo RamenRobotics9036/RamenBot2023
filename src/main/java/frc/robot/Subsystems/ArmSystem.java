@@ -24,13 +24,13 @@ public class ArmSystem extends SubsystemBase{
     private double maxOutputWinch;
     private DigitalInput sensor = new DigitalInput(Constants.OperatorConstants.kHallEffectExtenderChannel);
 
-    private CANSparkMax m_armWinch;
+    protected CANSparkMax m_armWinch;
     private CANSparkMax m_armExtender;
 
-    private RelativeEncoder m_winchEncoder;
+    protected RelativeEncoder m_winchEncoder;
     private RelativeEncoder m_extenderEncoder;
 
-    private DutyCycleEncoder m_winchAbsoluteEncoder;
+    protected DutyCycleEncoder m_winchAbsoluteEncoder;
 
     public ArmSystem(int armWinchChannel, int armExtenderChannel, XboxController m_controller, double m_deadband, boolean squareInputs, double maxOutputWinch) {
         m_armWinch = new CANSparkMax(armWinchChannel, MotorType.kBrushless);

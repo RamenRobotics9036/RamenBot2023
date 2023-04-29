@@ -19,6 +19,7 @@ import frc.robot.Subsystems.ArmSystem;
 import frc.robot.Subsystems.GrabberSystem;
 import frc.robot.Subsystems.TankDriveSystem;
 import frc.robot.Subsystems.TankDriveSystemSim;
+import frc.robot.Subsystems.ArmSystemSim;
 
 
 /**
@@ -46,7 +47,7 @@ public class RobotContainer {
     Constants.OperatorConstants.kTurboSlew
   );
 
-  public final ArmSystem m_armSystem = new ArmSystem(
+  public final ArmSystem m_armSystem = ArmSystemSim.CreateArmSystemInstance(
     Constants.OperatorConstants.kArmWinchChannel,
     Constants.OperatorConstants.kArmExtenderChannel,
     m_controller2,
