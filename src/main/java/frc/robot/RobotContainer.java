@@ -18,6 +18,8 @@ import frc.robot.Commands.RetractArmCommand;
 import frc.robot.Subsystems.ArmSystem;
 import frc.robot.Subsystems.GrabberSystem;
 import frc.robot.Subsystems.TankDriveSystem;
+import frc.robot.Subsystems.TankDriveSystemSim;
+import frc.robot.Subsystems.ArmSystemSim;
 
 
 /**
@@ -30,7 +32,7 @@ public class RobotContainer {
   public final XboxController m_controller1 = new XboxController(Constants.OperatorConstants.kDriverControllerPort1);
   public final XboxController m_controller2 = new XboxController(Constants.OperatorConstants.kDriverControllerPort2);
 
-  public final TankDriveSystem m_driveSystem = TankDriveSystem.CreateTankDriveSystemInstance(
+  public final TankDriveSystem m_driveSystem = TankDriveSystemSim.CreateTankDriveSystemInstance(
     Constants.OperatorConstants.kLeftMotorBackChannel,
     Constants.OperatorConstants.kLeftMotorForwardChannel,
     Constants.OperatorConstants.kRightMotorBackChannel,
@@ -45,7 +47,7 @@ public class RobotContainer {
     Constants.OperatorConstants.kTurboSlew
   );
 
-  public final ArmSystem m_armSystem = new ArmSystem(
+  public final ArmSystem m_armSystem = ArmSystemSim.CreateArmSystemInstance(
     Constants.OperatorConstants.kArmWinchChannel,
     Constants.OperatorConstants.kArmExtenderChannel,
     m_controller2,
@@ -62,6 +64,12 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    // Configure default command for Drive Subsystem.  We want there to ALWAYS be a motor signal sent, even
+    // in autonomous mode.  If we didn't send a motor signal EVERY 20ms, then Slew would prevent
+    // the robot from ever stopping fully in some cases.  And also, the motor watchdog would trip
+    m_driveSystem.setDefaultCommand(
+        m_driveSystem.getDefaultDriveCommand());
+
     // CameraServer.startAutomaticCapture();
   }
 

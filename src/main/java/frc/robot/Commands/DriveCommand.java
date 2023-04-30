@@ -18,12 +18,12 @@ public class DriveCommand extends CommandBase{
         this.wheelCircumference = wheelCircumference;
 
         this.m_drive = m_drive;
-        m_drive.resetEncoders();
         addRequirements(m_drive);
     }
 
     @Override
     public void initialize() {
+        m_drive.resetEncoders();
     }
 
     @Override

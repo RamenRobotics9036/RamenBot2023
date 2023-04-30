@@ -6,7 +6,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
@@ -46,30 +45,9 @@ public class TankDriveSystem extends SubsystemBase {
     private final Pigeon2 m_gyro = new Pigeon2(7);
     private double m_prevRate = 0;
 
-    public static TankDriveSystem CreateTankDriveSystemInstance(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
-      int rightMotorForwardChannel, XboxController controller, boolean squareInputs,
-      double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters,
-      double slewLimit, double turboSlew)
-    {
-      TankDriveSystem result;
+    protected double m_wheelDiameterMeters;
+    protected double m_gearBoxRatio;
 
-      result = new TankDriveSystem(
-        Constants.OperatorConstants.kLeftMotorBackChannel,
-        Constants.OperatorConstants.kLeftMotorForwardChannel,
-        Constants.OperatorConstants.kRightMotorBackChannel,
-        Constants.OperatorConstants.kRightMotorForwardChannel,
-        controller,
-        Constants.OperatorConstants.kSquareInputsDrive,
-        Constants.OperatorConstants.kMaxOutputDrive,
-        Constants.OperatorConstants.kDeadband,
-        Constants.OperatorConstants.kGearBoxRatioDrive,
-        Constants.OperatorConstants.kWheelDiameterMetersDrive,
-        Constants.OperatorConstants.kSlewLimit,
-        Constants.OperatorConstants.kTurboSlew
-      );
-
-      return result;
-    }
 
     // Constructor
     public TankDriveSystem(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
@@ -77,6 +55,9 @@ public class TankDriveSystem extends SubsystemBase {
       double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters,
       double slewLimit, double turboSlew)
     {
+        m_gearBoxRatio = gearBoxRatio;
+        m_wheelDiameterMeters = wheelDiameterMeters;
+    
         m_leftMotor1 = new CANSparkMax(leftMotorBackChannel, MotorType.kBrushless);
         m_leftMotor2 = new CANSparkMax(leftMotorForwardChannel, MotorType.kBrushless);
         m_rightMotor1 = new CANSparkMax(rightMotorForwardChannel, MotorType.kBrushless);
@@ -128,14 +109,15 @@ public class TankDriveSystem extends SubsystemBase {
     public boolean getCondition() {
         return true;
     }
-
-    @Override
-    public void periodic() {
-        if (!RobotState.isAutonomous()) {
-          ProcessJoystickInput();
-        }
+    
+    public CommandBase getDefaultDriveCommand() {
+        return run(
+           () -> {
+                //System.out.println("DRIVECOMMAND");
+                ProcessJoystickInput();
+           }
+        );
     }
-
     public void resetEncoders() {
         m_leftEncoder.setPosition(0);
         m_rightEncoder.setPosition(0);
@@ -150,12 +132,15 @@ public class TankDriveSystem extends SubsystemBase {
     }
 
     public double getAverageEncoderPosition() {
-        return (Math.abs(m_leftEncoder.getPosition()) + Math.abs(m_rightEncoder.getPosition())) / 2;
+        return (Math.abs(getLeftEncoder()) + Math.abs(getRightEncoder())) / 2;
     }
 
-    public void ProcessJoystickInput() {    
-      double leftAxis = m_controller.getLeftY();
-      double rightAxis = m_controller.getRightY();
+    public void ProcessJoystickInput() {
+      // In autonomous, the default command is to tell the robot to STOP.  Recall
+      // that we have to send a voltage-level to the motors EVERY 20ms, otherwise
+      // the watchdog trips
+      double leftAxis = RobotState.isAutonomous() ? 0 : m_controller.getLeftY();
+      double rightAxis = RobotState.isAutonomous() ? 0 : m_controller.getRightY();
       
       double xSpeed = (m_controller.getLeftY() + m_controller.getRightY()) / 2;
       double zRotation = (m_controller.getLeftY() - m_controller.getRightY()) / 2;
@@ -192,6 +177,7 @@ public class TankDriveSystem extends SubsystemBase {
     public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
       m_drive.arcadeDrive(xSpeed, zRotation, squareInputs);
     }
+
     public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
         m_drive.tankDrive(leftSpeed, rightSpeed, squareInputs);
     }
