@@ -5,8 +5,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import java.util.Map;
 
-// $TODO - Remember not to run the simulation during Robot disabled state
-// $TODO - Remember that we update the ShuffleBoard in RobotPeriodic, not SimulationPeriodic
 //
 // Basic idea of the winch string:
 // |-----------------( )-----------------|
