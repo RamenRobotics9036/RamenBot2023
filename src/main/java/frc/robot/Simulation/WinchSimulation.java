@@ -75,6 +75,7 @@ public class WinchSimulation {
     // Take a snapshot of current DCMotor position
     m_initialMotorRotations = m_motorEncoderSim.getPosition();
 
+    // Call this to initialize m_currentLenSpooled
     UpdateNewLenSpooled();
   }
 

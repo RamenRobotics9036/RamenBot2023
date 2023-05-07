@@ -34,7 +34,7 @@ public class ArmSystem extends SubsystemBase{
 
     public ArmSystem(int armWinchChannel, int armExtenderChannel, XboxController m_controller, double m_deadband, boolean squareInputs, double maxOutputWinch) {
         m_armWinch = new CANSparkMax(armWinchChannel, MotorType.kBrushless);
-        m_armWinch.setSmartCurrentLimit(20);
+        m_armWinch.setSmartCurrentLimit(20); // $TODO - For simulation, test that smart limits actually work when I set a value on SparkMax
         m_armExtender = new CANSparkMax(armExtenderChannel, MotorType.kBrushless);
         m_armExtender.setSmartCurrentLimit(20);
         m_armExtender.setInverted(false);

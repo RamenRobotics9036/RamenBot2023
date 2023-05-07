@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class WinchSimulationTest {
     private final double m_SpoolDiameterMeters = 0.01; // (1 centimeter)
-    private final double m_TotalStringLenMeters = 5;
+    private final double m_TotalStringLenMeters = 5; 
     private final double m_InitialLenSpooled = 1;
     private final StringOrientation m_InitialStringOrientation = StringOrientation.BackOfRobot;
     private final boolean m_invertMotor = false;
