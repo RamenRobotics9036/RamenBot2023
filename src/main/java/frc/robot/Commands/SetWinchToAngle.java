@@ -25,7 +25,7 @@ public class SetWinchToAngle extends CommandBase {
             inverse = -1;
             System.out.println("inversed");
         }
-        else if (m_armSystem.getWinchAbsoluteEncoder() < angle){
+        else {
             inverse = 1;
             System.out.println("not inversed");
         }

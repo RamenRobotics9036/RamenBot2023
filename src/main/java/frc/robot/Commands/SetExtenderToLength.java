@@ -1,4 +1,4 @@
-package frc.robot.Commands;
+ package frc.robot.Commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -25,7 +25,7 @@ public class SetExtenderToLength extends CommandBase {
             inverse = -1;
             System.out.println("inversed");
         }
-        else if (m_armSystem.getExtenderEncoder() < rotations){
+        else {
             inverse = 1;
             System.out.println("not inversed");
         }

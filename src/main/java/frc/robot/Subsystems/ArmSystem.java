@@ -157,15 +157,6 @@ public class ArmSystem extends SubsystemBase{
     
     @Override
     public void simulationPeriodic() {
-        if (!(getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit | getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit)) {
-            double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
-            double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
-            winchOutput = winchOutput * Math.abs(winchOutput);
-            extenderOutput = extenderOutput * Math.abs(extenderOutput);
-    
-            setWinchSpeed(winchOutput * maxOutputWinch);
-            setExtenderSpeed(extenderOutput);
-        }
     }
 
     public void resetEncoders() {
