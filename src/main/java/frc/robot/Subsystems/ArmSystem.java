@@ -36,7 +36,7 @@ public class ArmSystem extends SubsystemBase{
         m_armWinch = new CANSparkMax(armWinchChannel, MotorType.kBrushless);
         m_armWinch.setSmartCurrentLimit(20); // $TODO - For simulation, test that smart limits actually work when I set a value on SparkMax
         m_armExtender = new CANSparkMax(armExtenderChannel, MotorType.kBrushless);
-        m_armExtender.setSmartCurrentLimit(20);
+        m_armExtender.setSmartCurrentLimit(20); // $TODO - For simulation, test that smart limits actually work when I set a value on SparkMax
         m_armExtender.setInverted(false);
         m_winchEncoder = m_armWinch.getEncoder();
         m_extenderEncoder = m_armExtender.getEncoder();
@@ -141,7 +141,7 @@ public class ArmSystem extends SubsystemBase{
                 setWinchSpeed(winchOutput * maxOutputWinch);
             }
 
-            if (getExtenderEncoder() <= Constants.OperatorConstants.kExtenderSoftLimitTurns && extenderOutput < 0) {
+            if (getExtenderEncoder() <= Constants.OperatorConstants.kExtenderSoftLimitTurns && extenderOutput < 0) { // $TODO - For simulation, test that smart limits actually work when I set a value on SparkMax
                 m_armExtender.set(0);
             } else if (getExtenderEncoder() > 0 && extenderOutput > 0) {
                 m_armExtender.set(0);
@@ -204,8 +204,8 @@ public class ArmSystem extends SubsystemBase{
     }
 
     public void setSoftLimit() {
-        m_armExtender.enableSoftLimit(SoftLimitDirection.kForward, false);
-        m_armExtender.enableSoftLimit(SoftLimitDirection.kReverse, false);
+        m_armExtender.enableSoftLimit(SoftLimitDirection.kForward, false); // $TODO - For simulation, test that smart limits actually work when I set a value on SparkMax
+        m_armExtender.enableSoftLimit(SoftLimitDirection.kReverse, false); // $TODO - For simulation, test that smart limits actually work when I set a value on SparkMax
         resetExtenderEncoder();
     }
 
