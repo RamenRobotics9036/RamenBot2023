@@ -100,8 +100,7 @@ public final class Constants {
     public static double kdeltaRotationsBeforeBroken = 0;
     public static double kgrabberBreaksIfOpenBelowThisLimit = 0.60;
 
-    // We use the same constants for upper and lower limits as physical arm:
-    //  kWinchEncoderUpperLimit = 0.78;
-    //  kWinchEncoderLowerLimit = 0.56;
+    // Grabber
+    public static boolean kgrabberInitiallyOpened = false;
   }
 }

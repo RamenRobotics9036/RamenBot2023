@@ -17,6 +17,7 @@ import frc.robot.Commands.SetSoftLimitCommand;
 import frc.robot.Commands.RetractArmCommand;
 import frc.robot.Subsystems.ArmSystem;
 import frc.robot.Subsystems.GrabberSystem;
+import frc.robot.Subsystems.GrabberSystemSim;
 import frc.robot.Subsystems.TankDriveSystem;
 import frc.robot.Subsystems.TankDriveSystemSim;
 import frc.robot.Subsystems.ArmSystemSim;
@@ -56,11 +57,11 @@ public class RobotContainer {
     Constants.OperatorConstants.kMaxOutputWinch
   );
 
-  public final GrabberSystem m_grabSystem = new GrabberSystem(
+  public final GrabberSystem m_grabSystem = GrabberSystemSim.CreateGrabberSystemInstance(
     Constants.OperatorConstants.kGrabberForwardChannel,
     Constants.OperatorConstants.kGrabberBackwardChannel,
     m_controller2
-    );
+  );
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
