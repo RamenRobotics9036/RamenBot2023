@@ -13,6 +13,16 @@ import frc.robot.Constants;
  */
 
 public class CalcArmAngle {
+  public class Result {
+    public final boolean m_isValid;
+    public final double m_value;
+
+    public Result(boolean isValid, double value) {
+      this.m_isValid = isValid;
+      this.m_value = value;
+    }
+  }
+
   private double m_heightFromWinchToPivotPoint;
   private double m_armLengthFromEdgeToPivot;
 
@@ -45,44 +55,42 @@ public class CalcArmAngle {
   }
 
   // Returns a value between 0-360
-  // Returns -1 if invalid string length
-  public double GetDegreesForStringLength(double stringLen) {
+  public Result GetDegreesForStringLength(double stringLen) {
     double backOfArmHeightAbovePivot = stringLen - m_heightFromWinchToPivotPoint;
 
     // Is arm beyond lowest possible point?
     if (backOfArmHeightAbovePivot > m_armLengthFromEdgeToPivot) {
       System.out.println("Below lowest point: String too long!");      
-      return -1;
+      return new Result(false, 360 - 90);
     }
 
     // Is arm beyond highest possible point?
     if (backOfArmHeightAbovePivot < -1 * m_armLengthFromEdgeToPivot) {
       System.out.println("Above highest point: String too short!");
-      return -1;
+      return new Result(false, 90);
     }
 
     // Level arm?
     if (backOfArmHeightAbovePivot == 0) {
-      return 0;
+      return new Result(true, 0);
     }
     else if (backOfArmHeightAbovePivot > 0) {
-      return 360 - RightTriangleAngleGivenHeight(m_armLengthFromEdgeToPivot, backOfArmHeightAbovePivot);
+      return new Result(true, 360 - RightTriangleAngleGivenHeight(m_armLengthFromEdgeToPivot, backOfArmHeightAbovePivot));
     }
     else {
-      return RightTriangleAngleGivenHeight(m_armLengthFromEdgeToPivot, Math.abs(backOfArmHeightAbovePivot));
+      return new Result(true, RightTriangleAngleGivenHeight(m_armLengthFromEdgeToPivot, Math.abs(backOfArmHeightAbovePivot)));
     }
   }
 
-  public double GetRotationsForStringLength(double stringLen) {
-    double result;
+  public Result GetRotationsForStringLength(double stringLen) {
+    Result resultPair;
 
-    result =  GetDegreesForStringLength(stringLen);
-    if (result == -1) {
-      return -1;
+    resultPair =  GetDegreesForStringLength(stringLen);
+    if (!resultPair.m_isValid) {
+      return new Result(false, Units.degreesToRotations(resultPair.m_value));
     }
     else {  
-      return Units.degreesToRotations(result);
+      return new Result(true, Units.degreesToRotations(resultPair.m_value));
     }
   }
 }
-

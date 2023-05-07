@@ -98,9 +98,9 @@ public class ArmSimulationTest {
       });
     }
 
-  public void CreateWithNDegreeArm_Helper(double backArmAbovePivot, double expectedDegrees, boolean expectArmBroken) {
-    double lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
-    double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
+    public void CreateWithNDegreeArm_Helper(double backArmAbovePivot, double expectedDegrees, boolean expectArmBroken) {
+      double lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
+      double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
     WinchSimulation tempwinchSimulation = new WinchSimulation(
       m_winchRelEncoderSim,
@@ -122,16 +122,16 @@ public class ArmSimulationTest {
       m_armLengthFromEdgeToPivot_Min,
       m_encoderPositionOffsetRotations);
 
-      assertTrue(tempArmSimulation != null);
-      assertTrue(!tempwinchSimulation.GetIsBroken());
+    assertTrue(tempArmSimulation != null);
+    assertTrue(!tempwinchSimulation.GetIsBroken());
 
-      if (expectArmBroken) {
-        assertTrue(tempArmSimulation.GetIsBroken());
-      }
-      else {
-        assertTrue(!tempArmSimulation.GetIsBroken()); 
-        assertEquals(m_winchAbsoluteEncoder.get() * 360, expectedDegrees, toleranceDegrees);
-      }
+    if (expectArmBroken) {
+      assertTrue(tempArmSimulation.GetIsBroken());
+    }
+    else {
+      assertTrue(!tempArmSimulation.GetIsBroken()); 
+      assertEquals(m_winchAbsoluteEncoder.get() * 360, expectedDegrees, toleranceDegrees);
+    }
   }
 
 
@@ -164,15 +164,34 @@ public class ArmSimulationTest {
   public void CreateWith91DegreeArmShouldFail() {
     double amountBeyondLimit = 0.0001;
 
-    CreateWithNDegreeArm_Helper(-0.5 - amountBeyondLimit, 91, true);
+    CreateWithNDegreeArm_Helper(-0.5 - amountBeyondLimit, 90, true);
   }
 
   @Test
   public void CreateWithNegative91DegreeArmShouldFail() {
     double amountBeyondLimit = 0.0001;
 
-    CreateWithNDegreeArm_Helper(0.5 + amountBeyondLimit, 360 - 91, true);
+    CreateWithNDegreeArm_Helper(0.5 + amountBeyondLimit, 360 - 90, true);
   }
+
+
+  @Test
+  public void CreateWith98DegreeArmShouldFail() {
+    double amountBeyondLimit = 0.1;
+
+    CreateWithNDegreeArm_Helper(-0.5 - amountBeyondLimit, 90, true);
+  }
+
+  @Test
+  public void CreateWithNegative98DegreeArmShouldFail() {
+    double amountBeyondLimit = 0.1;
+
+    CreateWithNDegreeArm_Helper(0.5 + amountBeyondLimit, 360 - 90, true);
+  }
+
+
+
+
 
   @Test
   public void CreateWithNegative45DegreeArmShouldSucceed() {
@@ -295,4 +314,40 @@ public class ArmSimulationTest {
       double expected = -10;
       assertEquals(expected, ArmSimulation.toSignedDegrees(input), 0.001);
   }
+
+  @Test
+  void toUnSignedDegreesTestToUnsignedDegrees_Positive() {
+      double signedDegrees = 45;
+      double expectedUnsignedDegrees = 45;
+      assertEquals(expectedUnsignedDegrees, ArmSimulation.toUnsignedDegrees(signedDegrees), 0.001);
+  }
+
+  @Test
+  void toUnSignedDegreesTestToUnsignedDegrees_Negative() {
+      double signedDegrees = -45;
+      double expectedUnsignedDegrees = 315;
+      assertEquals(expectedUnsignedDegrees, ArmSimulation.toUnsignedDegrees(signedDegrees), 0.001);
+  }
+
+  @Test
+  void toUnSignedDegreesTestToUnsignedDegrees_GreaterThan360() {
+      double signedDegrees = 361;
+      double expectedUnsignedDegrees = 1;
+      assertEquals(expectedUnsignedDegrees, ArmSimulation.toUnsignedDegrees(signedDegrees), 0.001);
+  }
+
+  @Test
+  void toUnSignedDegreesTestToUnsignedDegrees_LessThanNegative360() {
+      double signedDegrees = -361;
+      double expectedUnsignedDegrees = 359;
+      assertEquals(expectedUnsignedDegrees, ArmSimulation.toUnsignedDegrees(signedDegrees), 0.001);
+  }
+
+  @Test
+  void toUnSignedDegreesTestToUnsignedDegrees_MultipleOf360() {
+      double signedDegrees = 720;
+      double expectedUnsignedDegrees = 0;
+      assertEquals(expectedUnsignedDegrees, ArmSimulation.toUnsignedDegrees(signedDegrees), 0.001);
+  }
 }
+

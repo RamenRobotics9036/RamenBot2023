@@ -25,9 +25,11 @@ public class CalcArmAngleTest {
       double amountBeyondLimit = 0.0001;
 
       double stringLen = (m_armHeightFromWinchToPivotPoint - m_armLengthFromEdgeToPivot - amountBeyondLimit);
-      double expectedResult = -1;
+      double expectedResult = 90;
 
-      assertTrue(m_calcArmAngle.GetDegreesForStringLength(stringLen) == expectedResult);
+      CalcArmAngle.Result resultPair = m_calcArmAngle.GetDegreesForStringLength(stringLen);
+      assertTrue(!resultPair.m_isValid);
+      assertTrue(resultPair.m_value == expectedResult);
     }
 
     @Test
@@ -35,9 +37,11 @@ public class CalcArmAngleTest {
       double amountBeyondLimit = 0.0001;
 
       double stringLen = (m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot + amountBeyondLimit);
-      double expectedResult = -1;
+      double expectedResult = 270;
     
-      assertTrue(m_calcArmAngle.GetDegreesForStringLength(stringLen) == expectedResult);
+      CalcArmAngle.Result resultPair = m_calcArmAngle.GetDegreesForStringLength(stringLen);
+      assertTrue(!resultPair.m_isValid);
+      assertTrue(resultPair.m_value == expectedResult);
     }
 
     @Test
@@ -45,7 +49,7 @@ public class CalcArmAngleTest {
       double stringLen = (m_armHeightFromWinchToPivotPoint - m_armLengthFromEdgeToPivot);
       double expectedResult = 90;
     
-      assertEquals(m_calcArmAngle.GetDegreesForStringLength(stringLen), expectedResult, toleranceDegrees);
+      assertEquals(m_calcArmAngle.GetDegreesForStringLength(stringLen).m_value, expectedResult, toleranceDegrees);
     }
     
     @Test
@@ -53,7 +57,7 @@ public class CalcArmAngleTest {
       double stringLen = m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot;
       double expectedResult = 270;
     
-      assertEquals(m_calcArmAngle.GetDegreesForStringLength(stringLen), expectedResult, toleranceDegrees);
+      assertEquals(m_calcArmAngle.GetDegreesForStringLength(stringLen).m_value, expectedResult, toleranceDegrees);
     }
 
     @Test
@@ -61,7 +65,7 @@ public class CalcArmAngleTest {
       double stringLen = m_armHeightFromWinchToPivotPoint;
       double expectedResult = 0;
     
-      assertEquals(m_calcArmAngle.GetDegreesForStringLength(stringLen), expectedResult, toleranceDegrees);
+      assertEquals(m_calcArmAngle.GetDegreesForStringLength(stringLen).m_value, expectedResult, toleranceDegrees);
     }
 
     @Test
@@ -69,7 +73,7 @@ public class CalcArmAngleTest {
       double stringLen = m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot;
       double expectedResult = 0.75;
     
-      assertEquals(m_calcArmAngle.GetRotationsForStringLength(stringLen), expectedResult, toleranceRotations);
+      assertEquals(m_calcArmAngle.GetRotationsForStringLength(stringLen).m_value, expectedResult, toleranceRotations);
     }
 
     @Test
@@ -77,7 +81,7 @@ public class CalcArmAngleTest {
       double stringLen = (m_armHeightFromWinchToPivotPoint - 0.17678);
       double expectedResult = 45;
 
-      assertEquals(m_calcArmAngle.GetDegreesForStringLength(stringLen), expectedResult, toleranceDegrees);
+      assertEquals(m_calcArmAngle.GetDegreesForStringLength(stringLen).m_value, expectedResult, toleranceDegrees);
     }
 }
 

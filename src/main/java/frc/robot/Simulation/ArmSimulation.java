@@ -99,6 +99,15 @@ public class ArmSimulation {
     return signedDegrees;
   }
 
+  public static double toUnsignedDegrees(double signedDegrees) {
+      double unsignedDegrees = signedDegrees % 360;
+  
+      if (unsignedDegrees < 0) {
+          unsignedDegrees += 360;
+      }
+      return unsignedDegrees;
+  }
+
   public static double toNonOffsetSignedDegrees(double position, double offset) {
     double positionWithoutOffset = OffsetArmRotationPosition(position, -1 * offset);
     double degreesWithoutOffset = positionWithoutOffset * 360;
@@ -111,35 +120,37 @@ public class ArmSimulation {
 
   private void UpdateAbsoluteEncoderPosition()
   {
-    double newStringLen;
-    double newAbsoluteEncoderPosition;
-
     // If the arm is broken, there's nothing to update
     if (m_IsBroken) {
       return;
     }
 
-    newStringLen = m_winchSimulation.GetStringExtendedLen();
-    newAbsoluteEncoderPosition = m_calcArmAngle.GetRotationsForStringLength(newStringLen);
+    double newStringLen = m_winchSimulation.GetStringExtendedLen();
+    CalcArmAngle.Result resultPair = m_calcArmAngle.GetDegreesForStringLength(newStringLen);
+    double newAbsoluteEncoderNonSignedDegrees = resultPair.m_value;
 
     // Check if we got back that string length was invalid
-    if (newAbsoluteEncoderPosition == -1) {
-      System.out.println("ARM: Angle is out of bounds, needs to be between 0 - 90");
+    if (!resultPair.m_isValid) {
+      System.out.println("ARM: Angle is out of bounds, needs to be in right half plane");
       m_IsBroken = true;
-      return;
     }
 
-    if (newAbsoluteEncoderPosition > m_topSignedDegreesLimit) {
+    double newAbsoluteEncoderSignedDegrees = toSignedDegrees(newAbsoluteEncoderNonSignedDegrees);
+
+    if (newAbsoluteEncoderSignedDegrees > m_topSignedDegreesLimit) {
       System.out.println("ARM: Angle is above top limit of " + m_topSignedDegreesLimit);
+      newAbsoluteEncoderSignedDegrees = m_topSignedDegreesLimit;
       m_IsBroken = true;
-      return;
     }
 
-    if (newAbsoluteEncoderPosition < m_bottomSignedDegreesLimit) {
+    if (newAbsoluteEncoderSignedDegrees < m_bottomSignedDegreesLimit) {
       System.out.println("ARM: Angle is below limit of " + m_bottomSignedDegreesLimit);
+      newAbsoluteEncoderSignedDegrees = m_bottomSignedDegreesLimit;
       m_IsBroken = true;
-      return;
     }
+
+    newAbsoluteEncoderNonSignedDegrees = toUnsignedDegrees(newAbsoluteEncoderSignedDegrees);
+    double newAbsoluteEncoderPosition = newAbsoluteEncoderNonSignedDegrees / 360.0;
 
     double newOffsetAbsoluteEncoderPosition = OffsetArmRotationPosition(
       newAbsoluteEncoderPosition,
