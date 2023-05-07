@@ -55,11 +55,6 @@ public class GrabberSystem extends SubsystemBase {
 
     @Override
     public void simulationPeriodic() {
-        if (m_controller.getLeftBumperReleased()) {
-            m_solenoid.set(Value.kForward);
-        } else if (m_controller.getRightBumperReleased()) {
-            m_solenoid.set(Value.kReverse);
-        }
     }
 
     public void toggle() {
