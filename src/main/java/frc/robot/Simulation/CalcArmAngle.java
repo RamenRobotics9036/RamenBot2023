@@ -1,6 +1,7 @@
 package frc.robot.Simulation;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants;
 
 /* We make some simplifying assumptions for the simulation:
  *   1) Hardcoded length of arm, and distance from winch to point that string is attached to arm
@@ -12,11 +13,25 @@ import edu.wpi.first.math.util.Units;
  */
 
 public class CalcArmAngle {
-  public static final double m_armLengthFromEdgeToPivot = 0.1;
-  public static final double m_armHeightFromWinchToPivotPoint = 1.0;
+  private double m_heightFromWinchToPivotPoint;
+  private double m_armLengthFromEdgeToPivot;
 
   // Constructor
-  public CalcArmAngle() {
+  public CalcArmAngle(double heightFromWinchToPivotPoint, double armLengthFromEdgeToPivot ) {
+    if (heightFromWinchToPivotPoint < Constants.SimConstants.karmHeightFromWinchToPivotPoint_Min) {
+      throw new IllegalArgumentException("Height from winch to arm needs to be at least "
+        + Constants.SimConstants.karmHeightFromWinchToPivotPoint_Min
+        + " meters");
+    }
+
+    if (armLengthFromEdgeToPivot < Constants.SimConstants.karmLengthFromEdgeToPivot_Min) {
+      throw new IllegalArgumentException("armLengthFromEdgeToPivot needs to be at least "
+        + Constants.SimConstants.karmLengthFromEdgeToPivot_Min
+        + " meters, otherwise the arm cant be rotated");
+    }
+
+    m_heightFromWinchToPivotPoint = heightFromWinchToPivotPoint;
+    m_armLengthFromEdgeToPivot = armLengthFromEdgeToPivot;
   }
 
   // We are calculating the angle of a right triangle at point (0,0).  We know the length of the hypotenus, and we know
@@ -25,28 +40,29 @@ public class CalcArmAngle {
   //    /  |
   //  /    |
   // -----------
-  private static double RightTriangleAngleGivenHeight(double lenHypotenuse, double height) {
+  private double RightTriangleAngleGivenHeight(double lenHypotenuse, double height) {
     return Math.toDegrees(Math.asin(height / lenHypotenuse));
   }
 
   // Returns a value between 0-360
   // Returns -1 if invalid string length
-  public static double GetDegreesForStringLength(double stringLen) {
-    double backOfArmHeightAbovePivot = stringLen - m_armHeightFromWinchToPivotPoint;
-    double tinyVariance = 0.0000001;
+  public double GetDegreesForStringLength(double stringLen) {
+    double backOfArmHeightAbovePivot = stringLen - m_heightFromWinchToPivotPoint;
 
     // Is arm beyond lowest possible point?
-    if (backOfArmHeightAbovePivot + tinyVariance > m_armLengthFromEdgeToPivot) {
+    if (backOfArmHeightAbovePivot > m_armLengthFromEdgeToPivot) {
+      System.out.println("Below lowest point: String too long!");      
       return -1;
     }
 
     // Is arm beyond highest possible point?
-    if (backOfArmHeightAbovePivot - tinyVariance < -1 * m_armLengthFromEdgeToPivot) {
+    if (backOfArmHeightAbovePivot < -1 * m_armLengthFromEdgeToPivot) {
+      System.out.println("Above highest point: String too short!");
       return -1;
     }
 
     // Level arm?
-    if (Math.abs(backOfArmHeightAbovePivot) < tinyVariance) {
+    if (backOfArmHeightAbovePivot == 0) {
       return 0;
     }
     else if (backOfArmHeightAbovePivot > 0) {
@@ -57,8 +73,16 @@ public class CalcArmAngle {
     }
   }
 
-  public static double GetRotationsForStringLength(double stringLen) {
-    return Units.degreesToRotations(GetDegreesForStringLength(stringLen));
+  public double GetRotationsForStringLength(double stringLen) {
+    double result;
+
+    result =  GetDegreesForStringLength(stringLen);
+    if (result == -1) {
+      return -1;
+    }
+    else {  
+      return Units.degreesToRotations(result);
+    }
   }
 }
 

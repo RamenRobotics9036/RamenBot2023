@@ -1,6 +1,7 @@
 package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -75,32 +76,37 @@ public class ArmSystemSim extends ArmSystem {
     m_motorModel = DCMotor.getNEO(1); // 1 motor in the gearbox
 
     // Create the motor simulation with motor model, gear ratio, and moment of inertia
-    double gearRatio = 20.0; // 20:1 gear reduction // $TODO Move into constants
-    double motorMomentInertia = 0.0005; // $TODO - Move into constants
-    m_motorSim = new DCMotorSim(m_motorModel, gearRatio, motorMomentInertia);
+    double motorMomentInertia = 0.0005;
+    m_motorSim = new DCMotorSim(
+      m_motorModel,
+      Constants.SimConstants.kwinchSimGearRatio,
+      motorMomentInertia);
 
     // Create winch simulated encoder
     m_winchEncoderSim = new RelativeEncoderSim(m_winchEncoder);
 
     m_WinchSimulation = new WinchSimulation(
       m_winchEncoderSim,
-      0.0254, // $TODO Spool diameter, move to constants (1 inch)
-      2,    // $TODO Total string length, move to constants
-      0.25,    // $TODO Initial length spooled
-      StringOrientation.BackOfRobot,  // $TODO Initial string orientation
-      false);
+      0.0254, // Spool diameter (1 inch)
+      Constants.SimConstants.kTotalStringLenMeters,
+      Constants.SimConstants.kCurrentLenSpooled,
+      StringOrientation.BackOfRobot,
+      true); // invert motor for winch
 
     // Create simulated absolute encoder
-    m_winchAbsoluteEncoderSim = new DutyCycleEncoderSim(m_winchAbsoluteEncoder);
-    // $TODO - Under simulation, we need to set our robot's arm to some initial position, otherwise it would be 0 and out of bounds!  It needs to be "read" from the winchsimulation string-length
+    m_winchAbsoluteEncoderSim = new DutyCycleEncoderSim2(m_winchAbsoluteEncoder);
 
     m_ArmSimulation = new ArmSimulation(
       m_WinchSimulation,
       m_winchAbsoluteEncoderSim,
       Constants.OperatorConstants.kWinchEncoderUpperLimit,
       Constants.OperatorConstants.kWinchEncoderLowerLimit,
-      0.02, // $TODO Delta until broken, move to constants
-      0.60); // $TODO Delta below which grabber cant be opened, move to constants
+      Constants.SimConstants.kdeltaRotationsBeforeBroken,
+      Constants.SimConstants.kgrabberBreaksIfOpenBelowThisLimit,
+      Constants.SimConstants.karmHeightFromWinchToPivotPoint,
+      Constants.SimConstants.karmLengthFromEdgeToPivot,
+      Constants.SimConstants.karmLengthFromEdgeToPivot_Min,
+      Constants.SimConstants.karmEncoderRotationsOffset);
   
     AddShuffleboardWidgets();
   }
@@ -127,7 +133,16 @@ public class ArmSystemSim extends ArmSystem {
       .withWidget(BuiltInWidgets.kTextView);
 
     Shuffleboard.getTab("Simulation")
+      .addDouble("Arm position", () -> m_winchAbsoluteEncoder.getAbsolutePosition())
+      .withWidget(BuiltInWidgets.kTextView);
+
+    Shuffleboard.getTab("Simulation")
       .addBoolean("Winch Functional", () -> !m_WinchSimulation.GetIsBroken())
+      .withWidget(BuiltInWidgets.kBooleanBox)
+      .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
+
+    Shuffleboard.getTab("Simulation")
+      .addBoolean("Arm Functional", () -> !m_ArmSimulation.GetIsBroken())
       .withWidget(BuiltInWidgets.kBooleanBox)
       .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
   }

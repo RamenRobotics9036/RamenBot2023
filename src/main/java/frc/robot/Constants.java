@@ -82,4 +82,26 @@ public final class Constants {
     public static int kLEDLightsChannel = 9;
     public static int kLEDLightsLength = 40;
   }
+
+  public static class SimConstants {
+    // Winch
+    public static double kTotalStringLenMeters = 1;
+    public static double kCurrentLenSpooled = 0.25;
+    public static double kwinchSimGearRatio = 20.0; // 20:1
+
+    // Arm
+    public static double karmLengthFromEdgeToPivot = 0.25;
+    public static double karmHeightFromWinchToPivotPoint = 0.75;
+    
+    public static double karmHeightFromWinchToPivotPoint_Min = 0.1;
+    public static double karmLengthFromEdgeToPivot_Min = 0.1;
+    public static double karmEncoderRotationsOffset = 0.56;
+
+    public static double kdeltaRotationsBeforeBroken = 0;
+    public static double kgrabberBreaksIfOpenBelowThisLimit = 0.60;
+
+    // We use the same constants for upper and lower limits as physical arm:
+    //  kWinchEncoderUpperLimit = 0.78;
+    //  kWinchEncoderLowerLimit = 0.56;
+  }
 }
