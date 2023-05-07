@@ -14,14 +14,14 @@ public class GrabberSystem extends SubsystemBase {
     private XboxController m_controller;
     private final Compressor m_compressor = new Compressor(PneumaticsModuleType.REVPH);
     private PneumaticHub m_pneumaticHub;
-    private DoubleSolenoid m_solenoid;
+    protected DoubleSolenoid m_solenoid;
 
-    public GrabberSystem(int grabberForwardChannel, int grabberBackwardChannel, XboxController m_controller) {
+    public GrabberSystem(int grabberForwardChannel, int grabberBackwardChannel, XboxController controller) {
         m_pneumaticHub = new PneumaticHub();
         m_compressor.enableDigital();
         m_solenoid = m_pneumaticHub.makeDoubleSolenoid(grabberForwardChannel, grabberBackwardChannel);
 
-        this.m_controller = m_controller;
+        this.m_controller = controller;
     }
 
     public boolean getCondition() {

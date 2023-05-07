@@ -28,6 +28,8 @@
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/Shuffleboard/Simulation/Field": "Field2d",
+      "/Shuffleboard/Simulation/Gyro": "Gyro",
       "/SmartDashboard/Auto Mode": "String Chooser",
       "/SmartDashboard/Drive Backwards": "Command",
       "/SmartDashboard/Drive Forwards": "Command",
