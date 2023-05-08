@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 // import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -72,6 +74,14 @@ public class RobotContainer {
         m_driveSystem.getDefaultDriveCommand());
 
     // CameraServer.startAutomaticCapture();
+
+    // Stitch together BooleanSupplier from GrabberSystemSim with ArmSystemSim
+    if (m_grabSystem instanceof GrabberSystemSim &&
+        m_armSystem instanceof ArmSystemSim) {
+
+      BooleanSupplier supplier = ((GrabberSystemSim)m_grabSystem).getGrabberOpenSupplier();
+      ((ArmSystemSim)m_armSystem).setGrabberOpenSupplier(supplier);
+    }
   }
 
   /**

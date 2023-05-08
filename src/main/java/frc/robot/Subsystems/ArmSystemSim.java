@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 import frc.robot.Constants;
 import frc.robot.Simulation.ArmSimulation;
@@ -24,6 +25,7 @@ public class ArmSystemSim extends ArmSystem {
   private double m_winchMotorOutputPercentage = 0;
   private WinchSimulation m_WinchSimulation;
   private ArmSimulation m_ArmSimulation;
+  private BooleanSupplier m_grabberOpenSupplier = null;
 
   public static ArmSystem CreateArmSystemInstance(int armWinchChannel, int armExtenderChannel, XboxController m_controller, double m_deadband, boolean squareInputs, double maxOutputWinch)
   {
@@ -151,9 +153,18 @@ public class ArmSystemSim extends ArmSystem {
     return RobotState.isEnabled();
   }
 
+  public void setGrabberOpenSupplier(BooleanSupplier grabberOpenSupplier) {
+    m_grabberOpenSupplier = grabberOpenSupplier;
+  }
+
   @Override
   public void periodic() {
       super.periodic();
+
+      // $TODO - This will move into ArmSimulation
+      //if (m_grabberOpenSupplier != null) {
+      //  System.out.println(m_grabberOpenSupplier.getAsBoolean());
+      //}
 
       // When Robot is disabled, the entire simulation freezes
       if (isRobotEnabled()) {      
