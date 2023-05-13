@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -17,14 +18,25 @@ import frc.robot.Commands.SetWinchToAngle;
 import frc.robot.Simulation.ArmSimulation;
 import frc.robot.Simulation.WinchSimulation;
 import frc.robot.Simulation.WinchSimulation.StringOrientation;
+import frc.robot.Simulation.ExtenderSimulation;
 
 public class ArmSystemSim extends ArmSystem {
-  private RelativeEncoderSim m_winchEncoderSim;
   private DutyCycleEncoderSim m_winchAbsoluteEncoderSim;
-  private DCMotor m_motorModel;
-  private DCMotorSim m_motorSim;
+
+  private DCMotor m_winchMotorModel;
+  private DCMotorSim m_winchMotorSim;
+  private RelativeEncoderSim m_winchEncoderSim;
   private double m_winchMotorOutputPercentage = 0;
   private WinchSimulation m_WinchSimulation;
+
+  private DCMotor m_extenderMotorModel;
+  private DCMotorSim m_extenderMotorSim;
+  private RelativeEncoderSim m_extenderEncoderSim;
+  private double m_extenderMotorOutputPercentage = 0;
+  private ExtenderSimulation m_ExtenderSimulation;
+
+  private DIOSim m_sensorSim;
+
   private ArmSimulation m_ArmSimulation;
   private BooleanSupplier m_grabberOpenSupplier = null;
 
@@ -76,27 +88,10 @@ public class ArmSystemSim extends ArmSystem {
       return;
     }
 
-    // Model a NEO motor (or any other motor)
-    m_motorModel = DCMotor.getNEO(1); // 1 motor in the gearbox
+    CreateWinchSimParts();
+    CreateExtenderSimParts();
 
-    // Create the motor simulation with motor model, gear ratio, and moment of
-    // inertia
-    double motorMomentInertia = 0.0005;
-    m_motorSim = new DCMotorSim(
-        m_motorModel,
-        Constants.SimConstants.kwinchSimGearRatio,
-        motorMomentInertia);
-
-    // Create winch simulated encoder
-    m_winchEncoderSim = new RelativeEncoderSim(m_winchEncoder);
-
-    m_WinchSimulation = new WinchSimulation(
-        m_winchEncoderSim,
-        0.0254, // Spool diameter (1 inch)
-        Constants.SimConstants.kTotalStringLenMeters,
-        Constants.SimConstants.kCurrentLenSpooled,
-        StringOrientation.BackOfRobot,
-        true); // invert motor for winch
+    m_sensorSim = new DIOSim(sensor);
 
     // Create simulated absolute encoder
     m_winchAbsoluteEncoderSim = new DutyCycleEncoderSim2(m_winchAbsoluteEncoder);
@@ -114,6 +109,53 @@ public class ArmSystemSim extends ArmSystem {
         Constants.SimConstants.karmEncoderRotationsOffset);
   }
 
+  private void CreateWinchSimParts() {
+    // Model a NEO motor (or any other motor)
+    m_winchMotorModel = DCMotor.getNEO(1); // 1 motor in the gearbox
+
+    // Create the motor simulation with motor model, gear ratio, and moment of
+    // inertia
+    double motorMomentInertia = 0.0005;
+    m_winchMotorSim = new DCMotorSim(
+        m_winchMotorModel,
+        Constants.SimConstants.kwinchSimGearRatio,
+        motorMomentInertia);
+
+    // Create winch simulated encoder
+    m_winchEncoderSim = new RelativeEncoderSim(m_winchEncoder);
+
+    m_WinchSimulation = new WinchSimulation(
+        m_winchEncoderSim,
+        0.0254, // Spool diameter (1 inch)
+        Constants.SimConstants.kTotalStringLenMeters,
+        Constants.SimConstants.kCurrentLenSpooled,
+        StringOrientation.BackOfRobot,
+        true); // invert motor for winch
+  }
+
+  private void CreateExtenderSimParts() {
+    // Model a NEO motor (or any other motor)
+    m_extenderMotorModel = DCMotor.getNEO(1); // 1 motor in the gearbox
+
+    // Create the motor simulation with motor model, gear ratio, and moment of
+    // inertia
+    double motorMomentInertia = 0.0005;
+    m_extenderMotorSim = new DCMotorSim(
+        m_extenderMotorModel,
+        Constants.SimConstants.kextenderSimGearRatio,
+        motorMomentInertia);
+
+    // Create extender simulated encoder
+    m_extenderEncoderSim = new RelativeEncoderSim(m_extenderEncoder);
+
+    m_ExtenderSimulation = new ExtenderSimulation(
+        m_extenderEncoderSim,
+        Constants.SimConstants.kcylinderDiameterMeters,
+        Constants.SimConstants.kTotalExtenderLenMeters,
+        Constants.SimConstants.kInitialExtendedLen,
+        true);
+  }
+
   private void AddCommandButtons() {
     CommandBase armToMiddleNodeCone = new SetWinchToAngle(
         this,
@@ -125,7 +167,7 @@ public class ArmSystemSim extends ArmSystem {
         .withWidget(BuiltInWidgets.kCommand);
   }
 
-  private void AddShuffleboardWidgets() {
+  private void AddShuffleboardWidgetsForWinch() {
     Shuffleboard.getTab("Simulation")
         .addDouble("Winch Motor Power", () -> m_winchMotorOutputPercentage)
         .withWidget(BuiltInWidgets.kNumberBar)
@@ -147,13 +189,45 @@ public class ArmSystemSim extends ArmSystem {
         .withWidget(BuiltInWidgets.kTextView);
 
     Shuffleboard.getTab("Simulation")
-        .addDouble("Arm position", () -> m_winchAbsoluteEncoder.getAbsolutePosition())
-        .withWidget(BuiltInWidgets.kTextView);
-
-    Shuffleboard.getTab("Simulation")
         .addBoolean("Winch Functional", () -> !m_WinchSimulation.GetIsBroken())
         .withWidget(BuiltInWidgets.kBooleanBox)
         .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
+  }
+
+  private void AddShuffleboardWidgetsForExtender() {
+    Shuffleboard.getTab("Simulation")
+        .addDouble("Extender Motor Power", () -> m_extenderMotorOutputPercentage)
+        .withWidget(BuiltInWidgets.kNumberBar)
+        .withProperties(Map.of(
+            "min", -1.0,
+            "max", 1.0,
+            "show text", false));
+
+    Shuffleboard.getTab("Simulation")
+        .addDouble("Extender % Extended", () -> m_ExtenderSimulation.GetExtendedPercent())
+        .withWidget(BuiltInWidgets.kNumberBar)
+        .withProperties(Map.of(
+            "min", 0.0,
+            "max", 1.0,
+            "show text", false));
+
+    Shuffleboard.getTab("Simulation")
+        .addBoolean("Extender Functional", () -> !m_ExtenderSimulation.GetIsBroken())
+        .withWidget(BuiltInWidgets.kBooleanBox)
+        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
+  }
+
+  private void AddShuffleboardWidgetsForSensor() {
+    Shuffleboard.getTab("Simulation")
+        .addBoolean("Extender Sensor", () -> !m_sensorSim.getValue())
+        .withWidget(BuiltInWidgets.kBooleanBox)
+        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#FFFFFF"));
+  }
+
+  private void AddShuffleboardWidgetsForArm() {
+    Shuffleboard.getTab("Simulation")
+        .addDouble("Arm position", () -> m_winchAbsoluteEncoder.getAbsolutePosition())
+        .withWidget(BuiltInWidgets.kTextView);
 
     Shuffleboard.getTab("Simulation")
         .addBoolean("Arm Functional", () -> !m_ArmSimulation.GetIsBroken())
@@ -162,6 +236,13 @@ public class ArmSystemSim extends ArmSystem {
 
     Shuffleboard.getTab("Simulation")
         .add("Arm System Commands", this);
+  }
+
+  private void AddShuffleboardWidgets() {
+    AddShuffleboardWidgetsForWinch();
+    AddShuffleboardWidgetsForExtender();
+    AddShuffleboardWidgetsForSensor();
+    AddShuffleboardWidgetsForArm();
   }
 
   private boolean isRobotEnabled() {
@@ -192,8 +273,24 @@ public class ArmSystemSim extends ArmSystem {
     // When Robot is disabled, the entire simulation freezes
     if (isRobotEnabled()) {
       m_WinchSimulation.periodic();
+      m_ExtenderSimulation.periodic();
       m_ArmSimulation.periodic();
     }
+  }
+
+  private static void UpdateSimMotorPosition(double motorOutputPercentage,
+      DCMotorSim motorSim, RelativeEncoderSim encoderSim) {
+    // Calculate the input voltage for the motor
+    double inputVoltageVolts = motorOutputPercentage * 12.0;
+
+    // Update the motor simulation
+    motorSim.setInput(inputVoltageVolts);
+    motorSim.update(0.02);
+
+    // Update the Encoder based on the simulation - the units are "number of
+    // rotations"
+    double motorRotations = motorSim.getAngularPositionRotations();
+    encoderSim.setPosition(motorRotations);
   }
 
   @Override
@@ -202,26 +299,29 @@ public class ArmSystemSim extends ArmSystem {
 
     // When Robot is disabled, the entire simulation freezes
     if (isRobotEnabled()) {
-      // Get the motor controller output percentage
+
+      // Get the WINCH motor controller output percentage
       m_winchMotorOutputPercentage = m_armWinch.get();
 
-      // Calculate the input voltage for the motor
-      double inputVoltageVolts = m_winchMotorOutputPercentage * 12.0;
+      UpdateSimMotorPosition(
+          m_winchMotorOutputPercentage,
+          m_winchMotorSim,
+          m_winchEncoderSim);
 
-      // Update the motor simulation
-      m_motorSim.setInput(inputVoltageVolts);
-      m_motorSim.update(0.02);
+      // Get the EXTENDER motor controller output percentage
+      m_extenderMotorOutputPercentage = m_armExtender.get();
 
-      // Update the Encoder based on the simulation - the units are "number of
-      // rotations"
-      double motorRotations = m_motorSim.getAngularPositionRotations();
-      m_winchEncoderSim.setPosition(motorRotations);
-
-      // System.out.println("Input volts: " + inputVoltageVolts);
-      // System.out.println("Winch motor rotations: " + motorRotations);
+      UpdateSimMotorPosition(
+          m_extenderMotorOutputPercentage,
+          m_extenderMotorSim,
+          m_extenderEncoderSim);
 
       m_WinchSimulation.simulationPeriodic();
+      m_ExtenderSimulation.simulationPeriodic();
       m_ArmSimulation.simulationPeriodic();
+
+      boolean isExtenderSensorOn = m_ExtenderSimulation.GetExtendedLen() <= Constants.SimConstants.kextenderFullyRetractedLen;
+      m_sensorSim.setValue(!isExtenderSensorOn);
     }
   }
 }

@@ -89,6 +89,13 @@ public final class Constants {
     public static double kCurrentLenSpooled = 0.25;
     public static double kwinchSimGearRatio = 20.0; // 20:1
 
+    // Extender
+    public static double kTotalExtenderLenMeters = 0.75;
+    public static double kInitialExtendedLen = 0.2;
+    public static double kextenderSimGearRatio = 20.0; // 20:1
+    public static double kcylinderDiameterMeters = 0.00155;
+    public static double kextenderFullyRetractedLen = 0.05;
+
     // Arm
     public static double karmLengthFromEdgeToPivot = 0.25;
     public static double karmHeightFromWinchToPivotPoint = 0.75;
