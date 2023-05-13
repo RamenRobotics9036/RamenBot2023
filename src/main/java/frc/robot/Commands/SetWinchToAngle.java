@@ -21,7 +21,8 @@ public class SetWinchToAngle extends CommandBase {
 
     @Override
     public void initialize() {
-        if (m_armSystem.getWinchAbsoluteEncoder() > angle) {
+        double currentRotations = m_armSystem.getWinchAbsoluteEncoder();
+        if (currentRotations > angle) {
             inverse = -1;
             System.out.println("inversed");
         }
@@ -29,7 +30,7 @@ public class SetWinchToAngle extends CommandBase {
             inverse = 1;
             System.out.println("not inversed");
         }
-        System.out.println("Command initialized with enoder at " +  m_armSystem.getWinchAbsoluteEncoder());
+        System.out.println("Command initialized with enoder at " +  currentRotations);
         System.out.println("Command initialized with speed at " +  speed);
     }
 

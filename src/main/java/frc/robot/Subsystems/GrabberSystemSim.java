@@ -56,8 +56,6 @@ public class GrabberSystemSim extends GrabberSystem {
 
     m_solenoidStatus = Value.kOff;
     m_grabberPhysicallyOpened = Constants.SimConstants.kgrabberInitiallyOpened;
-
-    AddShuffleboardWidgets();
   }
 
   public BooleanSupplier getGrabberOpenSupplier() {
@@ -96,6 +94,13 @@ public class GrabberSystemSim extends GrabberSystem {
 
   private boolean isRobotEnabled() {
     return RobotState.isEnabled();
+  }
+
+  @Override
+  public void initDashBoard() {
+    super.initDashBoard();
+
+    AddShuffleboardWidgets();
   }
 
   @Override

@@ -47,11 +47,10 @@ public class ArmSystem extends SubsystemBase{
 
         m_winchAbsoluteEncoder = new DutyCycleEncoder(Constants.OperatorConstants.kAbsoluteEncoderWinchChannel);
 
-        initDashBoard();
         setSoftLimit();
     }
 
-    private void initDashBoard() {
+    public void initDashBoard() {
         SmartDashboard.putNumber("Winch Encoder", m_winchEncoder.getPosition());
         SmartDashboard.putNumber("Extender Encoder", m_extenderEncoder.getPosition());
         SmartDashboard.putNumber("Winch Max Output", maxOutputWinch);
@@ -88,69 +87,50 @@ public class ArmSystem extends SubsystemBase{
         return getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit;
     }
 
-    public CommandBase armCommand() {
+    public CommandBase getDefaultArmCommand() {
         return run(
-            () -> {
-                // SmartDashboard.putNumber("Num rotations", m_extenderEncoder.getPosition());
-                double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
-                double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
-                winchOutput = winchOutput * Math.abs(winchOutput);
-                extenderOutput = extenderOutput * Math.abs(extenderOutput);
-        
-                if (getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit && winchOutput > 0 ) {
-                    m_armWinch.set(0);
-                    return;            
-                }
-                if (getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit && winchOutput < 0) {
-                    m_armWinch.set(0);
-                    return;
-                }
-
-                setWinchSpeed(winchOutput * maxOutputWinch);
-                setExtenderSpeed(extenderOutput);
-            }
+           () -> {
+                System.out.println("ARMCOMMAND");
+                ProcessJoystickInputForArm();
+           }
         );
     }
 
+    private void ProcessJoystickInputForArm() {
+      // SmartDashboard.putNumber("Absolute encoder", getWinchAbsoluteEncoder());
+      // SmartDashboard.putNumber("Extender encoder", getExtenderEncoder());
+      double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
+      double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
+      winchOutput = winchOutput * Math.abs(winchOutput);
+      extenderOutput = extenderOutput * Math.abs(extenderOutput);
+      
+      if (getWinchAbsoluteEncoderPrivate() != 0.0) {
+          if (getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit && winchOutput > 0 ) {
+              m_armWinch.set(0);
+          } else if (getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit && winchOutput < 0) {
+              m_armWinch.set(0);
+          } else {
+              setWinchSpeed(winchOutput * maxOutputWinch);
+          }
+      } else {
+          setWinchSpeed(winchOutput * maxOutputWinch);
+      }
+      
+      if (getExtenderEncoder() <= Constants.OperatorConstants.kExtenderSoftLimitTurns && extenderOutput < 0) { // $TODO - For simulation, test that smart limits actually work when I set a value on SparkMax
+          m_armExtender.set(0);
+      } else if (getExtenderEncoder() > 0 && extenderOutput > 0) {
+          m_armExtender.set(0);
+      } else {
+          setExtenderSpeed(extenderOutput);
+      }
+    }
     
 
     @Override
     public void periodic() {
-
-        Double winchAbsoluteEncoder = Double.valueOf(getWinchAbsoluteEncoderPrivate());
-        // SmartDashboard.putNumber("Winch Absolute Position", getWinchAbsoluteEncoderPrivate());
-        SmartDashboard.putBoolean("Winch Absolute Encoder", !(winchAbsoluteEncoder == 0.0));
-
-        if (!RobotState.isAutonomous()) {
-            // SmartDashboard.putNumber("Absolute encoder", getWinchAbsoluteEncoder());
-            // SmartDashboard.putNumber("Extender encoder", getExtenderEncoder());
-            double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
-            double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
-            winchOutput = winchOutput * Math.abs(winchOutput);
-            extenderOutput = extenderOutput * Math.abs(extenderOutput);
-
-            if (getWinchAbsoluteEncoderPrivate() != 0.0) {
-                if (getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit && winchOutput > 0 ) {
-                    m_armWinch.set(0);
-                } else if (getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit && winchOutput < 0) {
-                    m_armWinch.set(0);
-                } else {
-                    setWinchSpeed(winchOutput * maxOutputWinch);
-                }
-            } else {
-                setWinchSpeed(winchOutput * maxOutputWinch);
-            }
-
-            if (getExtenderEncoder() <= Constants.OperatorConstants.kExtenderSoftLimitTurns && extenderOutput < 0) { // $TODO - For simulation, test that smart limits actually work when I set a value on SparkMax
-                m_armExtender.set(0);
-            } else if (getExtenderEncoder() > 0 && extenderOutput > 0) {
-                m_armExtender.set(0);
-            } else {
-                setExtenderSpeed(extenderOutput);
-            }
-        }
-
-        // setExtenderSpeed(extenderOutput);
+      Double winchAbsoluteEncoder = Double.valueOf(getWinchAbsoluteEncoderPrivate());
+      // SmartDashboard.putNumber("Winch Absolute Position", getWinchAbsoluteEncoderPrivate());
+      SmartDashboard.putBoolean("Winch Absolute Encoder", !(winchAbsoluteEncoder == 0.0));
     }
 
 

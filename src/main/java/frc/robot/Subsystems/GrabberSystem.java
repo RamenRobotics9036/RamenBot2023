@@ -42,6 +42,9 @@ public class GrabberSystem extends SubsystemBase {
         );
     }
 
+    public void initDashBoard() {
+    }
+
     @Override
     public void periodic() {
         if (!RobotState.isAutonomous()) {
