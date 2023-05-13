@@ -4,8 +4,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.ArmSystem;
 
-
-public class RetractArmCommand extends CommandBase{
+public class RetractArmCommand extends CommandBase {
     ArmSystem armSystem;
 
     public RetractArmCommand(ArmSystem armSystem) {
@@ -24,7 +23,7 @@ public class RetractArmCommand extends CommandBase{
 
     @Override
     public boolean isFinished() {
-        if (!armSystem.getDigitalSensor()){
+        if (!armSystem.getDigitalSensor()) {
             return true;
         }
         return false;

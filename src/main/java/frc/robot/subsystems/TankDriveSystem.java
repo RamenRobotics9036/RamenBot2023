@@ -1,6 +1,5 @@
 package frc.robot.Subsystems;
 
-
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -48,16 +47,14 @@ public class TankDriveSystem extends SubsystemBase {
     protected double m_wheelDiameterMeters;
     protected double m_gearBoxRatio;
 
-
     // Constructor
     public TankDriveSystem(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
-      int rightMotorForwardChannel, XboxController controller, boolean squareInputs,
-      double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters,
-      double slewLimit, double turboSlew)
-    {
+            int rightMotorForwardChannel, XboxController controller, boolean squareInputs,
+            double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters,
+            double slewLimit, double turboSlew) {
         m_gearBoxRatio = gearBoxRatio;
         m_wheelDiameterMeters = wheelDiameterMeters;
-    
+
         m_leftMotor1 = new CANSparkMax(leftMotorBackChannel, MotorType.kBrushless);
         m_leftMotor2 = new CANSparkMax(leftMotorForwardChannel, MotorType.kBrushless);
         m_rightMotor1 = new CANSparkMax(rightMotorForwardChannel, MotorType.kBrushless);
@@ -67,7 +64,7 @@ public class TankDriveSystem extends SubsystemBase {
         m_rightMotors = new MotorControllerGroup(m_rightMotor1, m_rightMotor2);
         m_rightMotors.setInverted(true);
         m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
-        
+
         m_drive.setMaxOutput(maxOutput);
         m_drive.setDeadband(Deadband);
 
@@ -109,15 +106,15 @@ public class TankDriveSystem extends SubsystemBase {
     public boolean getCondition() {
         return true;
     }
-    
+
     public CommandBase getDefaultDriveCommand() {
         return run(
-           () -> {
-                System.out.println("DRIVECOMMAND");
-                ProcessJoystickInput();
-           }
-        );
+                () -> {
+                    System.out.println("DRIVECOMMAND");
+                    ProcessJoystickInput();
+                });
     }
+
     public void resetEncoders() {
         m_leftEncoder.setPosition(0);
         m_rightEncoder.setPosition(0);
@@ -125,7 +122,7 @@ public class TankDriveSystem extends SubsystemBase {
 
     public double getLeftEncoder() {
         return m_leftEncoder.getPosition();
-    } 
+    }
 
     public double getRightEncoder() {
         return m_rightEncoder.getPosition();
@@ -136,46 +133,46 @@ public class TankDriveSystem extends SubsystemBase {
     }
 
     private void ProcessJoystickInput() {
-      // In autonomous, the default command is to tell the robot to STOP.  Recall
-      // that we have to send a voltage-level to the motors EVERY 20ms, otherwise
-      // the watchdog trips
-      double leftAxis = RobotState.isAutonomous() ? 0 : m_controller.getLeftY();
-      double rightAxis = RobotState.isAutonomous() ? 0 : m_controller.getRightY();
-      
-      double xSpeed = (m_controller.getLeftY() + m_controller.getRightY()) / 2;
-      double zRotation = (m_controller.getLeftY() - m_controller.getRightY()) / 2;
-      
-      if (m_controller.getRightTriggerAxis() > Constants.OperatorConstants.kDeadband) {
-          m_drive.setMaxOutput(1);
-          double slewLimit1 = turboLimiter1.calculate(xSpeed);
-          double slewLimit2 = turboLimiter2.calculate(zRotation);
-      
-          arcadeDrive(slewLimit1, slewLimit2 * Constants.OperatorConstants.kRotationDilation, squareInputs);
-          slewLimiter1.reset(slewLimit1);
-          slewLimiter2.reset(slewLimit2);
-      } else {
-      
-          m_drive.setMaxOutput(maxOutput);
-          double slewLimit1 = slewLimiter1.calculate(xSpeed);
-          double slewLimit2 = slewLimiter2.calculate(zRotation);
-      
-          arcadeDrive(slewLimit1, slewLimit2 * Constants.OperatorConstants.kRotationDilation, squareInputs);
-          turboLimiter1.reset(slewLimit1);
-          turboLimiter2.reset(slewLimit2);
-      }
-      SmartDashboard.putNumber("Left Motor", m_leftMotors.get());
-      SmartDashboard.putNumber("Right Motor", m_rightMotors.get());
-      
-      // if (m_controller.getRightTriggerAxis() > 0) {
-      //     m_drive.tankDrive(1, 0, false);
-      // }
-      // if (m_controller.getLeftTriggerAxis() > 0) {
-      //     m_drive.tankDrive(0, 1, false);
-      // }
+        // In autonomous, the default command is to tell the robot to STOP. Recall
+        // that we have to send a voltage-level to the motors EVERY 20ms, otherwise
+        // the watchdog trips
+        double leftAxisY = RobotState.isAutonomous() ? 0 : m_controller.getLeftY();
+        double rightAxisY = RobotState.isAutonomous() ? 0 : m_controller.getRightY();
+
+        double xSpeed = (leftAxisY + rightAxisY) / 2;
+        double zRotation = (leftAxisY - rightAxisY) / 2;
+
+        if (m_controller.getRightTriggerAxis() > Constants.OperatorConstants.kDeadband) {
+            m_drive.setMaxOutput(1);
+            double slewLimit1 = turboLimiter1.calculate(xSpeed);
+            double slewLimit2 = turboLimiter2.calculate(zRotation);
+
+            arcadeDrive(slewLimit1, slewLimit2 * Constants.OperatorConstants.kRotationDilation, squareInputs);
+            slewLimiter1.reset(slewLimit1);
+            slewLimiter2.reset(slewLimit2);
+        } else {
+
+            m_drive.setMaxOutput(maxOutput);
+            double slewLimit1 = slewLimiter1.calculate(xSpeed);
+            double slewLimit2 = slewLimiter2.calculate(zRotation);
+
+            arcadeDrive(slewLimit1, slewLimit2 * Constants.OperatorConstants.kRotationDilation, squareInputs);
+            turboLimiter1.reset(slewLimit1);
+            turboLimiter2.reset(slewLimit2);
+        }
+        SmartDashboard.putNumber("Left Motor", m_leftMotors.get());
+        SmartDashboard.putNumber("Right Motor", m_rightMotors.get());
+
+        // if (m_controller.getRightTriggerAxis() > 0) {
+        // m_drive.tankDrive(1, 0, false);
+        // }
+        // if (m_controller.getLeftTriggerAxis() > 0) {
+        // m_drive.tankDrive(0, 1, false);
+        // }
     }
 
     public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
-      m_drive.arcadeDrive(xSpeed, zRotation, squareInputs);
+        m_drive.arcadeDrive(xSpeed, zRotation, squareInputs);
     }
 
     public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {

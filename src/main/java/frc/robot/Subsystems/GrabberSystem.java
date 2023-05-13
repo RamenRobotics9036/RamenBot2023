@@ -30,16 +30,15 @@ public class GrabberSystem extends SubsystemBase {
 
     public CommandBase grabCommand() {
         return run(
-            () -> {
-            if (!RobotState.isAutonomous()) {
-                if (m_controller.getLeftBumperReleased()) {
-                    m_solenoid.set(Value.kForward);
-                } else if (m_controller.getRightBumperReleased()) {
-                    m_solenoid.set(Value.kReverse);
-                }
-            }
-            }
-        );
+                () -> {
+                    if (!RobotState.isAutonomous()) {
+                        if (m_controller.getLeftBumperReleased()) {
+                            m_solenoid.set(Value.kForward);
+                        } else if (m_controller.getRightBumperReleased()) {
+                            m_solenoid.set(Value.kReverse);
+                        }
+                    }
+                });
     }
 
     public void initDashBoard() {
@@ -63,13 +62,14 @@ public class GrabberSystem extends SubsystemBase {
     public void toggle() {
         m_solenoid.toggle();
     }
-    public void openGrabber(){
+
+    public void openGrabber() {
         if (RobotState.isAutonomous()) {
             m_solenoid.set(Value.kForward);
         }
     }
 
-    public void closeGrabber(){
+    public void closeGrabber() {
         if (RobotState.isAutonomous()) {
             m_solenoid.set(Value.kReverse);
         }
