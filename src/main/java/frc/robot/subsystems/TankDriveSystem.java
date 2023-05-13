@@ -110,7 +110,7 @@ public class TankDriveSystem extends SubsystemBase {
     public CommandBase getDefaultDriveCommand() {
         return run(
                 () -> {
-                    System.out.println("DRIVECOMMAND");
+                    //System.out.println("DRIVECOMMAND");
                     ProcessJoystickInput();
                 });
     }

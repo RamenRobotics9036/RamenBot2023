@@ -19,13 +19,13 @@ public class ArmSystem extends SubsystemBase {
     private XboxController m_controller;
     private double m_deadband;
     private double maxOutputWinch;
-    private DigitalInput sensor = new DigitalInput(Constants.OperatorConstants.kHallEffectExtenderChannel);
+    protected DigitalInput sensor = new DigitalInput(Constants.OperatorConstants.kHallEffectExtenderChannel);
 
     protected CANSparkMax m_armWinch;
-    private CANSparkMax m_armExtender;
+    protected CANSparkMax m_armExtender;
 
     protected RelativeEncoder m_winchEncoder;
-    private RelativeEncoder m_extenderEncoder;
+    protected RelativeEncoder m_extenderEncoder;
 
     protected DutyCycleEncoder m_winchAbsoluteEncoder;
 
@@ -90,7 +90,7 @@ public class ArmSystem extends SubsystemBase {
     public CommandBase getDefaultArmCommand() {
         return run(
                 () -> {
-                    System.out.println("ARMCOMMAND");
+                    //System.out.println("ARMCOMMAND");
                     ProcessJoystickInputForArm();
                 });
     }
