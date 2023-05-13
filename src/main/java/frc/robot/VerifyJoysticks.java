@@ -59,7 +59,7 @@ public class VerifyJoysticks {
 
   public boolean VerifyJoysticksPeriodically() {
     Instant currentTime = Instant.now();
-    int periodSeconds = 10;
+    int periodSeconds = 1;
     boolean AllSuccess = true;
 
     if (m_firstCall || (currentTime.getEpochSecond() - m_recordedTime.getEpochSecond()) >= periodSeconds) {
