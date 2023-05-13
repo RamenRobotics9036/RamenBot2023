@@ -116,7 +116,24 @@ public final class Constants {
   }
 
   public static class SimWidgets {
-    public static String kWinchMotorPower = "Winch Motor Power";
+    public static class WidgetPosition {
+      public String name;
+      public int x;
+      public int y;
+      public int width;
+      public int height;
+  
+      // Constructor
+      public WidgetPosition(String name, int x, int y, int width, int height) {
+        this.name = name;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+      }
+    }
+ 
+    public static WidgetPosition kWinchMotorPower = new WidgetPosition("Winch Motor Power", 1, 1, 2, 1); 
     public static String kWinchStringPercentExtended = "Winch String % Extended";
     public static String kWinchStringLocation = "Winch string location";
     public static String kWinchFunctional = "Winch Functional";

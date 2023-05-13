@@ -169,8 +169,10 @@ public class ArmSystemSim extends ArmSystem {
 
   private void AddShuffleboardWidgetsForWinch() {
     Shuffleboard.getTab("Simulation")
-        .addDouble(Constants.SimWidgets.kWinchMotorPower, () -> m_winchMotorOutputPercentage)
+        .addDouble(Constants.SimWidgets.kWinchMotorPower.name, () -> m_winchMotorOutputPercentage)
         .withWidget(BuiltInWidgets.kNumberBar)
+        .withPosition(Constants.SimWidgets.kWinchMotorPower.x, Constants.SimWidgets.kWinchMotorPower.y)
+        .withSize(Constants.SimWidgets.kWinchMotorPower.width, Constants.SimWidgets.kWinchMotorPower.height)
         .withProperties(Map.of(
             "min", -1.0,
             "max", 1.0,
