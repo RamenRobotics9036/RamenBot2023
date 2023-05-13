@@ -163,13 +163,13 @@ public class ArmSystemSim extends ArmSystem {
         1);
 
     Shuffleboard.getTab("Simulation")
-        .add("Middle node cone", armToMiddleNodeCone)
+        .add(Constants.SimWidgets.kButtonMiddleNodeCone, armToMiddleNodeCone)
         .withWidget(BuiltInWidgets.kCommand);
   }
 
   private void AddShuffleboardWidgetsForWinch() {
     Shuffleboard.getTab("Simulation")
-        .addDouble("Winch Motor Power", () -> m_winchMotorOutputPercentage)
+        .addDouble(Constants.SimWidgets.kWinchMotorPower, () -> m_winchMotorOutputPercentage)
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of(
             "min", -1.0,
@@ -177,7 +177,7 @@ public class ArmSystemSim extends ArmSystem {
             "show text", false));
 
     Shuffleboard.getTab("Simulation")
-        .addDouble("Winch String % Extended", () -> m_WinchSimulation.GetStringExtendedPercent())
+        .addDouble(Constants.SimWidgets.kWinchStringPercentExtended, () -> m_WinchSimulation.GetStringExtendedPercent())
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of(
             "min", 0.0,
@@ -185,18 +185,18 @@ public class ArmSystemSim extends ArmSystem {
             "show text", false));
 
     Shuffleboard.getTab("Simulation")
-        .addString("Winch string location", () -> m_WinchSimulation.GetStringOrientationName())
+        .addString(Constants.SimWidgets.kWinchStringLocation, () -> m_WinchSimulation.GetStringOrientationName())
         .withWidget(BuiltInWidgets.kTextView);
 
     Shuffleboard.getTab("Simulation")
-        .addBoolean("Winch Functional", () -> !m_WinchSimulation.GetIsBroken())
+        .addBoolean(Constants.SimWidgets.kWinchFunctional, () -> !m_WinchSimulation.GetIsBroken())
         .withWidget(BuiltInWidgets.kBooleanBox)
         .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
   }
 
   private void AddShuffleboardWidgetsForExtender() {
     Shuffleboard.getTab("Simulation")
-        .addDouble("Extender Motor Power", () -> m_extenderMotorOutputPercentage)
+        .addDouble(Constants.SimWidgets.kExtenderMotorPower, () -> m_extenderMotorOutputPercentage)
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of(
             "min", -1.0,
@@ -204,7 +204,7 @@ public class ArmSystemSim extends ArmSystem {
             "show text", false));
 
     Shuffleboard.getTab("Simulation")
-        .addDouble("Extender % Extended", () -> m_ExtenderSimulation.GetExtendedPercent())
+        .addDouble(Constants.SimWidgets.kExtenderMotorPercent, () -> m_ExtenderSimulation.GetExtendedPercent())
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of(
             "min", 0.0,
@@ -212,30 +212,30 @@ public class ArmSystemSim extends ArmSystem {
             "show text", false));
 
     Shuffleboard.getTab("Simulation")
-        .addBoolean("Extender Functional", () -> !m_ExtenderSimulation.GetIsBroken())
+        .addBoolean(Constants.SimWidgets.kExtenderFunctional, () -> !m_ExtenderSimulation.GetIsBroken())
         .withWidget(BuiltInWidgets.kBooleanBox)
         .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
   }
 
   private void AddShuffleboardWidgetsForSensor() {
     Shuffleboard.getTab("Simulation")
-        .addBoolean("Extender Sensor", () -> !m_sensorSim.getValue())
+        .addBoolean(Constants.SimWidgets.kExtenderSensor, () -> !m_sensorSim.getValue())
         .withWidget(BuiltInWidgets.kBooleanBox)
         .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#FFFFFF"));
   }
 
   private void AddShuffleboardWidgetsForArm() {
     Shuffleboard.getTab("Simulation")
-        .addDouble("Arm position", () -> m_winchAbsoluteEncoder.getAbsolutePosition())
+        .addDouble(Constants.SimWidgets.kArmPosition, () -> m_winchAbsoluteEncoder.getAbsolutePosition())
         .withWidget(BuiltInWidgets.kTextView);
 
     Shuffleboard.getTab("Simulation")
-        .addBoolean("Arm Functional", () -> !m_ArmSimulation.GetIsBroken())
+        .addBoolean(Constants.SimWidgets.kArmFunctional, () -> !m_ArmSimulation.GetIsBroken())
         .withWidget(BuiltInWidgets.kBooleanBox)
         .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
 
     Shuffleboard.getTab("Simulation")
-        .add("Arm System Commands", this);
+        .add(Constants.SimWidgets.kArmSystemCommands, this);
   }
 
   private void AddShuffleboardWidgets() {

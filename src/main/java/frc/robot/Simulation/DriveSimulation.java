@@ -120,15 +120,6 @@ public class DriveSimulation {
     resetAllEncoders();
 
     m_rightGroup.setInverted(true);
-
-    Shuffleboard.getTab("Simulation")
-        .add("Field", m_fieldSim)
-        .withWidget(BuiltInWidgets.kField);
-
-    Shuffleboard.getTab("Simulation")
-        .add("Gyro", m_gyro)
-        .withWidget(BuiltInWidgets.kGyro)
-        .withProperties(Map.of("Starting angle", 90));
   }
 
   /** Sets speeds to the drivetrain motors. */
@@ -207,6 +198,14 @@ public class DriveSimulation {
 
   public double getHeading() {
     return m_gyroSim.getAngle();
+  }
+
+  public Field2d getField() {
+    return m_fieldSim;
+  }
+
+  public AnalogGyro getGyro() {
+    return m_gyro;
   }
 
   /** Update our simulation. This should be run every robot loop in simulation. */

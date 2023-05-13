@@ -88,7 +88,7 @@ public class GrabberSystemSim extends GrabberSystem {
 
   private void AddShuffleboardWidgets() {
     Shuffleboard.getTab("Simulation")
-        .addString("Grabber", () -> getGrabberStatusText())
+        .addString(Constants.SimWidgets.kGrabber, () -> getGrabberStatusText())
         .withWidget(BuiltInWidgets.kTextView);
   }
 
