@@ -7,29 +7,28 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class VerifyJoysticks {
   public class JoystickConfig {
-      int port;
-      int expectedAxisCount;
-      int expectedButtonCount;
-      int expectedPOVCount;
-      String expectedJoystickName;
-      int expectedJoystickType;
+    int port;
+    int expectedAxisCount;
+    int expectedButtonCount;
+    int expectedPOVCount;
+    String expectedJoystickName;
+    int expectedJoystickType;
 
-      // Constructor
-      public JoystickConfig(
-          int port,
-          int expectedAxisCount,
-          int expectedButtonCount,
-          int expectedPOVCount,
-          String expectedJoystickName,
-          int expectedJoystickType
-      ) {
-          this.port = port;
-          this.expectedAxisCount = expectedAxisCount;
-          this.expectedButtonCount = expectedButtonCount;
-          this.expectedPOVCount = expectedPOVCount;
-          this.expectedJoystickName = expectedJoystickName;
-          this.expectedJoystickType = expectedJoystickType;
-      }
+    // Constructor
+    public JoystickConfig(
+        int port,
+        int expectedAxisCount,
+        int expectedButtonCount,
+        int expectedPOVCount,
+        String expectedJoystickName,
+        int expectedJoystickType) {
+      this.port = port;
+      this.expectedAxisCount = expectedAxisCount;
+      this.expectedButtonCount = expectedButtonCount;
+      this.expectedPOVCount = expectedPOVCount;
+      this.expectedJoystickName = expectedJoystickName;
+      this.expectedJoystickType = expectedJoystickType;
+    }
   }
 
   private boolean m_lastResult;
@@ -38,19 +37,19 @@ public class VerifyJoysticks {
 
   private JoystickConfig[] m_joystickConfigs = new JoystickConfig[] {
       new JoystickConfig(
-        1,    // port
-        6,    // expectedAxisCount
-        16,    // expectedButtonCount
-        1,    // expectedPOVCountt
-        "Controller (Xbox One For Windows)",
-        1),   // expectedJoystickType
+          1, // port
+          6, // expectedAxisCount
+          16, // expectedButtonCount
+          1, // expectedPOVCountt
+          "Controller (Xbox One For Windows)",
+          1), // expectedJoystickType
       new JoystickConfig(
-        0,
-        6, 
-        16,
-        1,
-        "Controller (Xbox One For Windows)",
-        1)
+          0,
+          6,
+          16,
+          1,
+          "Controller (Xbox One For Windows)",
+          1)
   };
 
   // Constructor
@@ -66,16 +65,16 @@ public class VerifyJoysticks {
     if (m_firstCall || (currentTime.getEpochSecond() - m_recordedTime.getEpochSecond()) >= periodSeconds) {
 
       for (int i = 0; i < m_joystickConfigs.length; i++) {
-         if (!VerifySingleJoystick(
-          m_joystickConfigs[i].port,
-          m_joystickConfigs[i].expectedAxisCount,
-          m_joystickConfigs[i].expectedButtonCount,
-          m_joystickConfigs[i].expectedPOVCount,
-          m_joystickConfigs[i].expectedJoystickName,
-          m_joystickConfigs[i].expectedJoystickType)) {
+        if (!VerifySingleJoystick(
+            m_joystickConfigs[i].port,
+            m_joystickConfigs[i].expectedAxisCount,
+            m_joystickConfigs[i].expectedButtonCount,
+            m_joystickConfigs[i].expectedPOVCount,
+            m_joystickConfigs[i].expectedJoystickName,
+            m_joystickConfigs[i].expectedJoystickType)) {
 
-            AllSuccess = false;
-          }
+          AllSuccess = false;
+        }
       }
 
       m_lastResult = AllSuccess;
@@ -94,12 +93,12 @@ public class VerifyJoysticks {
   }
 
   private boolean VerifySingleJoystick(
-    int port,
-    int expectedAxisCount,
-    int expectedButtonCount,
-    int expectedPOVCount,
-    String expectedJoystickName,
-    int expectedJoystickType) {
+      int port,
+      int expectedAxisCount,
+      int expectedButtonCount,
+      int expectedPOVCount,
+      String expectedJoystickName,
+      int expectedJoystickType) {
 
     boolean result = true;
 
@@ -110,35 +109,39 @@ public class VerifyJoysticks {
 
     int actualAxisCount = DriverStation.getStickAxisCount(port);
     if (expectedAxisCount != actualAxisCount) {
-      System.out.println(String.format("Joystick port #%d: Expected AxisCount=%d, Actual AxisCount=%d", port, expectedAxisCount, actualAxisCount));
+      System.out.println(String.format("Joystick port #%d: Expected AxisCount=%d, Actual AxisCount=%d", port,
+          expectedAxisCount, actualAxisCount));
       result = false;
     }
 
     int actualButtonCount = DriverStation.getStickButtonCount(port);
     if (expectedButtonCount != actualButtonCount) {
-      System.out.println(String.format("Joystick port #%d: Expected ButtonCount=%d, Actual ButtonCount=%d", port, expectedButtonCount, actualButtonCount));
+      System.out.println(String.format("Joystick port #%d: Expected ButtonCount=%d, Actual ButtonCount=%d", port,
+          expectedButtonCount, actualButtonCount));
       result = false;
     }
 
     int actualPovCount = DriverStation.getStickPOVCount(port);
     if (expectedPOVCount != actualPovCount) {
-      System.out.println(String.format("Joystick port #%d: Expected PovCount=%d, Actual PovCount=%d", port, expectedPOVCount, actualPovCount));
+      System.out.println(String.format("Joystick port #%d: Expected PovCount=%d, Actual PovCount=%d", port,
+          expectedPOVCount, actualPovCount));
       result = false;
     }
 
     String actualJoystickName = DriverStation.getJoystickName(port);
     if (!expectedJoystickName.equals(actualJoystickName)) {
-      System.out.println(String.format("Joystick port #%d: Expected JoystickName=%s, Actual JoystickName=%s", port, expectedJoystickName, actualJoystickName));
+      System.out.println(String.format("Joystick port #%d: Expected JoystickName=%s, Actual JoystickName=%s", port,
+          expectedJoystickName, actualJoystickName));
       result = false;
     }
 
     int actualJoystickType = DriverStation.getJoystickType(port);
     if (expectedJoystickType != actualJoystickType) {
-      System.out.println(String.format("Joystick port #%d: Expected JoystickType=%d, Actual JoystickType=%d", port, expectedJoystickType, actualJoystickType));
+      System.out.println(String.format("Joystick port #%d: Expected JoystickType=%d, Actual JoystickType=%d", port,
+          expectedJoystickType, actualJoystickType));
       result = false;
     }
 
     return result;
   }
 }
-

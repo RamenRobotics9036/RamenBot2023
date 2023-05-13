@@ -3,7 +3,7 @@ package frc.robot.Commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.TankDriveSystem;
 
-public class DriveCommand extends CommandBase{
+public class DriveCommand extends CommandBase {
     private double distance;
     private double gearBoxRatio;
     private double percentOutput;
@@ -11,7 +11,8 @@ public class DriveCommand extends CommandBase{
 
     TankDriveSystem m_drive;
 
-    public DriveCommand(TankDriveSystem m_drive, double distance, double gearBoxRatio, double percentOutput, double wheelCircumference) {
+    public DriveCommand(TankDriveSystem m_drive, double distance, double gearBoxRatio, double percentOutput,
+            double wheelCircumference) {
         this.distance = distance;
         this.gearBoxRatio = gearBoxRatio;
         this.percentOutput = -percentOutput;

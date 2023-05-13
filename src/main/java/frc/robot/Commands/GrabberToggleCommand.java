@@ -3,7 +3,7 @@ package frc.robot.Commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.GrabberSystem;
 
-public class GrabberToggleCommand extends CommandBase{
+public class GrabberToggleCommand extends CommandBase {
     private boolean finished = false;
     GrabberSystem m_grabSystem;
 
@@ -14,7 +14,7 @@ public class GrabberToggleCommand extends CommandBase{
 
     @Override
     public void initialize() {
-        
+
     }
 
     @Override
@@ -30,6 +30,6 @@ public class GrabberToggleCommand extends CommandBase{
 
     @Override
     public void end(boolean interrupted) {
-    
+
     }
 }

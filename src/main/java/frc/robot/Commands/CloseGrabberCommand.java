@@ -18,7 +18,7 @@ public class CloseGrabberCommand extends CommandBase {
 
     @Override
     public void execute() {
-        
+
     }
 
     @Override
@@ -28,6 +28,6 @@ public class CloseGrabberCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        
+
     }
 }

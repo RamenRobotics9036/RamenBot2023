@@ -1,7 +1,6 @@
 package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -29,39 +28,39 @@ public class ArmSystemSim extends ArmSystem {
   private ArmSimulation m_ArmSimulation;
   private BooleanSupplier m_grabberOpenSupplier = null;
 
-  public static ArmSystem CreateArmSystemInstance(int armWinchChannel, int armExtenderChannel, XboxController m_controller, double m_deadband, boolean squareInputs, double maxOutputWinch)
-  {
+  public static ArmSystem CreateArmSystemInstance(int armWinchChannel, int armExtenderChannel,
+      XboxController m_controller, double m_deadband, boolean squareInputs, double maxOutputWinch) {
     ArmSystem result;
-  
+
     if (RobotBase.isSimulation()) {
       result = new ArmSystemSim(
-        armWinchChannel,
-        armExtenderChannel,
-        m_controller,
-        m_deadband,
-        squareInputs,
-        maxOutputWinch);
-    
+          armWinchChannel,
+          armExtenderChannel,
+          m_controller,
+          m_deadband,
+          squareInputs,
+          maxOutputWinch);
+
       System.out.println("ARMSYSTEM: **** Simulation ****");
-  
+
     } else {
       result = new ArmSystem(
-        armWinchChannel,
-        armExtenderChannel,
-        m_controller,
-        m_deadband,
-        squareInputs,
-        maxOutputWinch);
-  
+          armWinchChannel,
+          armExtenderChannel,
+          m_controller,
+          m_deadband,
+          squareInputs,
+          maxOutputWinch);
+
       System.out.println("ARMSYSTEM: Physical Robot version");
     }
-  
+
     return result;
   }
 
   // Constructor
-  public ArmSystemSim(int armWinchChannel, int armExtenderChannel, XboxController m_controller, double m_deadband, boolean squareInputs, double maxOutputWinch)
-  {
+  public ArmSystemSim(int armWinchChannel, int armExtenderChannel, XboxController m_controller, double m_deadband,
+      boolean squareInputs, double maxOutputWinch) {
     // FIRST, we call superclass
     super(armWinchChannel,
         armExtenderChannel,
@@ -71,7 +70,8 @@ public class ArmSystemSim extends ArmSystem {
         maxOutputWinch);
 
     // This entire class should only be instantiated when we're under simulation.
-    // But just in-case someone tries to instantiate it otherwise, we do an extra check here.
+    // But just in-case someone tries to instantiate it otherwise, we do an extra
+    // check here.
     if (!RobotBase.isSimulation()) {
       return;
     }
@@ -79,88 +79,89 @@ public class ArmSystemSim extends ArmSystem {
     // Model a NEO motor (or any other motor)
     m_motorModel = DCMotor.getNEO(1); // 1 motor in the gearbox
 
-    // Create the motor simulation with motor model, gear ratio, and moment of inertia
+    // Create the motor simulation with motor model, gear ratio, and moment of
+    // inertia
     double motorMomentInertia = 0.0005;
     m_motorSim = new DCMotorSim(
-      m_motorModel,
-      Constants.SimConstants.kwinchSimGearRatio,
-      motorMomentInertia);
+        m_motorModel,
+        Constants.SimConstants.kwinchSimGearRatio,
+        motorMomentInertia);
 
     // Create winch simulated encoder
     m_winchEncoderSim = new RelativeEncoderSim(m_winchEncoder);
 
     m_WinchSimulation = new WinchSimulation(
-      m_winchEncoderSim,
-      0.0254, // Spool diameter (1 inch)
-      Constants.SimConstants.kTotalStringLenMeters,
-      Constants.SimConstants.kCurrentLenSpooled,
-      StringOrientation.BackOfRobot,
-      true); // invert motor for winch
+        m_winchEncoderSim,
+        0.0254, // Spool diameter (1 inch)
+        Constants.SimConstants.kTotalStringLenMeters,
+        Constants.SimConstants.kCurrentLenSpooled,
+        StringOrientation.BackOfRobot,
+        true); // invert motor for winch
 
     // Create simulated absolute encoder
     m_winchAbsoluteEncoderSim = new DutyCycleEncoderSim2(m_winchAbsoluteEncoder);
 
     m_ArmSimulation = new ArmSimulation(
-      m_WinchSimulation,
-      m_winchAbsoluteEncoderSim,
-      Constants.OperatorConstants.kWinchEncoderUpperLimit,
-      Constants.OperatorConstants.kWinchEncoderLowerLimit,
-      Constants.SimConstants.kdeltaRotationsBeforeBroken,
-      Constants.SimConstants.kgrabberBreaksIfOpenBelowThisLimit,
-      Constants.SimConstants.karmHeightFromWinchToPivotPoint,
-      Constants.SimConstants.karmLengthFromEdgeToPivot,
-      Constants.SimConstants.karmLengthFromEdgeToPivot_Min,
-      Constants.SimConstants.karmEncoderRotationsOffset);
-    }
+        m_WinchSimulation,
+        m_winchAbsoluteEncoderSim,
+        Constants.OperatorConstants.kWinchEncoderUpperLimit,
+        Constants.OperatorConstants.kWinchEncoderLowerLimit,
+        Constants.SimConstants.kdeltaRotationsBeforeBroken,
+        Constants.SimConstants.kgrabberBreaksIfOpenBelowThisLimit,
+        Constants.SimConstants.karmHeightFromWinchToPivotPoint,
+        Constants.SimConstants.karmLengthFromEdgeToPivot,
+        Constants.SimConstants.karmLengthFromEdgeToPivot_Min,
+        Constants.SimConstants.karmEncoderRotationsOffset);
+  }
 
   private void AddCommandButtons() {
     CommandBase armToMiddleNodeCone = new SetWinchToAngle(
-      this,
-      Constants.OperatorConstants.kWinchMiddleNodeCone,
-      1);
+        this,
+        Constants.OperatorConstants.kWinchMiddleNodeCone,
+        1);
 
     Shuffleboard.getTab("Simulation")
-      .add("Middle node cone", armToMiddleNodeCone)
-      .withWidget(BuiltInWidgets.kCommand);
+        .add("Middle node cone", armToMiddleNodeCone)
+        .withWidget(BuiltInWidgets.kCommand);
   }
-  
+
   private void AddShuffleboardWidgets() {
     Shuffleboard.getTab("Simulation")
-      .addDouble("Winch Motor Power", () -> m_winchMotorOutputPercentage)
-      .withWidget(BuiltInWidgets.kNumberBar)
-      .withProperties(Map.of(
-        "min", -1.0,
-        "max", 1.0,
-        "show text", false));
-    
-    Shuffleboard.getTab("Simulation")
-      .addDouble("Winch String % Extended", () -> m_WinchSimulation.GetStringExtendedPercent())
-      .withWidget(BuiltInWidgets.kNumberBar)
-      .withProperties(Map.of(
-        "min", 0.0,
-        "max", 1.0,
-        "show text", false));
+        .addDouble("Winch Motor Power", () -> m_winchMotorOutputPercentage)
+        .withWidget(BuiltInWidgets.kNumberBar)
+        .withProperties(Map.of(
+            "min", -1.0,
+            "max", 1.0,
+            "show text", false));
 
     Shuffleboard.getTab("Simulation")
-      .addString("Winch string location", () -> m_WinchSimulation.GetStringOrientationName())
-      .withWidget(BuiltInWidgets.kTextView);
+        .addDouble("Winch String % Extended", () -> m_WinchSimulation.GetStringExtendedPercent())
+        .withWidget(BuiltInWidgets.kNumberBar)
+        .withProperties(Map.of(
+            "min", 0.0,
+            "max", 1.0,
+            "show text", false));
 
     Shuffleboard.getTab("Simulation")
-      .addDouble("Arm position", () -> m_winchAbsoluteEncoder.getAbsolutePosition())
-      .withWidget(BuiltInWidgets.kTextView);
+        .addString("Winch string location", () -> m_WinchSimulation.GetStringOrientationName())
+        .withWidget(BuiltInWidgets.kTextView);
 
     Shuffleboard.getTab("Simulation")
-      .addBoolean("Winch Functional", () -> !m_WinchSimulation.GetIsBroken())
-      .withWidget(BuiltInWidgets.kBooleanBox)
-      .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
+        .addDouble("Arm position", () -> m_winchAbsoluteEncoder.getAbsolutePosition())
+        .withWidget(BuiltInWidgets.kTextView);
 
     Shuffleboard.getTab("Simulation")
-      .addBoolean("Arm Functional", () -> !m_ArmSimulation.GetIsBroken())
-      .withWidget(BuiltInWidgets.kBooleanBox)
-      .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
+        .addBoolean("Winch Functional", () -> !m_WinchSimulation.GetIsBroken())
+        .withWidget(BuiltInWidgets.kBooleanBox)
+        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
 
     Shuffleboard.getTab("Simulation")
-      .add("Arm System Commands", this);
+        .addBoolean("Arm Functional", () -> !m_ArmSimulation.GetIsBroken())
+        .withWidget(BuiltInWidgets.kBooleanBox)
+        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
+
+    Shuffleboard.getTab("Simulation")
+        .add("Arm System Commands", this);
   }
 
   private boolean isRobotEnabled() {
@@ -172,7 +173,7 @@ public class ArmSystemSim extends ArmSystem {
   }
 
   @Override
-  public void initDashBoard() {  
+  public void initDashBoard() {
     super.initDashBoard();
 
     AddShuffleboardWidgets();
@@ -181,18 +182,18 @@ public class ArmSystemSim extends ArmSystem {
 
   @Override
   public void periodic() {
-      super.periodic();
+    super.periodic();
 
-      // $TODO - This will move into ArmSimulation
-      //if (m_grabberOpenSupplier != null) {
-      //  System.out.println(m_grabberOpenSupplier.getAsBoolean());
-      //}
+    // $TODO - This will move into ArmSimulation
+    // if (m_grabberOpenSupplier != null) {
+    // System.out.println(m_grabberOpenSupplier.getAsBoolean());
+    // }
 
-      // When Robot is disabled, the entire simulation freezes
-      if (isRobotEnabled()) {      
-        m_WinchSimulation.periodic();
-        m_ArmSimulation.periodic();
-      }
+    // When Robot is disabled, the entire simulation freezes
+    if (isRobotEnabled()) {
+      m_WinchSimulation.periodic();
+      m_ArmSimulation.periodic();
+    }
   }
 
   @Override
@@ -206,21 +207,21 @@ public class ArmSystemSim extends ArmSystem {
 
       // Calculate the input voltage for the motor
       double inputVoltageVolts = m_winchMotorOutputPercentage * 12.0;
-      
+
       // Update the motor simulation
       m_motorSim.setInput(inputVoltageVolts);
       m_motorSim.update(0.02);
 
-      // Update the Encoder based on the simulation - the units are "number of rotations"
+      // Update the Encoder based on the simulation - the units are "number of
+      // rotations"
       double motorRotations = m_motorSim.getAngularPositionRotations();
       m_winchEncoderSim.setPosition(motorRotations);
 
-      //System.out.println("Input volts:           " + inputVoltageVolts);
-      //System.out.println("Winch motor rotations: " + motorRotations);
+      // System.out.println("Input volts: " + inputVoltageVolts);
+      // System.out.println("Winch motor rotations: " + motorRotations);
 
       m_WinchSimulation.simulationPeriodic();
       m_ArmSimulation.simulationPeriodic();
     }
   }
 }
-

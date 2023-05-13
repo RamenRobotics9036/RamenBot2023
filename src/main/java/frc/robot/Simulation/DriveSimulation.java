@@ -28,8 +28,6 @@ import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Simulation.RelEncoderWrapper;
 
 public class DriveSimulation {
   // 3 meters per second.
@@ -46,10 +44,8 @@ public class DriveSimulation {
   private final PWMSparkMax m_rightLeader = new PWMSparkMax(3);
   private final PWMSparkMax m_rightFollower = new PWMSparkMax(4);
 
-  private final MotorControllerGroup m_leftGroup =
-      new MotorControllerGroup(m_leftLeader, m_leftFollower);
-  private final MotorControllerGroup m_rightGroup =
-      new MotorControllerGroup(m_rightLeader, m_rightFollower);
+  private final MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftLeader, m_leftFollower);
+  private final MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightLeader, m_rightFollower);
 
   private final Encoder m_leftEncoder = new Encoder(0, 1);
   private final Encoder m_rightEncoder = new Encoder(2, 3);
@@ -59,11 +55,9 @@ public class DriveSimulation {
 
   private final AnalogGyro m_gyro = new AnalogGyro(0);
 
-  private final DifferentialDriveKinematics m_kinematics =
-      new DifferentialDriveKinematics(kTrackWidth);
-  private final DifferentialDriveOdometry m_odometry =
-      new DifferentialDriveOdometry(
-          m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
+  private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(kTrackWidth);
+  private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
+      m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
 
   // Gains are for example purposes only - must be determined for your own
   // robot!
@@ -78,8 +72,8 @@ public class DriveSimulation {
   private final RelEncoderWrapper m_rightEncoderSimWrapper;
 
   private final Field2d m_fieldSim = new Field2d();
-  private final LinearSystem<N2, N2, N2> m_drivetrainSystem =
-      LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
+  private final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5,
+      0.3);
   private final DifferentialDrivetrainSim m_drivetrainSimulator;
 
   // Resets both the absolute-encoders AND the relative-encoders
@@ -106,9 +100,8 @@ public class DriveSimulation {
   public DriveSimulation(double wheelRadiusMeters) {
     m_WheelRadius = wheelRadiusMeters;
 
-    m_drivetrainSimulator =
-        new DifferentialDrivetrainSim(
-            m_drivetrainSystem, DCMotor.getCIM(2), 8, kTrackWidth, m_WheelRadius, null);
+    m_drivetrainSimulator = new DifferentialDrivetrainSim(
+        m_drivetrainSystem, DCMotor.getCIM(2), 8, kTrackWidth, m_WheelRadius, null);
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
@@ -129,23 +122,21 @@ public class DriveSimulation {
     m_rightGroup.setInverted(true);
 
     Shuffleboard.getTab("Simulation")
-      .add("Field", m_fieldSim)
-      .withWidget(BuiltInWidgets.kField);
+        .add("Field", m_fieldSim)
+        .withWidget(BuiltInWidgets.kField);
 
     Shuffleboard.getTab("Simulation")
-      .add("Gyro", m_gyro)
-      .withWidget(BuiltInWidgets.kGyro)
-      .withProperties(Map.of("Starting angle", 90));
+        .add("Gyro", m_gyro)
+        .withWidget(BuiltInWidgets.kGyro)
+        .withProperties(Map.of("Starting angle", 90));
   }
 
   /** Sets speeds to the drivetrain motors. */
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
     var leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
     var rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
-    double leftOutput =
-        m_leftPIDController.calculate(m_leftEncoder.getRate(), speeds.leftMetersPerSecond);
-    double rightOutput =
-        m_rightPIDController.calculate(m_rightEncoder.getRate(), speeds.rightMetersPerSecond);
+    double leftOutput = m_leftPIDController.calculate(m_leftEncoder.getRate(), speeds.leftMetersPerSecond);
+    double rightOutput = m_rightPIDController.calculate(m_rightEncoder.getRate(), speeds.rightMetersPerSecond);
 
     m_leftGroup.setVoltage(leftOutput + leftFeedforward);
     m_rightGroup.setVoltage(rightOutput + rightFeedforward);
@@ -154,11 +145,12 @@ public class DriveSimulation {
   /**
    * Controls the robot using thank drive.
    *
-   * @param leftSpeed for left wheels
+   * @param leftSpeed  for left wheels
    * @param rightSpeed for right wheels
    */
-  public void tankDrive(double leftSpeed, double rightSpeed, boolean SquareInputs) {  
-    //System.out.println("TANK: xLeft = " + leftSpeed + ", xRight = " + rightSpeed);
+  public void tankDrive(double leftSpeed, double rightSpeed, boolean SquareInputs) {
+    // System.out.println("TANK: xLeft = " + leftSpeed + ", xRight = " +
+    // rightSpeed);
 
     double xForward = (leftSpeed + rightSpeed) / 2;
     double zRotation = (leftSpeed - rightSpeed) / 2;
@@ -170,11 +162,11 @@ public class DriveSimulation {
    * Controls the robot using arcade drive.
    *
    * @param xSpeed the speed for the x axis
-   * @param rot the rotation
+   * @param rot    the rotation
    */
   public void arcadeDrive(double xSpeed, double rot, boolean SquareInputs) {
-    //System.out.println("ARCADE: xSpeed = " + xSpeed);
-  
+    // System.out.println("ARCADE: xSpeed = " + xSpeed);
+
     xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
     rot = MathUtil.clamp(rot, -1.0, 1.0);
 
@@ -203,7 +195,8 @@ public class DriveSimulation {
     m_odometry.resetPosition(
         m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance(), pose);
 
-    // Even if robot is in Disabled state, we want to update the Field view to show where it is initially
+    // Even if robot is in Disabled state, we want to update the Field view to show
+    // where it is initially
     DrawRobotOnField();
   }
 
