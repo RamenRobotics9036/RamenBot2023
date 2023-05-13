@@ -113,7 +113,7 @@ public class TankDriveSystem extends SubsystemBase {
     public CommandBase getDefaultDriveCommand() {
         return run(
            () -> {
-                //System.out.println("DRIVECOMMAND");
+                System.out.println("DRIVECOMMAND");
                 ProcessJoystickInput();
            }
         );
@@ -135,7 +135,7 @@ public class TankDriveSystem extends SubsystemBase {
         return (Math.abs(getLeftEncoder()) + Math.abs(getRightEncoder())) / 2;
     }
 
-    public void ProcessJoystickInput() {
+    private void ProcessJoystickInput() {
       // In autonomous, the default command is to tell the robot to STOP.  Recall
       // that we have to send a voltage-level to the motors EVERY 20ms, otherwise
       // the watchdog trips

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 // import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -71,7 +73,18 @@ public class RobotContainer {
     m_driveSystem.setDefaultCommand(
         m_driveSystem.getDefaultDriveCommand());
 
+    m_armSystem.setDefaultCommand(
+        m_armSystem.getDefaultArmCommand());
+
     // CameraServer.startAutomaticCapture();
+
+    // Stitch together BooleanSupplier from GrabberSystemSim with ArmSystemSim
+    if (m_grabSystem instanceof GrabberSystemSim &&
+        m_armSystem instanceof ArmSystemSim) {
+
+      BooleanSupplier supplier = ((GrabberSystemSim)m_grabSystem).getGrabberOpenSupplier();
+      ((ArmSystemSim)m_armSystem).setGrabberOpenSupplier(supplier);
+    }
   }
 
   /**
@@ -84,8 +97,7 @@ public class RobotContainer {
    * joysticks}.
    */
   public void configureBindings() {
-    // $TODO - Are these armCommand and grabCommand even being called?  The work is already done in Periodic of those robot systems today
-    new Trigger(m_armSystem::getCondition).whileTrue(m_armSystem.armCommand());
+    // $TODO - Is this grabCommand even being called?  The work is already done in Periodic of those robot systems today
     new Trigger(m_grabSystem::getCondition).whileTrue(m_grabSystem.grabCommand());
 
     new Trigger(m_controller2::getAButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCone, 1));
@@ -114,6 +126,8 @@ public class RobotContainer {
   }
 
   public void initDashboard() {
+    m_armSystem.initDashBoard();
+    m_grabSystem.initDashBoard();
     // SmartDashboard.putNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed);
     // SmartDashboard.putNumber("Auto Motor Distance", Constants.OperatorConstants.kAutoMotorDistance);
     // SmartDashboard.putBoolean("Auto Turn Left", true);

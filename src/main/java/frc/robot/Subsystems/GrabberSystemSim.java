@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 import frc.robot.Constants;
 
@@ -55,8 +56,10 @@ public class GrabberSystemSim extends GrabberSystem {
 
     m_solenoidStatus = Value.kOff;
     m_grabberPhysicallyOpened = Constants.SimConstants.kgrabberInitiallyOpened;
+  }
 
-    AddShuffleboardWidgets();
+  public BooleanSupplier getGrabberOpenSupplier() {
+    return () -> m_grabberPhysicallyOpened;
   }
 
   private String getGrabberStatusText() {
@@ -91,6 +94,13 @@ public class GrabberSystemSim extends GrabberSystem {
 
   private boolean isRobotEnabled() {
     return RobotState.isEnabled();
+  }
+
+  @Override
+  public void initDashBoard() {
+    super.initDashBoard();
+
+    AddShuffleboardWidgets();
   }
 
   @Override

@@ -7,11 +7,14 @@ import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 
 import frc.robot.Constants;
+import frc.robot.Commands.SetWinchToAngle;
 import frc.robot.Simulation.ArmSimulation;
 import frc.robot.Simulation.WinchSimulation;
 import frc.robot.Simulation.WinchSimulation.StringOrientation;
@@ -24,6 +27,7 @@ public class ArmSystemSim extends ArmSystem {
   private double m_winchMotorOutputPercentage = 0;
   private WinchSimulation m_WinchSimulation;
   private ArmSimulation m_ArmSimulation;
+  private BooleanSupplier m_grabberOpenSupplier = null;
 
   public static ArmSystem CreateArmSystemInstance(int armWinchChannel, int armExtenderChannel, XboxController m_controller, double m_deadband, boolean squareInputs, double maxOutputWinch)
   {
@@ -107,10 +111,19 @@ public class ArmSystemSim extends ArmSystem {
       Constants.SimConstants.karmLengthFromEdgeToPivot,
       Constants.SimConstants.karmLengthFromEdgeToPivot_Min,
       Constants.SimConstants.karmEncoderRotationsOffset);
-  
-    AddShuffleboardWidgets();
-  }
+    }
 
+  private void AddCommandButtons() {
+    CommandBase armToMiddleNodeCone = new SetWinchToAngle(
+      this,
+      Constants.OperatorConstants.kWinchMiddleNodeCone,
+      1);
+
+    Shuffleboard.getTab("Simulation")
+      .add("Middle node cone", armToMiddleNodeCone)
+      .withWidget(BuiltInWidgets.kCommand);
+  }
+  
   private void AddShuffleboardWidgets() {
     Shuffleboard.getTab("Simulation")
       .addDouble("Winch Motor Power", () -> m_winchMotorOutputPercentage)
@@ -145,15 +158,35 @@ public class ArmSystemSim extends ArmSystem {
       .addBoolean("Arm Functional", () -> !m_ArmSimulation.GetIsBroken())
       .withWidget(BuiltInWidgets.kBooleanBox)
       .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
+
+    Shuffleboard.getTab("Simulation")
+      .add("Arm System Commands", this);
   }
 
   private boolean isRobotEnabled() {
     return RobotState.isEnabled();
   }
 
+  public void setGrabberOpenSupplier(BooleanSupplier grabberOpenSupplier) {
+    m_grabberOpenSupplier = grabberOpenSupplier;
+  }
+
+  @Override
+  public void initDashBoard() {  
+    super.initDashBoard();
+
+    AddShuffleboardWidgets();
+    AddCommandButtons();
+  }
+
   @Override
   public void periodic() {
       super.periodic();
+
+      // $TODO - This will move into ArmSimulation
+      //if (m_grabberOpenSupplier != null) {
+      //  System.out.println(m_grabberOpenSupplier.getAsBoolean());
+      //}
 
       // When Robot is disabled, the entire simulation freezes
       if (isRobotEnabled()) {      
