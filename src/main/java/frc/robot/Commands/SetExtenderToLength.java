@@ -31,7 +31,7 @@ public class SetExtenderToLength extends CommandBase {
 
     @Override
     public void execute() {
-        m_armSystem.setExtenderSpeed(inverse*speed*60); //multiplied by gearbox ratio
+        m_armSystem.setExtenderSpeed(inverse*speed);
     }
 
     @Override
