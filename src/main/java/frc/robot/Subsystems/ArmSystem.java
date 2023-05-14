@@ -88,11 +88,14 @@ public class ArmSystem extends SubsystemBase {
     }
 
     public CommandBase getDefaultArmCommand() {
-        return run(
+        CommandBase defaultCommand = run(
                 () -> {
                     //System.out.println("ARMCOMMAND");
                     ProcessJoystickInputForArm();
                 });
+
+        defaultCommand.setName("Default");
+        return defaultCommand;
     }
 
     private void ProcessJoystickInputForArm() {

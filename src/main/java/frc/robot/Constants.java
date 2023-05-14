@@ -108,7 +108,7 @@ public final class Constants {
     public static double karmLengthFromEdgeToPivot_Min = 0.1;
     public static double karmEncoderRotationsOffset = 0.56;
 
-    public static double kdeltaRotationsBeforeBroken = 0;
+    public static double kdeltaRotationsBeforeBroken = .01;
     public static double kgrabberBreaksIfOpenBelowThisLimit = 0.60;
 
     // Grabber
