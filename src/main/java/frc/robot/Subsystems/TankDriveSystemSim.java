@@ -1,10 +1,15 @@
 package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Simulation.DriveSimulation;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.RobotBase;
+
+import java.util.Map;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -82,8 +87,24 @@ public class TankDriveSystemSim extends TankDriveSystem {
       m_driveSimulation = new DriveSimulation(wheelDiameterMeters / 2);
       resetSimulationRobotPosition();
     }
+
+    AddShuffleboardWidgets();
   }
 
+  private void AddShuffleboardWidgets() {
+    Shuffleboard.getTab("Simulation")
+        .add(Constants.SimWidgets.kFieldWidget.name, m_driveSimulation.getField())
+        .withWidget(BuiltInWidgets.kField)
+        .withPosition(Constants.SimWidgets.kFieldWidget.x, Constants.SimWidgets.kFieldWidget.y)
+        .withSize(Constants.SimWidgets.kFieldWidget.width, Constants.SimWidgets.kFieldWidget.height);
+
+    Shuffleboard.getTab("Simulation")
+        .add(Constants.SimWidgets.kGyroWidget.name, m_driveSimulation.getGyro())
+        .withWidget(BuiltInWidgets.kGyro)
+        .withPosition(Constants.SimWidgets.kGyroWidget.x, Constants.SimWidgets.kGyroWidget.y)
+        .withSize(Constants.SimWidgets.kGyroWidget.width, Constants.SimWidgets.kGyroWidget.height)
+        .withProperties(Map.of("Starting angle", 90));
+  }
   private boolean isRobotEnabled() {
     return RobotState.isEnabled();
   }

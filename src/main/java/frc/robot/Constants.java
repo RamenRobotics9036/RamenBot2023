@@ -5,11 +5,15 @@
 package frc.robot;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
@@ -17,7 +21,7 @@ public final class Constants {
     public static final int kDriverControllerPort1 = 0;
     public static final int kDriverControllerPort2 = 1;
 
-    public static final int kLeftMotorForwardChannel= 13;
+    public static final int kLeftMotorForwardChannel = 13;
     public static final int kLeftMotorBackChannel = 12;
     public static final int kRightMotorBackChannel = 10;
     public static final int kRightMotorForwardChannel = 11;
@@ -33,7 +37,7 @@ public final class Constants {
 
     public static double kMaxOutputDrive = 0.7;
     public static double kMaxOutputWinch = 0.8;
-    
+
     public static double kDeadband = 0.14;
     public static boolean kUseArcadeDrive = false;
 
@@ -55,7 +59,7 @@ public final class Constants {
 
     public static double kAutoMotorSpeed = 0.3;
     public static double kAutoMotorDistance = 1;
-   
+
     public static double kAutoDriveBack = 3;
     public static double kAutoWinchRotate = 1;
     public static double kAutoExtenderRotate = 1;
@@ -76,7 +80,7 @@ public final class Constants {
     public static double kWinchGroundAngle = 0.57;
     public static double kEmergencyAngle = 0.72;
 
-    public static float kExtenderSoftLimitTurns = (float)-125; // Max is 155
+    public static float kExtenderSoftLimitTurns = (float) -125; // Max is 155
     public static int kHallEffectExtenderChannel = 4;
 
     public static int kLEDLightsChannel = 9;
@@ -99,7 +103,7 @@ public final class Constants {
     // Arm
     public static double karmLengthFromEdgeToPivot = 0.25;
     public static double karmHeightFromWinchToPivotPoint = 0.75;
-    
+
     public static double karmHeightFromWinchToPivotPoint_Min = 0.1;
     public static double karmLengthFromEdgeToPivot_Min = 0.1;
     public static double karmEncoderRotationsOffset = 0.56;
@@ -109,5 +113,53 @@ public final class Constants {
 
     // Grabber
     public static boolean kgrabberInitiallyOpened = false;
+  }
+
+  public static class SimWidgets {
+    public static class WidgetPosition {
+      public String name;
+      public int x;
+      public int y;
+      public int width;
+      public int height;
+  
+      // Constructor
+      public WidgetPosition(String name, int x, int y, int width, int height) {
+        this.name = name;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+      }
+    }
+ 
+    public static WidgetPosition kFieldWidget = new WidgetPosition("Field", 2, 0, 5, 3);
+    public static WidgetPosition kGyroWidget = new WidgetPosition("Heading", 0, 0, 2, 2);
+    public static WidgetPosition kGrabber = new WidgetPosition("Grabber", 0, 5, 2, 1);
+
+    // Arm list
+    public static WidgetPosition kArmList = new WidgetPosition("Arm", 0, 3, 2, 2);
+    public static String kArmFunctional = "Arm Functional";
+    public static String kArmSystemCommands = "Arm System Commands";
+    public static String kArmPosition = "Arm position";
+
+    // Winch list
+    public static WidgetPosition kWinchList = new WidgetPosition("Winch", 2, 3, 2, 3);
+    public static String kWinchFunctional = "Winch Functional";
+    public static String kWinchMotorPower = "Winch Motor Power"; 
+    public static String kWinchStringPercentExtended = "Winch String % Extended";
+    public static String kWinchStringLocation = "Winch string location";
+
+    // Extender list
+    public static WidgetPosition kExtenderList = new WidgetPosition("Extender", 4, 3, 2, 3);
+    public static String kExtenderFunctional = "Extender Functional";
+    public static String kExtenderMotorPower = "Extender Motor Power";
+    public static String kExtenderExtendedPercent = "Extender % Extended";
+    public static String kExtenderSensor = "Extender Sensor";
+
+    // Button list
+    public static WidgetPosition kButtonList = new WidgetPosition("Remote Control", 6, 3, 2, 2);
+    public static String kButtonMiddleNodeCone = "Arm Middle node";
+    public static String kButtonArmToGround = "Arm to ground";
   }
 }
