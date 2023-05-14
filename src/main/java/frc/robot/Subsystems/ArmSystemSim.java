@@ -158,136 +158,121 @@ public class ArmSystemSim extends ArmSystem {
   }
 
   private void AddCommandButtons() {
-    // Create a list layout
-    Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kButtonList.name, BuiltInLayouts.kList)
-        .withProperties(Map.of("Label position", "HIDDEN"))
-        .withPosition(Constants.SimWidgets.kButtonList.x, Constants.SimWidgets.kButtonList.y)
-        .withSize(Constants.SimWidgets.kButtonList.width, Constants.SimWidgets.kButtonList.height);
-
     // Move to to middle node cone
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kButtonList.name, BuiltInLayouts.kList)
-        .add(Constants.SimWidgets.kButtonMiddleNodeCone, new ArmToMiddleNodeCone(this))
-        .withWidget(BuiltInWidgets.kCommand);
+        .add(Constants.SimWidgets.kButtonMiddleNodeCone.name, new ArmToMiddleNodeCone(this))
+        .withWidget(BuiltInWidgets.kCommand)
+        .withPosition(Constants.SimWidgets.kButtonMiddleNodeCone.x, Constants.SimWidgets.kButtonMiddleNodeCone.y)
+        .withSize(Constants.SimWidgets.kButtonMiddleNodeCone.width, Constants.SimWidgets.kButtonMiddleNodeCone.height);
 
     // Lower arm to ground
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kButtonList.name, BuiltInLayouts.kList)
-        .add(Constants.SimWidgets.kButtonArmToGround, new ArmToGround(this))
-        .withWidget(BuiltInWidgets.kCommand);        
+        .add(Constants.SimWidgets.kButtonArmToGround.name, new ArmToGround(this))
+        .withWidget(BuiltInWidgets.kCommand)
+        .withPosition(Constants.SimWidgets.kButtonArmToGround.x, Constants.SimWidgets.kButtonArmToGround.y)
+        .withSize(Constants.SimWidgets.kButtonArmToGround.width, Constants.SimWidgets.kButtonArmToGround.height);
   }
 
   private void AddShuffleboardExtenderList() {
-      // Create a list layout
-      Shuffleboard.getTab("Simulation")
-          .getLayout(Constants.SimWidgets.kExtenderList.name, BuiltInLayouts.kList)
-          .withProperties(Map.of("Label position", "TOP"))
-          .withPosition(Constants.SimWidgets.kExtenderList.x, Constants.SimWidgets.kExtenderList.y)
-          .withSize(Constants.SimWidgets.kExtenderList.width, Constants.SimWidgets.kExtenderList.height);
-
     // Extender functional
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kExtenderList.name, BuiltInLayouts.kList)
-        .addBoolean(Constants.SimWidgets.kExtenderFunctional, () -> !m_ExtenderSimulation.GetIsBroken())
+        .addBoolean(Constants.SimWidgets.kExtenderFunctional.name, () -> !m_ExtenderSimulation.GetIsBroken())
         .withWidget(BuiltInWidgets.kBooleanBox)
-        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
+        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"))
+        .withPosition(Constants.SimWidgets.kExtenderFunctional.x, Constants.SimWidgets.kExtenderFunctional.y)
+        .withSize(Constants.SimWidgets.kExtenderFunctional.width, Constants.SimWidgets.kExtenderFunctional.height);
 
     // Extender motor power
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kExtenderList.name, BuiltInLayouts.kList)
-        .addDouble(Constants.SimWidgets.kExtenderMotorPower, () -> m_extenderMotorOutputPercentage)
+        .addDouble(Constants.SimWidgets.kExtenderMotorPower.name, () -> m_extenderMotorOutputPercentage)
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of(
             "min", -1.0,
             "max", 1.0,
-            "show text", false));
+            "show text", false))
+    .withPosition(Constants.SimWidgets.kExtenderMotorPower.x, Constants.SimWidgets.kExtenderMotorPower.y)
+    .withSize(Constants.SimWidgets.kExtenderMotorPower.width, Constants.SimWidgets.kExtenderMotorPower.height);
 
     // Extender percent extended
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kExtenderList.name, BuiltInLayouts.kList)
-        .addDouble(Constants.SimWidgets.kExtenderExtendedPercent, () -> m_ExtenderSimulation.GetExtendedPercent())
+        .addDouble(Constants.SimWidgets.kExtenderExtendedPercent.name, () -> m_ExtenderSimulation.GetExtendedPercent())
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of(
             "min", 0.0,
             "max", 1.0,
-            "show text", false));
+            "show text", false))
+        .withPosition(Constants.SimWidgets.kExtenderExtendedPercent.x, Constants.SimWidgets.kExtenderExtendedPercent.y)
+        .withSize(Constants.SimWidgets.kExtenderExtendedPercent.width, Constants.SimWidgets.kExtenderExtendedPercent.height);            
 
     // Extender sensor display
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kExtenderList.name, BuiltInLayouts.kList)
-        .addBoolean(Constants.SimWidgets.kExtenderSensor, () -> !m_sensorSim.getValue())
+        .addBoolean(Constants.SimWidgets.kExtenderSensor.name, () -> !m_sensorSim.getValue())
         .withWidget(BuiltInWidgets.kBooleanBox)
-        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#FFFFFF"));
+        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#FFFFFF"))
+        .withPosition(Constants.SimWidgets.kExtenderSensor.x, Constants.SimWidgets.kExtenderSensor.y)
+        .withSize(Constants.SimWidgets.kExtenderSensor.width, Constants.SimWidgets.kExtenderSensor.height);
   }
 
   private void AddShuffleboardArmList() {
-    // Create a list layout
-    Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kArmList.name, BuiltInLayouts.kList)
-        .withProperties(Map.of("Label position", "TOP"))
-        .withPosition(Constants.SimWidgets.kArmList.x, Constants.SimWidgets.kArmList.y)
-        .withSize(Constants.SimWidgets.kArmList.width, Constants.SimWidgets.kArmList.height);
-
     // Arm functional display
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kArmList.name, BuiltInLayouts.kList)
-        .addBoolean(Constants.SimWidgets.kArmFunctional, () -> !m_ArmSimulation.GetIsBroken())
+        .addBoolean(Constants.SimWidgets.kArmFunctional.name, () -> !m_ArmSimulation.GetIsBroken())
         .withWidget(BuiltInWidgets.kBooleanBox)
-        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
+        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"))
+        .withPosition(Constants.SimWidgets.kArmFunctional.x, Constants.SimWidgets.kArmFunctional.y)
+        .withSize(Constants.SimWidgets.kArmFunctional.width, Constants.SimWidgets.kArmFunctional.height);
 
     // Arm position
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kArmList.name, BuiltInLayouts.kList)
-        .addDouble(Constants.SimWidgets.kArmPosition, () -> m_winchAbsoluteEncoder.getAbsolutePosition())
-        .withWidget(BuiltInWidgets.kTextView);
+        .addDouble(Constants.SimWidgets.kArmPosition.name, () -> m_winchAbsoluteEncoder.getAbsolutePosition())
+        .withWidget(BuiltInWidgets.kTextView)
+        .withPosition(Constants.SimWidgets.kArmPosition.x, Constants.SimWidgets.kArmPosition.y)
+        .withSize(Constants.SimWidgets.kArmPosition.width, Constants.SimWidgets.kArmPosition.height);
 
     // Arm commands
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kArmList.name, BuiltInLayouts.kList)
-        .add(Constants.SimWidgets.kArmSystemCommands, this);
+        .add(Constants.SimWidgets.kArmSystemCommands.name, this)
+        .withPosition(Constants.SimWidgets.kArmSystemCommands.x, Constants.SimWidgets.kArmSystemCommands.y)
+        .withSize(Constants.SimWidgets.kArmSystemCommands.width, Constants.SimWidgets.kArmSystemCommands.height);
   }
 
   private void AddShuffleboardWinchList() {
-    // Create a list layout
-    Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kWinchList.name, BuiltInLayouts.kList)
-        .withProperties(Map.of("Label position", "TOP"))
-        .withPosition(Constants.SimWidgets.kWinchList.x, Constants.SimWidgets.kWinchList.y)
-        .withSize(Constants.SimWidgets.kWinchList.width, Constants.SimWidgets.kWinchList.height);
-
     // Winch functional display
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kWinchList.name, BuiltInLayouts.kList)
-        .addBoolean(Constants.SimWidgets.kWinchFunctional, () -> !m_WinchSimulation.GetIsBroken())
+        .addBoolean(Constants.SimWidgets.kWinchFunctional.name, () -> !m_WinchSimulation.GetIsBroken())
         .withWidget(BuiltInWidgets.kBooleanBox)
-        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
+        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"))
+        .withPosition(Constants.SimWidgets.kWinchFunctional.x, Constants.SimWidgets.kWinchFunctional.y)
+        .withSize(Constants.SimWidgets.kWinchFunctional.width, Constants.SimWidgets.kWinchFunctional.height);
 
     // Winch motor power
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kWinchList.name, BuiltInLayouts.kList)
-        .addDouble(Constants.SimWidgets.kWinchMotorPower, () -> m_winchMotorOutputPercentage)
+        .addDouble(Constants.SimWidgets.kWinchMotorPower.name, () -> m_winchMotorOutputPercentage)
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of(
             "min", -1.0,
             "max", 1.0,
-            "show text", false));
-
+            "show text", false))
+        .withPosition(Constants.SimWidgets.kWinchMotorPower.x, Constants.SimWidgets.kWinchMotorPower.y)
+        .withSize(Constants.SimWidgets.kWinchMotorPower.width, Constants.SimWidgets.kWinchMotorPower.height);
+    
     // Winch String % extended
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kWinchList.name, BuiltInLayouts.kList)
-        .addDouble(Constants.SimWidgets.kWinchStringPercentExtended, () -> m_WinchSimulation.GetStringExtendedPercent())
+        .addDouble(Constants.SimWidgets.kWinchStringPercentExtended.name, () -> m_WinchSimulation.GetStringExtendedPercent())
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of(
             "min", 0.0,
             "max", 1.0,
-            "show text", false));
-
+            "show text", false))
+        .withPosition(Constants.SimWidgets.kWinchStringPercentExtended.x, Constants.SimWidgets.kWinchStringPercentExtended.y)
+        .withSize(Constants.SimWidgets.kWinchStringPercentExtended.width, Constants.SimWidgets.kWinchStringPercentExtended.height);
+    
     // Winch string location
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kWinchList.name, BuiltInLayouts.kList)
-        .addString(Constants.SimWidgets.kWinchStringLocation, () -> m_WinchSimulation.GetStringOrientationName())
-        .withWidget(BuiltInWidgets.kTextView);
+        .addString(Constants.SimWidgets.kWinchStringLocation.name, () -> m_WinchSimulation.GetStringOrientationName())
+        .withWidget(BuiltInWidgets.kTextView)
+        .withPosition(Constants.SimWidgets.kWinchStringLocation.x, Constants.SimWidgets.kWinchStringLocation.y)
+        .withSize(Constants.SimWidgets.kWinchStringLocation.width, Constants.SimWidgets.kWinchStringLocation.height);
   }
 
   private void AddShuffleboardWidgets() {
