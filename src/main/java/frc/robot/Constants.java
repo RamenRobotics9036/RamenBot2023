@@ -137,6 +137,10 @@ public final class Constants {
     public static WidgetPosition kGyroWidget = new WidgetPosition("Heading", 0, 0, 2, 2);
     public static WidgetPosition kGrabber = new WidgetPosition("Grabber", 0, 5, 2, 1);
 
+    // Buttons (not in a list)
+    public static WidgetPosition kButtonMiddleNodeCone = new WidgetPosition("Arm Middle node", 6, 3, 2, 1);
+    public static WidgetPosition kButtonArmToGround = new WidgetPosition("Arm to ground", 6, 4, 2, 1);
+
     // Arm list
     public static WidgetPosition kArmList = new WidgetPosition("Arm", 0, 3, 2, 2);
     public static String kArmFunctional = "Arm Functional";
@@ -156,10 +160,5 @@ public final class Constants {
     public static String kExtenderMotorPower = "Extender Motor Power";
     public static String kExtenderExtendedPercent = "Extender % Extended";
     public static String kExtenderSensor = "Extender Sensor";
-
-    // Button list
-    public static WidgetPosition kButtonList = new WidgetPosition("Remote Control", 6, 3, 2, 2);
-    public static String kButtonMiddleNodeCone = "Arm Middle node";
-    public static String kButtonArmToGround = "Arm to ground";
   }
 }

@@ -158,24 +158,19 @@ public class ArmSystemSim extends ArmSystem {
   }
 
   private void AddCommandButtons() {
-    // Create a list layout
-    Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kButtonList.name, BuiltInLayouts.kList)
-        .withProperties(Map.of("Label position", "HIDDEN"))
-        .withPosition(Constants.SimWidgets.kButtonList.x, Constants.SimWidgets.kButtonList.y)
-        .withSize(Constants.SimWidgets.kButtonList.width, Constants.SimWidgets.kButtonList.height);
-
     // Move to to middle node cone
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kButtonList.name, BuiltInLayouts.kList)
-        .add(Constants.SimWidgets.kButtonMiddleNodeCone, new ArmToMiddleNodeCone(this))
-        .withWidget(BuiltInWidgets.kCommand);
+        .add(Constants.SimWidgets.kButtonMiddleNodeCone.name, new ArmToMiddleNodeCone(this))
+        .withWidget(BuiltInWidgets.kCommand)
+        .withPosition(Constants.SimWidgets.kButtonMiddleNodeCone.x, Constants.SimWidgets.kButtonMiddleNodeCone.y)
+        .withSize(Constants.SimWidgets.kButtonMiddleNodeCone.width, Constants.SimWidgets.kButtonMiddleNodeCone.height);
 
     // Lower arm to ground
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kButtonList.name, BuiltInLayouts.kList)
-        .add(Constants.SimWidgets.kButtonArmToGround, new ArmToGround(this))
-        .withWidget(BuiltInWidgets.kCommand);        
+        .add(Constants.SimWidgets.kButtonArmToGround.name, new ArmToGround(this))
+        .withWidget(BuiltInWidgets.kCommand)
+        .withPosition(Constants.SimWidgets.kButtonArmToGround.x, Constants.SimWidgets.kButtonArmToGround.y)
+        .withSize(Constants.SimWidgets.kButtonArmToGround.width, Constants.SimWidgets.kButtonArmToGround.height);
   }
 
   private void AddShuffleboardExtenderList() {
