@@ -96,7 +96,7 @@ public final class Constants {
     // Extender
     public static double kTotalExtenderLenMeters = 0.75;
     public static double kInitialExtendedLen = 0.2;
-    public static double kextenderSimGearRatio = 20.0; // 20:1
+    public static double kextenderSimGearRatio = 2.0; // 2:1
     public static double kcylinderDiameterMeters = 0.00155;
     public static double kextenderFullyRetractedLen = 0.05;
 
