@@ -139,6 +139,8 @@ public final class Constants {
     // Buttons
     public static WidgetPosition kButtonMiddleNodeCone = new WidgetPosition("Arm Middle node", 10, 0, 2, 1);
     public static WidgetPosition kButtonArmToGround = new WidgetPosition("Arm to ground", 10, 1, 2, 1);
+    public static WidgetPosition kArmExtendFully = new WidgetPosition("Extend", 10, 2, 2, 1);
+    public static WidgetPosition kArmRetract = new WidgetPosition("Retract extender", 10, 3, 2, 1);
 
     // Arm list
     public static WidgetPosition kArmFunctional = new WidgetPosition("Arm Functional", 0, 3, 2, 1);

@@ -15,6 +15,8 @@ import java.util.function.BooleanSupplier;
 
 import frc.robot.Constants;
 import frc.robot.Commands.ArmToMiddleNodeCone;
+import frc.robot.Commands.RetractArmCommand;
+import frc.robot.Commands.ArmExtendFully;
 import frc.robot.Commands.ArmToGround;
 import frc.robot.Simulation.ArmSimulation;
 import frc.robot.Simulation.WinchSimulation;
@@ -171,6 +173,20 @@ public class ArmSystemSim extends ArmSystem {
         .withWidget(BuiltInWidgets.kCommand)
         .withPosition(Constants.SimWidgets.kButtonArmToGround.x, Constants.SimWidgets.kButtonArmToGround.y)
         .withSize(Constants.SimWidgets.kButtonArmToGround.width, Constants.SimWidgets.kButtonArmToGround.height);
+
+    // Extend arm
+    Shuffleboard.getTab("Simulation")
+        .add(Constants.SimWidgets.kArmExtendFully.name, new ArmExtendFully(this))
+        .withWidget(BuiltInWidgets.kCommand)
+        .withPosition(Constants.SimWidgets.kArmExtendFully.x, Constants.SimWidgets.kArmExtendFully.y)
+        .withSize(Constants.SimWidgets.kArmExtendFully.width, Constants.SimWidgets.kArmExtendFully.height);
+
+    // Retract extender
+    Shuffleboard.getTab("Simulation")
+        .add(Constants.SimWidgets.kArmRetract.name, new RetractArmCommand(this))
+        .withWidget(BuiltInWidgets.kCommand)
+        .withPosition(Constants.SimWidgets.kArmRetract.x, Constants.SimWidgets.kArmRetract.y)
+        .withSize(Constants.SimWidgets.kArmRetract.width, Constants.SimWidgets.kArmRetract.height);
   }
 
   private void AddShuffleboardExtenderList() {
