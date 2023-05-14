@@ -133,22 +133,33 @@ public final class Constants {
       }
     }
  
-    public static WidgetPosition kWinchMotorPower = new WidgetPosition("Winch Motor Power", 1, 1, 2, 1); 
+    public static WidgetPosition kFieldWidget = new WidgetPosition("Field", 2, 0, 5, 3);
+    public static WidgetPosition kGyroWidget = new WidgetPosition("Heading", 0, 0, 2, 2);
+    public static WidgetPosition kGrabber = new WidgetPosition("Grabber", 0, 5, 2, 1);
+
+    // Arm list
+    public static WidgetPosition kArmList = new WidgetPosition("Arm", 0, 3, 2, 2);
+    public static String kArmFunctional = "Arm Functional";
+    public static String kArmSystemCommands = "Arm System Commands";
+    public static String kArmPosition = "Arm position";
+
+    // Winch list
+    public static WidgetPosition kWinchList = new WidgetPosition("Winch", 2, 3, 2, 3);
+    public static String kWinchFunctional = "Winch Functional";
+    public static String kWinchMotorPower = "Winch Motor Power"; 
     public static String kWinchStringPercentExtended = "Winch String % Extended";
     public static String kWinchStringLocation = "Winch string location";
-    public static String kWinchFunctional = "Winch Functional";
-    public static String kExtenderMotorPower = "Extender Motor Power";
-    public static String kExtenderMotorPercent = "Extender % Extended";
-    public static String kExtenderFunctional = "Extender Functional";
-    public static String kExtenderSensor = "Extender Sensor";
-    public static String kArmPosition = "Arm position";
-    public static String kArmFunctional = "Arm Functional";
-    public static String kField = "Field";
-    public static String kGyro = "Gyro";
-    public static String kArmSystemCommands = "Arm System Commands";
-    public static String kGrabber = "Grabber";
 
-    // Buttons
-    public static String kButtonMiddleNodeCone = "Middle node cone";
+    // Extender list
+    public static WidgetPosition kExtenderList = new WidgetPosition("Extender", 4, 3, 2, 3);
+    public static String kExtenderFunctional = "Extender Functional";
+    public static String kExtenderMotorPower = "Extender Motor Power";
+    public static String kExtenderExtendedPercent = "Extender % Extended";
+    public static String kExtenderSensor = "Extender Sensor";
+
+    // Button list
+    public static WidgetPosition kButtonList = new WidgetPosition("Remote Control", 6, 3, 2, 2);
+    public static String kButtonMiddleNodeCone = "Arm Middle node";
+    public static String kButtonArmToGround = "Arm to ground";
   }
 }

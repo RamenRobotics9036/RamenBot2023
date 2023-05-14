@@ -93,12 +93,16 @@ public class TankDriveSystemSim extends TankDriveSystem {
 
   private void AddShuffleboardWidgets() {
     Shuffleboard.getTab("Simulation")
-        .add(Constants.SimWidgets.kField, m_driveSimulation.getField())
-        .withWidget(BuiltInWidgets.kField);
-    
+        .add(Constants.SimWidgets.kFieldWidget.name, m_driveSimulation.getField())
+        .withWidget(BuiltInWidgets.kField)
+        .withPosition(Constants.SimWidgets.kFieldWidget.x, Constants.SimWidgets.kFieldWidget.y)
+        .withSize(Constants.SimWidgets.kFieldWidget.width, Constants.SimWidgets.kFieldWidget.height);
+
     Shuffleboard.getTab("Simulation")
-        .add(Constants.SimWidgets.kGyro, m_driveSimulation.getGyro())
+        .add(Constants.SimWidgets.kGyroWidget.name, m_driveSimulation.getGyro())
         .withWidget(BuiltInWidgets.kGyro)
+        .withPosition(Constants.SimWidgets.kGyroWidget.x, Constants.SimWidgets.kGyroWidget.y)
+        .withSize(Constants.SimWidgets.kGyroWidget.width, Constants.SimWidgets.kGyroWidget.height)
         .withProperties(Map.of("Starting angle", 90));
   }
   private boolean isRobotEnabled() {

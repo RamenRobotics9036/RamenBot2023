@@ -88,8 +88,10 @@ public class GrabberSystemSim extends GrabberSystem {
 
   private void AddShuffleboardWidgets() {
     Shuffleboard.getTab("Simulation")
-        .addString(Constants.SimWidgets.kGrabber, () -> getGrabberStatusText())
-        .withWidget(BuiltInWidgets.kTextView);
+        .addString(Constants.SimWidgets.kGrabber.name, () -> getGrabberStatusText())
+        .withWidget(BuiltInWidgets.kTextView)
+        .withPosition(Constants.SimWidgets.kGrabber.x, Constants.SimWidgets.kGrabber.y)
+        .withSize(Constants.SimWidgets.kGrabber.width, Constants.SimWidgets.kGrabber.height);
   }
 
   private boolean isRobotEnabled() {
