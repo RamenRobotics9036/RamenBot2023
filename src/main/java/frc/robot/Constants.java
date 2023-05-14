@@ -147,11 +147,10 @@ public final class Constants {
     public static WidgetPosition kArmSystemCommands = new WidgetPosition("Arm System Commands", 0, 5, 2, 1);
 
     // Winch list
-    public static WidgetPosition kWinchList = new WidgetPosition("Winch", 2, 3, 2, 3);
-    public static String kWinchFunctional = "Winch Functional";
-    public static String kWinchMotorPower = "Winch Motor Power"; 
-    public static String kWinchStringPercentExtended = "Winch String % Extended";
-    public static String kWinchStringLocation = "Winch string location";
+    public static WidgetPosition kWinchFunctional = new WidgetPosition("Winch Functional", 2, 3, 2, 1);
+    public static WidgetPosition kWinchMotorPower = new WidgetPosition("Winch Motor Power", 2, 4, 2, 1);
+    public static WidgetPosition kWinchStringPercentExtended = new WidgetPosition("Winch String % Extended", 2, 5, 2, 1);
+    public static WidgetPosition kWinchStringLocation = new WidgetPosition("Winch string location", 2, 6, 2, 1);
 
     // Extender list
     public static WidgetPosition kExtenderList = new WidgetPosition("Extender", 4, 3, 2, 3);

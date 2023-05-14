@@ -240,45 +240,42 @@ public class ArmSystemSim extends ArmSystem {
   }
 
   private void AddShuffleboardWinchList() {
-    // Create a list layout
-    Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kWinchList.name, BuiltInLayouts.kList)
-        .withProperties(Map.of("Label position", "TOP"))
-        .withPosition(Constants.SimWidgets.kWinchList.x, Constants.SimWidgets.kWinchList.y)
-        .withSize(Constants.SimWidgets.kWinchList.width, Constants.SimWidgets.kWinchList.height);
-
     // Winch functional display
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kWinchList.name, BuiltInLayouts.kList)
-        .addBoolean(Constants.SimWidgets.kWinchFunctional, () -> !m_WinchSimulation.GetIsBroken())
+        .addBoolean(Constants.SimWidgets.kWinchFunctional.name, () -> !m_WinchSimulation.GetIsBroken())
         .withWidget(BuiltInWidgets.kBooleanBox)
-        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
+        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"))
+        .withPosition(Constants.SimWidgets.kWinchFunctional.x, Constants.SimWidgets.kWinchFunctional.y)
+        .withSize(Constants.SimWidgets.kWinchFunctional.width, Constants.SimWidgets.kWinchFunctional.height);
 
     // Winch motor power
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kWinchList.name, BuiltInLayouts.kList)
-        .addDouble(Constants.SimWidgets.kWinchMotorPower, () -> m_winchMotorOutputPercentage)
+        .addDouble(Constants.SimWidgets.kWinchMotorPower.name, () -> m_winchMotorOutputPercentage)
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of(
             "min", -1.0,
             "max", 1.0,
-            "show text", false));
-
+            "show text", false))
+        .withPosition(Constants.SimWidgets.kWinchMotorPower.x, Constants.SimWidgets.kWinchMotorPower.y)
+        .withSize(Constants.SimWidgets.kWinchMotorPower.width, Constants.SimWidgets.kWinchMotorPower.height);
+    
     // Winch String % extended
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kWinchList.name, BuiltInLayouts.kList)
-        .addDouble(Constants.SimWidgets.kWinchStringPercentExtended, () -> m_WinchSimulation.GetStringExtendedPercent())
+        .addDouble(Constants.SimWidgets.kWinchStringPercentExtended.name, () -> m_WinchSimulation.GetStringExtendedPercent())
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of(
             "min", 0.0,
             "max", 1.0,
-            "show text", false));
-
+            "show text", false))
+        .withPosition(Constants.SimWidgets.kWinchStringPercentExtended.x, Constants.SimWidgets.kWinchStringPercentExtended.y)
+        .withSize(Constants.SimWidgets.kWinchStringPercentExtended.width, Constants.SimWidgets.kWinchStringPercentExtended.height);
+    
     // Winch string location
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kWinchList.name, BuiltInLayouts.kList)
-        .addString(Constants.SimWidgets.kWinchStringLocation, () -> m_WinchSimulation.GetStringOrientationName())
-        .withWidget(BuiltInWidgets.kTextView);
+        .addString(Constants.SimWidgets.kWinchStringLocation.name, () -> m_WinchSimulation.GetStringOrientationName())
+        .withWidget(BuiltInWidgets.kTextView)
+        .withPosition(Constants.SimWidgets.kWinchStringLocation.x, Constants.SimWidgets.kWinchStringLocation.y)
+        .withSize(Constants.SimWidgets.kWinchStringLocation.width, Constants.SimWidgets.kWinchStringLocation.height);
   }
 
   private void AddShuffleboardWidgets() {
