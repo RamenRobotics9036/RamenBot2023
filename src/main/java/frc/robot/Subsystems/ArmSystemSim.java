@@ -174,46 +174,43 @@ public class ArmSystemSim extends ArmSystem {
   }
 
   private void AddShuffleboardExtenderList() {
-      // Create a list layout
-      Shuffleboard.getTab("Simulation")
-          .getLayout(Constants.SimWidgets.kExtenderList.name, BuiltInLayouts.kList)
-          .withProperties(Map.of("Label position", "TOP"))
-          .withPosition(Constants.SimWidgets.kExtenderList.x, Constants.SimWidgets.kExtenderList.y)
-          .withSize(Constants.SimWidgets.kExtenderList.width, Constants.SimWidgets.kExtenderList.height);
-
     // Extender functional
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kExtenderList.name, BuiltInLayouts.kList)
-        .addBoolean(Constants.SimWidgets.kExtenderFunctional, () -> !m_ExtenderSimulation.GetIsBroken())
+        .addBoolean(Constants.SimWidgets.kExtenderFunctional.name, () -> !m_ExtenderSimulation.GetIsBroken())
         .withWidget(BuiltInWidgets.kBooleanBox)
-        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
+        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"))
+        .withPosition(Constants.SimWidgets.kExtenderFunctional.x, Constants.SimWidgets.kExtenderFunctional.y)
+        .withSize(Constants.SimWidgets.kExtenderFunctional.width, Constants.SimWidgets.kExtenderFunctional.height);
 
     // Extender motor power
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kExtenderList.name, BuiltInLayouts.kList)
-        .addDouble(Constants.SimWidgets.kExtenderMotorPower, () -> m_extenderMotorOutputPercentage)
+        .addDouble(Constants.SimWidgets.kExtenderMotorPower.name, () -> m_extenderMotorOutputPercentage)
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of(
             "min", -1.0,
             "max", 1.0,
-            "show text", false));
+            "show text", false))
+    .withPosition(Constants.SimWidgets.kExtenderMotorPower.x, Constants.SimWidgets.kExtenderMotorPower.y)
+    .withSize(Constants.SimWidgets.kExtenderMotorPower.width, Constants.SimWidgets.kExtenderMotorPower.height);
 
     // Extender percent extended
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kExtenderList.name, BuiltInLayouts.kList)
-        .addDouble(Constants.SimWidgets.kExtenderExtendedPercent, () -> m_ExtenderSimulation.GetExtendedPercent())
+        .addDouble(Constants.SimWidgets.kExtenderExtendedPercent.name, () -> m_ExtenderSimulation.GetExtendedPercent())
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of(
             "min", 0.0,
             "max", 1.0,
-            "show text", false));
+            "show text", false))
+        .withPosition(Constants.SimWidgets.kExtenderExtendedPercent.x, Constants.SimWidgets.kExtenderExtendedPercent.y)
+        .withSize(Constants.SimWidgets.kExtenderExtendedPercent.width, Constants.SimWidgets.kExtenderExtendedPercent.height);            
 
     // Extender sensor display
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kExtenderList.name, BuiltInLayouts.kList)
-        .addBoolean(Constants.SimWidgets.kExtenderSensor, () -> !m_sensorSim.getValue())
+        .addBoolean(Constants.SimWidgets.kExtenderSensor.name, () -> !m_sensorSim.getValue())
         .withWidget(BuiltInWidgets.kBooleanBox)
-        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#FFFFFF"));
+        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#FFFFFF"))
+        .withPosition(Constants.SimWidgets.kExtenderSensor.x, Constants.SimWidgets.kExtenderSensor.y)
+        .withSize(Constants.SimWidgets.kExtenderSensor.width, Constants.SimWidgets.kExtenderSensor.height);
   }
 
   private void AddShuffleboardArmList() {

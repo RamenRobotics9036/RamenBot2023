@@ -87,6 +87,15 @@ public class GrabberSystemSim extends GrabberSystem {
   }
 
   private void AddShuffleboardWidgets() {
+    // Grabber functional
+    Shuffleboard.getTab("Simulation")
+        .addBoolean(Constants.SimWidgets.kGrabberFunctional.name, () -> true)
+        .withWidget(BuiltInWidgets.kBooleanBox)
+        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"))
+        .withPosition(Constants.SimWidgets.kGrabberFunctional.x, Constants.SimWidgets.kGrabberFunctional.y)
+        .withSize(Constants.SimWidgets.kGrabberFunctional.width, Constants.SimWidgets.kGrabberFunctional.height);
+
+    // Grabber open/closed
     Shuffleboard.getTab("Simulation")
         .addString(Constants.SimWidgets.kGrabber.name, () -> getGrabberStatusText())
         .withWidget(BuiltInWidgets.kTextView)

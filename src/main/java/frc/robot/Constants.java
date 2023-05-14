@@ -135,9 +135,8 @@ public final class Constants {
  
     public static WidgetPosition kFieldWidget = new WidgetPosition("Field", 2, 0, 5, 3);
     public static WidgetPosition kGyroWidget = new WidgetPosition("Heading", 0, 0, 2, 2);
-    public static WidgetPosition kGrabber = new WidgetPosition("Grabber", 6, 3, 2, 1);
 
-    // Buttons (not in a list)
+    // Buttons
     public static WidgetPosition kButtonMiddleNodeCone = new WidgetPosition("Arm Middle node", 10, 0, 2, 1);
     public static WidgetPosition kButtonArmToGround = new WidgetPosition("Arm to ground", 10, 1, 2, 1);
 
@@ -153,10 +152,13 @@ public final class Constants {
     public static WidgetPosition kWinchStringLocation = new WidgetPosition("Winch string location", 2, 6, 2, 1);
 
     // Extender list
-    public static WidgetPosition kExtenderList = new WidgetPosition("Extender", 4, 3, 2, 3);
-    public static String kExtenderFunctional = "Extender Functional";
-    public static String kExtenderMotorPower = "Extender Motor Power";
-    public static String kExtenderExtendedPercent = "Extender % Extended";
-    public static String kExtenderSensor = "Extender Sensor";
+    public static WidgetPosition kExtenderFunctional = new WidgetPosition("Extender Functional", 4, 3, 2, 1);
+    public static WidgetPosition kExtenderMotorPower = new WidgetPosition("Extender Motor Power", 4, 4, 2, 1);
+    public static WidgetPosition kExtenderExtendedPercent = new WidgetPosition("Extender % Extended", 4, 5, 2, 1);
+    public static WidgetPosition kExtenderSensor = new WidgetPosition("Extender Sensor", 4, 6, 2, 1);
+
+    // Grabber
+    public static WidgetPosition kGrabberFunctional = new WidgetPosition("Grabber Functional", 6, 3, 2, 1);
+    public static WidgetPosition kGrabber = new WidgetPosition("Grabber", 6, 4, 2, 1);
   }
 }
