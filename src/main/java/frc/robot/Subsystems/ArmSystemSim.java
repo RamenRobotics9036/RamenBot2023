@@ -217,30 +217,26 @@ public class ArmSystemSim extends ArmSystem {
   }
 
   private void AddShuffleboardArmList() {
-    // Create a list layout
-    Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kArmList.name, BuiltInLayouts.kList)
-        .withProperties(Map.of("Label position", "TOP"))
-        .withPosition(Constants.SimWidgets.kArmList.x, Constants.SimWidgets.kArmList.y)
-        .withSize(Constants.SimWidgets.kArmList.width, Constants.SimWidgets.kArmList.height);
-
     // Arm functional display
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kArmList.name, BuiltInLayouts.kList)
-        .addBoolean(Constants.SimWidgets.kArmFunctional, () -> !m_ArmSimulation.GetIsBroken())
+        .addBoolean(Constants.SimWidgets.kArmFunctional.name, () -> !m_ArmSimulation.GetIsBroken())
         .withWidget(BuiltInWidgets.kBooleanBox)
-        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"));
+        .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"))
+        .withPosition(Constants.SimWidgets.kArmFunctional.x, Constants.SimWidgets.kArmFunctional.y)
+        .withSize(Constants.SimWidgets.kArmFunctional.width, Constants.SimWidgets.kArmFunctional.height);
 
     // Arm position
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kArmList.name, BuiltInLayouts.kList)
-        .addDouble(Constants.SimWidgets.kArmPosition, () -> m_winchAbsoluteEncoder.getAbsolutePosition())
-        .withWidget(BuiltInWidgets.kTextView);
+        .addDouble(Constants.SimWidgets.kArmPosition.name, () -> m_winchAbsoluteEncoder.getAbsolutePosition())
+        .withWidget(BuiltInWidgets.kTextView)
+        .withPosition(Constants.SimWidgets.kArmPosition.x, Constants.SimWidgets.kArmPosition.y)
+        .withSize(Constants.SimWidgets.kArmPosition.width, Constants.SimWidgets.kArmPosition.height);
 
     // Arm commands
     Shuffleboard.getTab("Simulation")
-        .getLayout(Constants.SimWidgets.kArmList.name, BuiltInLayouts.kList)
-        .add(Constants.SimWidgets.kArmSystemCommands, this);
+        .add(Constants.SimWidgets.kArmSystemCommands.name, this)
+        .withPosition(Constants.SimWidgets.kArmSystemCommands.x, Constants.SimWidgets.kArmSystemCommands.y)
+        .withSize(Constants.SimWidgets.kArmSystemCommands.width, Constants.SimWidgets.kArmSystemCommands.height);
   }
 
   private void AddShuffleboardWinchList() {
