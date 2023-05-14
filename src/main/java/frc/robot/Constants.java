@@ -96,7 +96,7 @@ public final class Constants {
     // Extender
     public static double kTotalExtenderLenMeters = 0.75;
     public static double kInitialExtendedLen = 0.2;
-    public static double kextenderSimGearRatio = 20.0; // 20:1
+    public static double kextenderSimGearRatio = 2.0; // 2:1
     public static double kcylinderDiameterMeters = 0.00155;
     public static double kextenderFullyRetractedLen = 0.05;
 
@@ -108,7 +108,7 @@ public final class Constants {
     public static double karmLengthFromEdgeToPivot_Min = 0.1;
     public static double karmEncoderRotationsOffset = 0.56;
 
-    public static double kdeltaRotationsBeforeBroken = 0;
+    public static double kdeltaRotationsBeforeBroken = .01;
     public static double kgrabberBreaksIfOpenBelowThisLimit = 0.60;
 
     // Grabber
@@ -139,6 +139,8 @@ public final class Constants {
     // Buttons
     public static WidgetPosition kButtonMiddleNodeCone = new WidgetPosition("Arm Middle node", 10, 0, 2, 1);
     public static WidgetPosition kButtonArmToGround = new WidgetPosition("Arm to ground", 10, 1, 2, 1);
+    public static WidgetPosition kArmExtendFully = new WidgetPosition("Extend", 10, 2, 2, 1);
+    public static WidgetPosition kArmRetract = new WidgetPosition("Retract extender", 10, 3, 2, 1);
 
     // Arm list
     public static WidgetPosition kArmFunctional = new WidgetPosition("Arm Functional", 0, 3, 2, 1);

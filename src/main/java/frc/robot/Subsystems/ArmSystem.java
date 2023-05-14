@@ -88,11 +88,14 @@ public class ArmSystem extends SubsystemBase {
     }
 
     public CommandBase getDefaultArmCommand() {
-        return run(
+        CommandBase defaultCommand = run(
                 () -> {
                     //System.out.println("ARMCOMMAND");
                     ProcessJoystickInputForArm();
                 });
+
+        defaultCommand.setName("Default");
+        return defaultCommand;
     }
 
     private void ProcessJoystickInputForArm() {
@@ -173,10 +176,18 @@ public class ArmSystem extends SubsystemBase {
     }
 
     public void setWinchSpeed(double speed) {
+        if (speed > 1 || speed < -1) {
+          System.out.println("**** setWinchSpeed() called with invalid speed: " + speed);
+        }
+
         m_armWinch.set(speed);
     }
 
     public void setExtenderSpeed(double speed) {
+        if (speed > 1 || speed < -1) {
+          System.out.println("**** setExtenderSpeed() called with invalid speed: " + speed);
+        }
+
         m_armExtender.set(speed);
     }
 
