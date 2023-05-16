@@ -84,6 +84,10 @@ public class VerifyJoysticks {
     public boolean is_stopRestOfTestsIfFailed() {
       return m_stopRestOfTestsIfFailed;
     }
+
+    public void setTestAsSucceeded() {
+      m_lastSuccess = true;
+    }
   }
 
   // Member variables
@@ -223,6 +227,14 @@ public class VerifyJoysticks {
     return null;
   }
 
+  private static void ResetAllTestsToPassedExceptJoystickUnplugged(JoystickTest[] tests) {
+    for (int i = 0; i < tests.length; i++) {
+      if (!tests[i].is_stopRestOfTestsIfFailed()) {
+        tests[i].setTestAsSucceeded();
+      }
+    }
+  }
+
   private boolean VerifySingleJoystick(
       int port,
       int expectedAxisCount,
@@ -240,6 +252,11 @@ public class VerifyJoysticks {
         result = false;
 
         if (tests[i].is_stopRestOfTestsIfFailed()) {
+          // When the joystick is UNPLUGGED, we reset all the OTHER joystick test results to PASSED
+          //   That way, when a new joystick is plugged in again, all those other tests will rerun
+          //   even if they were already failed on the previously plugged-in Joystick.  That will
+          //   cause this system to print ALL the unexpected configurations on the NEW joystick
+          ResetAllTestsToPassedExceptJoystickUnplugged(tests);
           break;
         }
       }
