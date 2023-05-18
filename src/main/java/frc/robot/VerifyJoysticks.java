@@ -1,6 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
 import java.time.Instant;
 import java.util.function.Supplier;
 
@@ -61,14 +60,27 @@ public class VerifyJoysticks {
   private Instant m_recordedTime = Instant.now();
   private final JoystickConfig[] m_joystickConfigs;
   private JoystickTest[][] m_tests;
+  private final int m_periodSeconds;
 
   // Constructor
-  public VerifyJoysticks(JoystickConfig[] joystickConfigs, DriverStationFunctions driverStationFunctions) {
+  public VerifyJoysticks(JoystickConfig[] joystickConfigs, DriverStationFunctions driverStationFunctions, int periodSeconds) {
+    // Check params
+    if (joystickConfigs == null) {
+      throw new IllegalArgumentException("joystickConfigs cannot be null");
+    }
+
+    if (driverStationFunctions == null) {
+      throw new IllegalArgumentException("driverStationFunctions cannot be null");
+    }
+
+    m_periodSeconds = periodSeconds;
+
     m_driverStationFunctions = driverStationFunctions;
     m_joystickConfigs = joystickConfigs;
     m_tests = CreateAllJoystickTests(m_joystickConfigs);
 
     m_firstCall = true;
+    m_lastResult = true;
   }
 
   public static JoystickConfig[] GetDefaultJoystickConfigs() {
@@ -107,6 +119,52 @@ public class VerifyJoysticks {
     return allTests;
   }
 
+  public boolean getIsJoystickConnected(int index) {
+    if (index >= m_joystickConfigs.length) {
+      throw new IllegalArgumentException("index is out of range");
+    }
+    return m_tests[index][0].wasLastTestSuccessful();
+  }
+
+  public boolean getIsAxisCountCorrect(int index) {
+    if (index >= m_joystickConfigs.length) {
+      throw new IllegalArgumentException("index is out of range");
+    }
+    return m_tests[index][1].wasLastTestSuccessful();
+  }
+
+  public boolean getIsTestButtonCountCorrect(int index) {
+    if (index >= m_joystickConfigs.length) {
+      throw new IllegalArgumentException("index is out of range");
+    }
+    return m_tests[index][2].wasLastTestSuccessful();
+  }
+
+  public boolean getIsPOVCountCorrect(int index) {
+    if (index >= m_joystickConfigs.length) {
+      throw new IllegalArgumentException("index is out of range");
+    }
+    return m_tests[index][3].wasLastTestSuccessful();
+  }
+
+  public boolean getIsJoystickNameCorrect(int index) {
+    if (index >= m_joystickConfigs.length) {
+      throw new IllegalArgumentException("index is out of range");
+    }
+    return m_tests[index][4].wasLastTestSuccessful();
+  }
+
+  public boolean getIsJoystickTypeCorrect(int index) {
+    if (index >= m_joystickConfigs.length) {
+      throw new IllegalArgumentException("index is out of range");
+    }
+    return m_tests[index][5].wasLastTestSuccessful();
+  }
+
+  public boolean getAreAllJoysticksHealth() {
+    return m_lastResult;
+  }
+
   private JoystickTest[] CreateInitializedJoystickTest(
       int port,
       int expectedAxisCount,
@@ -129,10 +187,9 @@ public class VerifyJoysticks {
 
   public boolean VerifyJoysticksPeriodically() {
     Instant currentTime = Instant.now();
-    int periodSeconds = 1;
     boolean AllSuccess = true;
 
-    if (m_firstCall || (currentTime.getEpochSecond() - m_recordedTime.getEpochSecond()) >= periodSeconds) {
+    if (m_firstCall || (currentTime.getEpochSecond() - m_recordedTime.getEpochSecond()) >= m_periodSeconds) {
 
       for (int i = 0; i < m_joystickConfigs.length; i++) {
         if (!VerifySingleJoystick(

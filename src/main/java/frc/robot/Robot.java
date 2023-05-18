@@ -45,7 +45,8 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     m_verifyJoysticks = new VerifyJoysticks(
         VerifyJoysticks.GetDefaultJoystickConfigs(),
-        new DriverStationFunctions());
+        new DriverStationFunctions(),
+        1);
 
     m_robotContainer = new RobotContainer();
     m_robotContainer.initDashboard();
