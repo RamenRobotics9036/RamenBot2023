@@ -128,7 +128,7 @@ public class ArmSimulation {
   }
 
   private boolean IsInGrabberBreakRange(double positionSignedDegrees) {
-    return positionSignedDegrees <= m_grabberBreaksIfOpenBelowSignedDegreesLimit;
+    return positionSignedDegrees < m_grabberBreaksIfOpenBelowSignedDegreesLimit;
   }
 
   private void UpdateAbsoluteEncoderPosition() {
@@ -166,21 +166,30 @@ public class ArmSimulation {
       m_IsBroken = true;
     }
 
-    // If the arm is ALREADY below a certain level, and grabber is broken, arm is broken
     if (isGrabberOpen &&
-        m_IsCurrentSignedDegreesSet && IsInGrabberBreakRange(m_currentSignedDegrees)) {
+        m_IsCurrentSignedDegreesSet &&
+        IsInGrabberBreakRange(newAbsoluteEncoderSignedDegrees)) {
 
-      System.out.println("ARM: Grabber is open while arm is in breakable range");
-      m_IsBroken = true;
+      if (!IsInGrabberBreakRange(m_currentSignedDegrees)) {
 
-      // Note that we don't let the arm move from where it was
-      newAbsoluteEncoderSignedDegrees = m_currentSignedDegrees;
+        // If the arm is ABOUT to go into the breakable range with the grabber open, the arm gets stuck
+        // but doesn't break
+        System.out.println("ARM: Grabber is open while try to move arm to ground");
+
+        // With grabber open, arm is STUCK and not able to go lower than a certain point
+        newAbsoluteEncoderSignedDegrees = m_grabberBreaksIfOpenBelowSignedDegreesLimit;
+      }
+      else {
+
+        // If the arm is ALREADY below a certain level, and grabber is broken, arm is broken
+
+        System.out.println("ARM: Grabber is open while arm is in breakable range");
+        m_IsBroken = true;
+
+        // Note that we don't let the arm move from where it was
+        newAbsoluteEncoderSignedDegrees = m_currentSignedDegrees;
+      }
     }
-
-    // If the arm is ABOUT to go into the breakable range with the grabber open, the arm gets stuck
-    // but doesn't break
-    // $TODO
-
 
     // Update the current position
     m_currentSignedDegrees = newAbsoluteEncoderSignedDegrees;
