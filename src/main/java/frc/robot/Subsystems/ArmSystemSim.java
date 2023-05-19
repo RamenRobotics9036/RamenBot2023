@@ -41,7 +41,6 @@ public class ArmSystemSim extends ArmSystem {
   private DIOSim m_sensorSim;
 
   private ArmSimulation m_ArmSimulation;
-  private BooleanSupplier m_grabberOpenSupplier = null;
 
   public static ArmSystem CreateArmSystemInstance(int armWinchChannel, int armExtenderChannel,
       XboxController m_controller, double m_deadband, boolean squareInputs, double maxOutputWinch) {
@@ -302,7 +301,7 @@ public class ArmSystemSim extends ArmSystem {
   }
 
   public void setGrabberOpenSupplier(BooleanSupplier grabberOpenSupplier) {
-    m_grabberOpenSupplier = grabberOpenSupplier;
+    m_ArmSimulation.setGrabberOpenSupplier(grabberOpenSupplier);
   }
 
   @Override

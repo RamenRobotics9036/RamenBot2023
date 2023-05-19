@@ -7,8 +7,8 @@ public class GrabberToggleCommand extends CommandBase {
     private boolean finished = false;
     GrabberSystem m_grabSystem;
 
-    public GrabberToggleCommand(GrabberSystem m_grabSystem) {
-        this.m_grabSystem = m_grabSystem;
+    public GrabberToggleCommand(GrabberSystem grabSystem) {
+        this.m_grabSystem = grabSystem;
         addRequirements(m_grabSystem);
     }
 

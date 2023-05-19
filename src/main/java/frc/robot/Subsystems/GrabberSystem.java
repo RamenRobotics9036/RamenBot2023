@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class GrabberSystem extends SubsystemBase {
     private XboxController m_controller;
     private final Compressor m_compressor = new Compressor(PneumaticsModuleType.REVPH);
-    private PneumaticHub m_pneumaticHub;
+    protected PneumaticHub m_pneumaticHub;
     protected DoubleSolenoid m_solenoid;
 
     public GrabberSystem(int grabberForwardChannel, int grabberBackwardChannel, XboxController controller) {
@@ -26,19 +26,6 @@ public class GrabberSystem extends SubsystemBase {
 
     public boolean getCondition() {
         return true;
-    }
-
-    public CommandBase grabCommand() {
-        return run(
-                () -> {
-                    if (!RobotState.isAutonomous()) {
-                        if (m_controller.getLeftBumperReleased()) {
-                            m_solenoid.set(Value.kForward);
-                        } else if (m_controller.getRightBumperReleased()) {
-                            m_solenoid.set(Value.kReverse);
-                        }
-                    }
-                });
     }
 
     public void initDashBoard() {
@@ -59,19 +46,11 @@ public class GrabberSystem extends SubsystemBase {
     public void simulationPeriodic() {
     }
 
-    public void toggle() {
-        m_solenoid.toggle();
-    }
-
     public void openGrabber() {
-        if (RobotState.isAutonomous()) {
-            m_solenoid.set(Value.kForward);
-        }
+        m_solenoid.set(Value.kForward);
     }
 
     public void closeGrabber() {
-        if (RobotState.isAutonomous()) {
-            m_solenoid.set(Value.kReverse);
-        }
+        m_solenoid.set(Value.kReverse);
     }
 }

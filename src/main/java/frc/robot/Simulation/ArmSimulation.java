@@ -1,5 +1,7 @@
 package frc.robot.Simulation;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 
 public class ArmSimulation {
@@ -9,6 +11,9 @@ public class ArmSimulation {
   private double m_bottomSignedDegreesLimit;
   private double m_grabberBreaksIfOpenBelowSignedDegreesLimit;
   private double m_encoderRotationsOffset;
+  private double m_currentSignedDegrees;
+  private boolean m_IsCurrentSignedDegreesSet = false;
+  private BooleanSupplier m_grabberOpenSupplier = null;
   private boolean m_IsBroken;
 
   private CalcArmAngle m_calcArmAngle;
@@ -122,10 +127,19 @@ public class ArmSimulation {
     return signedDegrees >= -90 && signedDegrees <= 90;
   }
 
+  private boolean IsInGrabberBreakRange(double positionSignedDegrees) {
+    return positionSignedDegrees <= m_grabberBreaksIfOpenBelowSignedDegreesLimit;
+  }
+
   private void UpdateAbsoluteEncoderPosition() {
     // If the arm is broken, there's nothing to update
     if (m_IsBroken) {
       return;
+    }
+
+    boolean isGrabberOpen = false;
+    if (m_grabberOpenSupplier != null) {
+      isGrabberOpen = m_grabberOpenSupplier.getAsBoolean();
     }
 
     double newStringLen = m_winchSimulation.GetStringExtendedLen();
@@ -152,6 +166,26 @@ public class ArmSimulation {
       m_IsBroken = true;
     }
 
+    // If the arm is ALREADY below a certain level, and grabber is broken, arm is broken
+    if (isGrabberOpen &&
+        m_IsCurrentSignedDegreesSet && IsInGrabberBreakRange(m_currentSignedDegrees)) {
+
+      System.out.println("ARM: Grabber is open while arm is in breakable range");
+      m_IsBroken = true;
+
+      // Note that we don't let the arm move from where it was
+      newAbsoluteEncoderSignedDegrees = m_currentSignedDegrees;
+    }
+
+    // If the arm is ABOUT to go into the breakable range with the grabber open, the arm gets stuck
+    // but doesn't break
+    // $TODO
+
+
+    // Update the current position
+    m_currentSignedDegrees = newAbsoluteEncoderSignedDegrees;
+    m_IsCurrentSignedDegreesSet = true;
+
     newAbsoluteEncoderNonSignedDegrees = toUnsignedDegrees(newAbsoluteEncoderSignedDegrees);
     double newAbsoluteEncoderPosition = newAbsoluteEncoderNonSignedDegrees / 360.0;
 
@@ -160,6 +194,10 @@ public class ArmSimulation {
         m_encoderRotationsOffset);
 
     m_winchAbsoluteEncoderSim.set(newOffsetAbsoluteEncoderPosition);
+  }
+
+  public void setGrabberOpenSupplier(BooleanSupplier grabberOpenSupplier) {
+    m_grabberOpenSupplier = grabberOpenSupplier;
   }
 
   public void simulationPeriodic() {

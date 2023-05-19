@@ -97,9 +97,6 @@ public class RobotContainer {
    * joysticks}.
    */
   public void configureBindings() {
-    // $TODO - Is this grabCommand even being called?  The work is already done in Periodic of those robot systems today
-    new Trigger(m_grabSystem::getCondition).whileTrue(m_grabSystem.grabCommand());
-
     new Trigger(m_controller2::getAButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCone, 1));
     new Trigger(m_controller2::getXButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCube, 1));
     new Trigger(m_controller2::getBButtonReleased).onTrue(new RetractArmCommand(m_armSystem).andThen(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchGroundAngle, 1)));
