@@ -344,15 +344,6 @@ public class VerifyJoysticksTest {
 
     verifyTemp.VerifyJoysticksPeriodically();
 
-    // $TODO - Remove
-    System.out.println("getAreAllJoysticksHealth: " + verifyTemp.getAreAllJoysticksHealth());
-    System.out.println("getIsJoystickConnected: " + verifyTemp.getIsJoystickConnected(0));
-    System.out.println("getIsAxisCountCorrect: " + verifyTemp.getIsAxisCountCorrect(0));
-    System.out.println("getIsTestButtonCountCorrect: " + verifyTemp.getIsTestButtonCountCorrect(0));
-    System.out.println("getIsPOVCountCorrect: " + verifyTemp.getIsPOVCountCorrect(0));
-    System.out.println("getIsJoystickNameCorrect: " + verifyTemp.getIsJoystickNameCorrect(0));
-    System.out.println("getIsJoystickTypeCorrect: " + verifyTemp.getIsJoystickTypeCorrect(0));
-
     // Now, the joystick was unplugged.  All other params should be healthy
     assertTrue(!verifyTemp.getAreAllJoysticksHealth());
     assertTrue(!verifyTemp.getIsJoystickConnected(0));
@@ -361,5 +352,50 @@ public class VerifyJoysticksTest {
     assertTrue(verifyTemp.getIsPOVCountCorrect(0));
     assertTrue(verifyTemp.getIsJoystickNameCorrect(0));
     assertTrue(verifyTemp.getIsJoystickTypeCorrect(0));
+  }
+
+  @Test
+  void WhenElapsedTimerUsedThenQuicklyRequeringShouldGiveOldResult() {
+    int port = 1;
+    int timerSeconds = 60* 60 *24;
+
+    DriverStationFunctions mockDriverStationFunctions = mock(DriverStationFunctions.class);
+
+    when(mockDriverStationFunctions.isJoystickConnected(port)).thenReturn(true).thenReturn(false);
+    when(mockDriverStationFunctions.getStickAxisCount(port)).thenReturn(6);
+    when(mockDriverStationFunctions.getStickButtonCount(port)).thenReturn(16);
+    when(mockDriverStationFunctions.getStickPOVCount(port)).thenReturn(1);
+    when(mockDriverStationFunctions.getJoystickName(port)).thenReturn("Controller (Xbox One For Windows)");
+    when(mockDriverStationFunctions.getJoystickType(port)).thenReturn(2); // this value is changed
+
+    VerifyJoysticks verifyTemp = new VerifyJoysticks(
+        GetTestJoystickConfigs(),
+        mockDriverStationFunctions,
+        timerSeconds);
+
+    assertTrue(verifyTemp != null);
+    assertTrue(verifyTemp.getAreAllJoysticksHealth());
+
+    verifyTemp.VerifyJoysticksPeriodically();
+
+    // On the first round, JoystickType should be unhealthy
+    assertTrue(!verifyTemp.getAreAllJoysticksHealth());
+    assertTrue(!verifyTemp.getIsJoystickTypeCorrect(0));
+    assertTrue(verifyTemp.getIsJoystickConnected(0));
+    assertTrue(verifyTemp.getIsAxisCountCorrect(0));
+    assertTrue(verifyTemp.getIsTestButtonCountCorrect(0));
+    assertTrue(verifyTemp.getIsPOVCountCorrect(0));
+    assertTrue(verifyTemp.getIsJoystickNameCorrect(0));
+
+    verifyTemp.VerifyJoysticksPeriodically();
+
+    // Since timer is set to 24 hours, status on second query shouldnt change
+    assertTrue(!verifyTemp.getAreAllJoysticksHealth());
+    assertTrue(!verifyTemp.getIsJoystickTypeCorrect(0));
+    assertTrue(verifyTemp.getIsJoystickConnected(0));
+    assertTrue(verifyTemp.getIsAxisCountCorrect(0));
+    assertTrue(verifyTemp.getIsTestButtonCountCorrect(0));
+    assertTrue(verifyTemp.getIsPOVCountCorrect(0));
+    assertTrue(verifyTemp.getIsJoystickNameCorrect(0));
   }
 }

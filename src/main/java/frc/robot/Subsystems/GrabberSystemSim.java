@@ -6,15 +6,21 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.simulation.DoubleSolenoidSim;
+import edu.wpi.first.wpilibj.simulation.REVPHSim;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 
 import frc.robot.Constants;
+import frc.robot.Commands.CloseGrabberCommand;
+import frc.robot.Commands.GrabberToggleCommand;
 
 public class GrabberSystemSim extends GrabberSystem {
   private Value m_solenoidStatus;
   private boolean m_grabberPhysicallyOpened;
+  private REVPHSim m_penumaticSim;
+  private DoubleSolenoidSim m_solenoidSim;
 
   public static GrabberSystem CreateGrabberSystemInstance(int grabberForwardChannel, int grabberBackwardChannel,
       XboxController controller) {
@@ -54,8 +60,38 @@ public class GrabberSystemSim extends GrabberSystem {
       return;
     }
 
+    // Create simulated pneumatic hub
+    m_penumaticSim = new REVPHSim(m_pneumaticHub);
+
+    // Create simulated solenoid
+    m_solenoidSim = new DoubleSolenoidSim(m_penumaticSim,
+      grabberForwardChannel,
+      grabberBackwardChannel);
+
     m_solenoidStatus = Value.kOff;
     m_grabberPhysicallyOpened = Constants.SimConstants.kgrabberInitiallyOpened;
+  }
+
+  private void AddCommandButtons() {
+    // Open grabber
+    Shuffleboard.getTab("Simulation")
+        .add(Constants.SimWidgets.kOpenGrabber.name, new GrabberToggleCommand(this))
+        .withWidget(BuiltInWidgets.kCommand)
+        .withPosition(Constants.SimWidgets.kOpenGrabber.x, Constants.SimWidgets.kOpenGrabber.y)
+        .withSize(Constants.SimWidgets.kOpenGrabber.width, Constants.SimWidgets.kOpenGrabber.height);
+
+    // Close grabber
+    Shuffleboard.getTab("Simulation")
+        .add(Constants.SimWidgets.kCloseGrabber.name, new CloseGrabberCommand(this))
+        .withWidget(BuiltInWidgets.kCommand)
+        .withPosition(Constants.SimWidgets.kCloseGrabber.x, Constants.SimWidgets.kCloseGrabber.y)
+        .withSize(Constants.SimWidgets.kCloseGrabber.width, Constants.SimWidgets.kCloseGrabber.height);
+
+    // Grabber commands
+    Shuffleboard.getTab("Simulation")
+        .add(Constants.SimWidgets.kGrabberSystemCommands.name, this)
+        .withPosition(Constants.SimWidgets.kGrabberSystemCommands.x, Constants.SimWidgets.kGrabberSystemCommands.y)
+        .withSize(Constants.SimWidgets.kGrabberSystemCommands.width, Constants.SimWidgets.kGrabberSystemCommands.height);
   }
 
   public BooleanSupplier getGrabberOpenSupplier() {
@@ -112,6 +148,7 @@ public class GrabberSystemSim extends GrabberSystem {
     super.initDashBoard();
 
     AddShuffleboardWidgets();
+    AddCommandButtons();
   }
 
   @Override
@@ -129,7 +166,7 @@ public class GrabberSystemSim extends GrabberSystem {
 
     // When Robot is disabled, the entire simulation freezes
     if (isRobotEnabled()) {
-      m_solenoidStatus = m_solenoid.get();
+      m_solenoidStatus = m_solenoidSim.get();
 
       // If the solenoid is on, update the physicalGrabber as opened or closed
       if (m_solenoidStatus == Value.kForward) {

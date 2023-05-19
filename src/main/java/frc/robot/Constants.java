@@ -141,6 +141,8 @@ public final class Constants {
     public static WidgetPosition kButtonArmToGround = new WidgetPosition("Arm to ground", 10, 1, 2, 1);
     public static WidgetPosition kArmExtendFully = new WidgetPosition("Extend", 10, 2, 2, 1);
     public static WidgetPosition kArmRetract = new WidgetPosition("Retract extender", 10, 3, 2, 1);
+    public static WidgetPosition kOpenGrabber = new WidgetPosition("Open Grabber", 10, 4, 2, 1);
+    public static WidgetPosition kCloseGrabber = new WidgetPosition("Close Grabber", 10, 5, 2, 1);
 
     // Arm list
     public static WidgetPosition kArmFunctional = new WidgetPosition("Arm Functional", 0, 3, 2, 1);
@@ -162,5 +164,6 @@ public final class Constants {
     // Grabber
     public static WidgetPosition kGrabberFunctional = new WidgetPosition("Grabber Functional", 6, 3, 2, 1);
     public static WidgetPosition kGrabber = new WidgetPosition("Grabber", 6, 4, 2, 1);
+    public static WidgetPosition kGrabberSystemCommands = new WidgetPosition("Grabber System Commands", 6, 5, 2, 1);
   }
 }
