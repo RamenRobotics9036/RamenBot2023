@@ -168,10 +168,10 @@ public class ArmSimulationTest {
   }
 
   @Test
-  public void CreateWithNegative91DegreeArmShouldFail() {
+  public void CreateWithNegative91DegreeArmShouldNotBreakArm() {
     double amountBeyondLimit = 0.0001;
 
-    CreateWithNDegreeArm_Helper(0.5 + amountBeyondLimit, 360 - 90, true);
+    CreateWithNDegreeArm_Helper(0.5 + amountBeyondLimit, 360 - 90, false);
   }
 
 
@@ -183,15 +183,11 @@ public class ArmSimulationTest {
   }
 
   @Test
-  public void CreateWithNegative98DegreeArmShouldFail() {
+  public void CreateWithNegative98DegreeArmShouldNotBreakArm() {
     double amountBeyondLimit = 0.1;
 
-    CreateWithNDegreeArm_Helper(0.5 + amountBeyondLimit, 360 - 90, true);
+    CreateWithNDegreeArm_Helper(0.5 + amountBeyondLimit, 360 - 90, false);
   }
-
-
-
-
 
   @Test
   public void CreateWithNegative45DegreeArmShouldSucceed() {

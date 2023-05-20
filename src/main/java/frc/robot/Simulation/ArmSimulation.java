@@ -154,18 +154,6 @@ public class ArmSimulation {
 
     double newAbsoluteEncoderSignedDegrees = toSignedDegrees(newAbsoluteEncoderNonSignedDegrees);
 
-    if (newAbsoluteEncoderSignedDegrees > m_topSignedDegreesLimit) {
-      System.out.println("ARM: Angle is above top limit of " + m_topSignedDegreesLimit);
-      newAbsoluteEncoderSignedDegrees = m_topSignedDegreesLimit;
-      m_IsBroken = true;
-    }
-
-    if (newAbsoluteEncoderSignedDegrees < m_bottomSignedDegreesLimit) {
-      System.out.println("ARM: Angle is below limit of " + m_bottomSignedDegreesLimit);
-      newAbsoluteEncoderSignedDegrees = m_bottomSignedDegreesLimit;
-      m_IsBroken = true;
-    }
-
     if (isGrabberOpen &&
         m_IsCurrentSignedDegreesSet &&
         IsInGrabberBreakRange(newAbsoluteEncoderSignedDegrees)) {
@@ -189,6 +177,18 @@ public class ArmSimulation {
         // Note that we don't let the arm move from where it was
         newAbsoluteEncoderSignedDegrees = m_currentSignedDegrees;
       }
+    }
+
+    if (newAbsoluteEncoderSignedDegrees > m_topSignedDegreesLimit) {
+      System.out.println("ARM: Angle is above top limit of " + m_topSignedDegreesLimit);
+      newAbsoluteEncoderSignedDegrees = m_topSignedDegreesLimit;
+      m_IsBroken = true;
+    }
+
+    if (newAbsoluteEncoderSignedDegrees < m_bottomSignedDegreesLimit) {
+      System.out.println("ARM: Angle is below limit of " + m_bottomSignedDegreesLimit);
+      newAbsoluteEncoderSignedDegrees = m_bottomSignedDegreesLimit;
+      m_IsBroken = true;
     }
 
     // Update the current position

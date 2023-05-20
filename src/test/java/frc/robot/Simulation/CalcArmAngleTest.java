@@ -30,14 +30,14 @@ public class CalcArmAngleTest {
     }
 
     @Test
-    public void ArmBeyondFullyDownShouldReturnError() {
+    public void ArmBeyondFullyDownShouldReturnSuccessSinceStringDangling() {
       double amountBeyondLimit = 0.0001;
 
       double stringLen = (m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot + amountBeyondLimit);
       double expectedResult = 270;
     
       CalcArmAngle.Result resultPair = m_calcArmAngle.GetDegreesForStringLength(stringLen);
-      assertTrue(!resultPair.m_isValid);
+      assertTrue(resultPair.m_isValid);
       assertTrue(resultPair.m_value == expectedResult);
     }
 
