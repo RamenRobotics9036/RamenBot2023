@@ -59,9 +59,10 @@ public class CalcArmAngle {
     double backOfArmHeightAbovePivot = stringLen - m_heightFromWinchToPivotPoint;
 
     // Is arm beyond lowest possible point?
+    // If the string is too long, that's ok: it doesnt mean the arm is broken
     if (backOfArmHeightAbovePivot > m_armLengthFromEdgeToPivot) {
       System.out.println("Below lowest point: String too long!");      
-      return new Result(false, 360 - 90);
+      return new Result(true, 360 - 90);
     }
 
     // Is arm beyond highest possible point?

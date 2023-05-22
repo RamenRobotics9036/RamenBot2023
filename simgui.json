@@ -62,5 +62,8 @@
         "open": true
       }
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
