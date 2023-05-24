@@ -161,6 +161,10 @@ public class DriveSimulation {
     xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
     rot = MathUtil.clamp(rot, -1.0, 1.0);
 
+    // $TODO - Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
+    //private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(3);
+    //private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
+
     if (SquareInputs) {
       xSpeed = Math.copySign(xSpeed * xSpeed, xSpeed);
       rot = Math.copySign(rot * rot, rot);

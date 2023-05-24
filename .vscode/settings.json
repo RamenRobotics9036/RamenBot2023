@@ -25,5 +25,11 @@
       }
     },
   ],
-  "java.test.defaultConfig": "WPIlibUnitTests"
+  "java.test.defaultConfig": "WPIlibUnitTests",
+  "java.format.settings.profile": "RamenRobotics",
+  "java.format.settings.url": ".vscode/RamenFormatting.xml",
+  "[java]": {
+    "editor.detectIndentation": false,
+    "editor.tabSize": 2
+  }
 }
