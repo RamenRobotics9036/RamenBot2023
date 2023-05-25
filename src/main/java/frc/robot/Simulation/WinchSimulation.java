@@ -5,14 +5,13 @@ import frc.robot.Subsystems.RelativeEncoderSim;
 //
 // Basic idea of the winch string:
 // |-----------------( )-----------------|
-//                    ^ (Center is fully unwound string)
-//   ^ (Mostly spooled on back)
-//        Back <--         --> Front
+// ^ (Center is fully unwound string)
+// ^ (Mostly spooled on back)
+// Back <-- --> Front
 //
 public class WinchSimulation {
   public enum StringOrientation {
-    BackOfRobot,
-    FrontOfRobot
+    BackOfRobot, FrontOfRobot
   }
 
   private RelativeEncoderSim m_motorEncoderSim;
@@ -25,8 +24,7 @@ public class WinchSimulation {
   private double m_motorPolarity;
 
   // Constructor
-  public WinchSimulation(
-      RelativeEncoderSim motorEncoderSim,
+  public WinchSimulation(RelativeEncoderSim motorEncoderSim,
       double SpoolDiameterMeters,
       double TotalStringLenMeters,
       double InitialLenSpooled,
@@ -62,7 +60,8 @@ public class WinchSimulation {
     // If the string is towards the back of the robot, then we represent the length
     // of string pooled as a NEGATIVE number
     // See diagram above
-    m_initialLenSpooled = (InitialStringOrientation == StringOrientation.BackOfRobot) ? -1 * InitialLenSpooled
+    m_initialLenSpooled = (InitialStringOrientation == StringOrientation.BackOfRobot)
+        ? -1 * InitialLenSpooled
         : InitialLenSpooled;
 
     m_IsBroken = false;
@@ -84,7 +83,8 @@ public class WinchSimulation {
 
   public StringOrientation GetStringOrientation() {
     // We define 0 as string orientation: back
-    return (m_CurrentLenSpooled <= 0) ? StringOrientation.BackOfRobot : StringOrientation.FrontOfRobot;
+    return (m_CurrentLenSpooled <= 0) ? StringOrientation.BackOfRobot
+        : StringOrientation.FrontOfRobot;
   }
 
   public String GetStringOrientationName() {
@@ -121,7 +121,8 @@ public class WinchSimulation {
     if (newCurrentLenSpooled > m_TotalStringLenMeters) {
       newCurrentLenSpooled = m_TotalStringLenMeters;
       m_IsBroken = true;
-    } else if (newCurrentLenSpooled < -1 * m_TotalStringLenMeters) {
+    }
+    else if (newCurrentLenSpooled < -1 * m_TotalStringLenMeters) {
       newCurrentLenSpooled = -1 * m_TotalStringLenMeters;
       m_IsBroken = true;
     }

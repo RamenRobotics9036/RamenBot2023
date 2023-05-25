@@ -44,8 +44,10 @@ public class DriveSimulation {
   private final PWMSparkMax m_rightLeader = new PWMSparkMax(3);
   private final PWMSparkMax m_rightFollower = new PWMSparkMax(4);
 
-  private final MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftLeader, m_leftFollower);
-  private final MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightLeader, m_rightFollower);
+  private final MotorControllerGroup m_leftGroup = new MotorControllerGroup(m_leftLeader,
+      m_leftFollower);
+  private final MotorControllerGroup m_rightGroup = new MotorControllerGroup(m_rightLeader,
+      m_rightFollower);
 
   private final Encoder m_leftEncoder = new Encoder(0, 1);
   private final Encoder m_rightEncoder = new Encoder(2, 3);
@@ -55,7 +57,8 @@ public class DriveSimulation {
 
   private final AnalogGyro m_gyro = new AnalogGyro(0);
 
-  private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(kTrackWidth);
+  private final DifferentialDriveKinematics m_kinematics = new DifferentialDriveKinematics(
+      kTrackWidth);
   private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
       m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
 
@@ -72,8 +75,8 @@ public class DriveSimulation {
   private final RelEncoderWrapper m_rightEncoderSimWrapper;
 
   private final Field2d m_fieldSim = new Field2d();
-  private final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(1.98, 0.2, 1.5,
-      0.3);
+  private final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId
+      .identifyDrivetrainSystem(1.98, 0.2, 1.5, 0.3);
   private final DifferentialDrivetrainSim m_drivetrainSimulator;
 
   // Resets both the absolute-encoders AND the relative-encoders
@@ -100,8 +103,8 @@ public class DriveSimulation {
   public DriveSimulation(double wheelRadiusMeters) {
     m_WheelRadius = wheelRadiusMeters;
 
-    m_drivetrainSimulator = new DifferentialDrivetrainSim(
-        m_drivetrainSystem, DCMotor.getCIM(2), 8, kTrackWidth, m_WheelRadius, null);
+    m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem, DCMotor.getCIM(2), 8,
+        kTrackWidth, m_WheelRadius, null);
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
@@ -126,8 +129,10 @@ public class DriveSimulation {
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
     var leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
     var rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
-    double leftOutput = m_leftPIDController.calculate(m_leftEncoder.getRate(), speeds.leftMetersPerSecond);
-    double rightOutput = m_rightPIDController.calculate(m_rightEncoder.getRate(), speeds.rightMetersPerSecond);
+    double leftOutput = m_leftPIDController.calculate(m_leftEncoder.getRate(),
+        speeds.leftMetersPerSecond);
+    double rightOutput = m_rightPIDController.calculate(m_rightEncoder.getRate(),
+        speeds.rightMetersPerSecond);
 
     m_leftGroup.setVoltage(leftOutput + leftFeedforward);
     m_rightGroup.setVoltage(rightOutput + rightFeedforward);
@@ -161,6 +166,10 @@ public class DriveSimulation {
     xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
     rot = MathUtil.clamp(rot, -1.0, 1.0);
 
+    // $TODO - Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
+    // private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(3);
+    // private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
+
     if (SquareInputs) {
       xSpeed = Math.copySign(xSpeed * xSpeed, xSpeed);
       rot = Math.copySign(rot * rot, rot);
@@ -171,8 +180,8 @@ public class DriveSimulation {
 
   /** Update robot odometry. */
   public void updateOdometry() {
-    m_odometry.update(
-        m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
+    m_odometry
+        .update(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
   }
 
   private void DrawRobotOnField() {
@@ -183,8 +192,10 @@ public class DriveSimulation {
   public void resetOdometry(Pose2d pose) {
     resetAllEncoders();
     m_drivetrainSimulator.setPose(pose);
-    m_odometry.resetPosition(
-        m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance(), pose);
+    m_odometry.resetPosition(m_gyro.getRotation2d(),
+        m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance(),
+        pose);
 
     // Even if robot is in Disabled state, we want to update the Field view to show
     // where it is initially
@@ -214,8 +225,7 @@ public class DriveSimulation {
     // simulation, and write the simulated positions and velocities to our
     // simulated encoder and gyro. We negate the right side so that positive
     // voltages make the right side move forward.
-    m_drivetrainSimulator.setInputs(
-        m_leftGroup.get() * RobotController.getInputVoltage(),
+    m_drivetrainSimulator.setInputs(m_leftGroup.get() * RobotController.getInputVoltage(),
         m_rightGroup.get() * RobotController.getInputVoltage());
     m_drivetrainSimulator.update(0.02);
 

@@ -4,9 +4,8 @@ import frc.robot.Constants;
 import frc.robot.Subsystems.ArmSystem;
 
 public class ArmExtendFully extends SetExtenderToLength {
-    // Constructor
-    public ArmExtendFully(ArmSystem armSystem) {
-        super(armSystem, -100, 0.9);
-    }
+  // Constructor
+  public ArmExtendFully(ArmSystem armSystem) {
+    super(armSystem, -100, 0.9);
+  }
 }
-

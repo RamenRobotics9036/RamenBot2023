@@ -3,9 +3,11 @@ package frc.robot.Subsystems;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.RobotBase;
 
-// Rev robotics doesnt have a simulation class for RelativeEncoder.  However, a common pattern
-// in FRC is to only set the RelativeEncoder's current position by setting it on the RelativeEncoderSim object.
-// This way, the simulation never directly touches the RelativeEncoder object, which is a bit cleaner
+// Rev robotics doesnt have a simulation class for RelativeEncoder. However, a common pattern
+// in FRC is to only set the RelativeEncoder's current position by setting it on the
+// RelativeEncoderSim object.
+// This way, the simulation never directly touches the RelativeEncoder object, which is a bit
+// cleaner
 public class RelativeEncoderSim {
   private boolean m_testMode;
   private double m_testModePosition;
@@ -48,4 +50,3 @@ public class RelativeEncoderSim {
     }
   }
 }
-

@@ -15,19 +15,18 @@ import frc.robot.Commands.RetractArmCommand;
 import frc.robot.Commands.Auto;
 
 /**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the
- * name of this class or
- * the package after creating this project, you must also update the
- * build.gradle file in the
+ * The VM is configured to automatically run this class, and to call the functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the name of this class or
+ * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private AddressableLED m_LEDLight = new AddressableLED(Constants.OperatorConstants.kLEDLightsChannel);
-  private AddressableLEDBuffer m_LEDBuffer = new AddressableLEDBuffer(Constants.OperatorConstants.kLEDLightsLength);
+  private AddressableLED m_LEDLight = new AddressableLED(
+      Constants.OperatorConstants.kLEDLightsChannel);
+  private AddressableLEDBuffer m_LEDBuffer = new AddressableLEDBuffer(
+      Constants.OperatorConstants.kLEDLightsLength);
   private VerifyJoysticks m_verifyJoysticks;
   private SendableChooser<String> m_chooser;
   private int m_ledLoop;
@@ -37,16 +36,13 @@ public class Robot extends TimedRobot {
   private int m_ledHue;
 
   /**
-   * This function is run when the robot is first started up and should be used
-   * for any
+   * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
-    m_verifyJoysticks = new VerifyJoysticks(
-        VerifyJoysticks.GetDefaultJoystickConfigs(),
-        new DriverStationFunctions(),
-        1);
+    m_verifyJoysticks = new VerifyJoysticks(VerifyJoysticks.GetDefaultJoystickConfigs(),
+        new DriverStationFunctions(), 1);
 
     m_robotContainer = new RobotContainer();
     m_robotContainer.initDashboard();
@@ -61,14 +57,12 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * This function is called every 20 ms, no matter the mode. Use this for items
-   * like diagnostics
+   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
    *
    * <p>
-   * This runs after the mode specific periodic functions, but before LiveWindow
-   * and
-   * SmartDashboard integrated updating.
+   * This runs after the mode specific periodic functions, but before LiveWindow and SmartDashboard
+   * integrated updating.
    */
   @Override
   public void robotPeriodic() {
@@ -83,8 +77,7 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * This autonomous runs the autonomous command selected by your
-   * {@link RobotContainer} class.
+   * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
    */
   @Override
   public void autonomousInit() {
@@ -118,7 +111,8 @@ public class Robot extends TimedRobot {
     new RetractArmCommand(m_robotContainer.m_armSystem).schedule();
 
     // m_LEDLight.setLength(m_LEDBuffer.getLength());
-    SmartDashboard.putNumber("Winch Encoder", m_robotContainer.m_armSystem.getWinchAbsoluteEncoder());
+    SmartDashboard.putNumber("Winch Encoder",
+        m_robotContainer.m_armSystem.getWinchAbsoluteEncoder());
   }
 
   /** This function is called periodically during operator control. */
@@ -140,7 +134,8 @@ public class Robot extends TimedRobot {
       // }
       // m_LEDLight.setData(m_LEDBuffer);
       // m_LEDLight.start();
-    } else if (m_robotContainer.m_controller2.getRightTriggerAxis() > 0.05) {
+    }
+    else if (m_robotContainer.m_controller2.getRightTriggerAxis() > 0.05) {
       SmartDashboard.putBoolean("Get Cube", false);
 
       m_ledR = 255;
@@ -170,12 +165,14 @@ public class Robot extends TimedRobot {
       m_ledHue += 2;
       m_ledHue %= 180;
 
-    } else {
+    }
+    else {
       for (var i = 0; i < m_LEDBuffer.getLength() / 2; i++) {
         if (i == m_ledLoop) {
           m_LEDBuffer.setRGB(i, 0, 0, 0);
           m_LEDBuffer.setRGB(m_LEDBuffer.getLength() - i - 1, 0, 0, 0);
-        } else {
+        }
+        else {
           m_LEDBuffer.setRGB(i, m_ledG, m_ledR, m_ledB);
           m_LEDBuffer.setRGB(m_LEDBuffer.getLength() - i - 1, m_ledG, m_ledR, m_ledB);
         }

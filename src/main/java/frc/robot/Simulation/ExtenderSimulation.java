@@ -14,8 +14,7 @@ public class ExtenderSimulation {
   private double m_motorPolarity;
 
   // Constructor
-  public ExtenderSimulation(
-      RelativeEncoderSim motorEncoderSim,
+  public ExtenderSimulation(RelativeEncoderSim motorEncoderSim,
       double CylinderDiameterMeters,
       double TotalExtenderLengthMeters,
       double InitialExtendedLen,
@@ -94,7 +93,8 @@ public class ExtenderSimulation {
     if (newCurrentLen > m_TotalExtenderLengthMeters) {
       newCurrentLen = m_TotalExtenderLengthMeters;
       m_IsBroken = true;
-    } else if (newCurrentLen < m_MinExtendLength) {
+    }
+    else if (newCurrentLen < m_MinExtendLength) {
       newCurrentLen = m_MinExtendLength;
       m_IsBroken = true;
     }

@@ -9,8 +9,7 @@ public class JoystickConfig {
   int expectedJoystickType;
 
   // Constructor
-  public JoystickConfig(
-      int port,
+  public JoystickConfig(int port,
       int expectedAxisCount,
       int expectedButtonCount,
       int expectedPOVCount,
@@ -24,4 +23,3 @@ public class JoystickConfig {
     this.expectedJoystickType = expectedJoystickType;
   }
 }
-
