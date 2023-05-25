@@ -22,23 +22,19 @@ public class GrabberSystemSim extends GrabberSystem {
   private REVPHSim m_penumaticSim;
   private DoubleSolenoidSim m_solenoidSim;
 
-  public static GrabberSystem CreateGrabberSystemInstance(int grabberForwardChannel, int grabberBackwardChannel,
+  public static GrabberSystem CreateGrabberSystemInstance(int grabberForwardChannel,
+      int grabberBackwardChannel,
       XboxController controller) {
     GrabberSystem result;
 
     if (RobotBase.isSimulation()) {
-      result = new GrabberSystemSim(
-          grabberForwardChannel,
-          grabberBackwardChannel,
-          controller);
+      result = new GrabberSystemSim(grabberForwardChannel, grabberBackwardChannel, controller);
 
       System.out.println("GRABBERSYSTEM: **** Simulation ****");
 
-    } else {
-      result = new GrabberSystem(
-          grabberForwardChannel,
-          grabberBackwardChannel,
-          controller);
+    }
+    else {
+      result = new GrabberSystem(grabberForwardChannel, grabberBackwardChannel, controller);
 
       System.out.println("GRABBERSYSTEM: Physical Robot version");
     }
@@ -47,11 +43,11 @@ public class GrabberSystemSim extends GrabberSystem {
   }
 
   // Constructor
-  public GrabberSystemSim(int grabberForwardChannel, int grabberBackwardChannel, XboxController controller) {
+  public GrabberSystemSim(int grabberForwardChannel,
+      int grabberBackwardChannel,
+      XboxController controller) {
     // FIRST, we call superclass
-    super(grabberForwardChannel,
-        grabberBackwardChannel,
-        controller);
+    super(grabberForwardChannel, grabberBackwardChannel, controller);
 
     // This entire class should only be instantiated when we're under simulation.
     // But just in-case someone tries to instantiate it otherwise, we do an extra
@@ -64,9 +60,8 @@ public class GrabberSystemSim extends GrabberSystem {
     m_penumaticSim = new REVPHSim(m_pneumaticHub);
 
     // Create simulated solenoid
-    m_solenoidSim = new DoubleSolenoidSim(m_penumaticSim,
-      grabberForwardChannel,
-      grabberBackwardChannel);
+    m_solenoidSim = new DoubleSolenoidSim(m_penumaticSim, grabberForwardChannel,
+        grabberBackwardChannel);
 
     m_solenoidStatus = Value.kOff;
     m_grabberPhysicallyOpened = Constants.SimConstants.kgrabberInitiallyOpened;
@@ -78,20 +73,23 @@ public class GrabberSystemSim extends GrabberSystem {
         .add(Constants.SimWidgets.kOpenGrabber.name, new GrabberToggleCommand(this))
         .withWidget(BuiltInWidgets.kCommand)
         .withPosition(Constants.SimWidgets.kOpenGrabber.x, Constants.SimWidgets.kOpenGrabber.y)
-        .withSize(Constants.SimWidgets.kOpenGrabber.width, Constants.SimWidgets.kOpenGrabber.height);
+        .withSize(Constants.SimWidgets.kOpenGrabber.width,
+            Constants.SimWidgets.kOpenGrabber.height);
 
     // Close grabber
     Shuffleboard.getTab("Simulation")
         .add(Constants.SimWidgets.kCloseGrabber.name, new CloseGrabberCommand(this))
         .withWidget(BuiltInWidgets.kCommand)
         .withPosition(Constants.SimWidgets.kCloseGrabber.x, Constants.SimWidgets.kCloseGrabber.y)
-        .withSize(Constants.SimWidgets.kCloseGrabber.width, Constants.SimWidgets.kCloseGrabber.height);
+        .withSize(Constants.SimWidgets.kCloseGrabber.width,
+            Constants.SimWidgets.kCloseGrabber.height);
 
     // Grabber commands
-    Shuffleboard.getTab("Simulation")
-        .add(Constants.SimWidgets.kGrabberSystemCommands.name, this)
-        .withPosition(Constants.SimWidgets.kGrabberSystemCommands.x, Constants.SimWidgets.kGrabberSystemCommands.y)
-        .withSize(Constants.SimWidgets.kGrabberSystemCommands.width, Constants.SimWidgets.kGrabberSystemCommands.height);
+    Shuffleboard.getTab("Simulation").add(Constants.SimWidgets.kGrabberSystemCommands.name, this)
+        .withPosition(Constants.SimWidgets.kGrabberSystemCommands.x,
+            Constants.SimWidgets.kGrabberSystemCommands.y)
+        .withSize(Constants.SimWidgets.kGrabberSystemCommands.width,
+            Constants.SimWidgets.kGrabberSystemCommands.height);
   }
 
   public BooleanSupplier getGrabberOpenSupplier() {
@@ -103,18 +101,18 @@ public class GrabberSystemSim extends GrabberSystem {
     String physicalGrabberText;
 
     switch (m_solenoidStatus) {
-      case kForward:
-        solenoidStatusText = "Forward";
-        break;
-      case kReverse:
-        solenoidStatusText = "Reverse";
-        break;
-      case kOff:
-        solenoidStatusText = "Off";
-        break;
-      default:
-        solenoidStatusText = "Unknown";
-        break;
+    case kForward:
+      solenoidStatusText = "Forward";
+      break;
+    case kReverse:
+      solenoidStatusText = "Reverse";
+      break;
+    case kOff:
+      solenoidStatusText = "Off";
+      break;
+    default:
+      solenoidStatusText = "Unknown";
+      break;
     }
 
     physicalGrabberText = m_grabberPhysicallyOpened ? "Open" : "Closed";
@@ -128,8 +126,10 @@ public class GrabberSystemSim extends GrabberSystem {
         .addBoolean(Constants.SimWidgets.kGrabberFunctional.name, () -> true)
         .withWidget(BuiltInWidgets.kBooleanBox)
         .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"))
-        .withPosition(Constants.SimWidgets.kGrabberFunctional.x, Constants.SimWidgets.kGrabberFunctional.y)
-        .withSize(Constants.SimWidgets.kGrabberFunctional.width, Constants.SimWidgets.kGrabberFunctional.height);
+        .withPosition(Constants.SimWidgets.kGrabberFunctional.x,
+            Constants.SimWidgets.kGrabberFunctional.y)
+        .withSize(Constants.SimWidgets.kGrabberFunctional.width,
+            Constants.SimWidgets.kGrabberFunctional.height);
 
     // Grabber open/closed
     Shuffleboard.getTab("Simulation")
@@ -171,7 +171,8 @@ public class GrabberSystemSim extends GrabberSystem {
       // If the solenoid is on, update the physicalGrabber as opened or closed
       if (m_solenoidStatus == Value.kForward) {
         m_grabberPhysicallyOpened = true;
-      } else if (m_solenoidStatus == Value.kReverse) {
+      }
+      else if (m_solenoidStatus == Value.kReverse) {
         m_grabberPhysicallyOpened = false;
       }
     }

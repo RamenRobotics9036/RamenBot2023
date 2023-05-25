@@ -24,7 +24,6 @@ import frc.robot.Subsystems.TankDriveSystem;
 import frc.robot.Subsystems.TankDriveSystemSim;
 import frc.robot.Subsystems.ArmSystemSim;
 
-
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -32,79 +31,83 @@ import frc.robot.Subsystems.ArmSystemSim;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  public final XboxController m_controller1 = new XboxController(Constants.OperatorConstants.kDriverControllerPort1);
-  public final XboxController m_controller2 = new XboxController(Constants.OperatorConstants.kDriverControllerPort2);
+  public final XboxController m_controller1 = new XboxController(
+      Constants.OperatorConstants.kDriverControllerPort1);
+  public final XboxController m_controller2 = new XboxController(
+      Constants.OperatorConstants.kDriverControllerPort2);
 
   public final TankDriveSystem m_driveSystem = TankDriveSystemSim.CreateTankDriveSystemInstance(
-    Constants.OperatorConstants.kLeftMotorBackChannel,
-    Constants.OperatorConstants.kLeftMotorForwardChannel,
-    Constants.OperatorConstants.kRightMotorBackChannel,
-    Constants.OperatorConstants.kRightMotorForwardChannel,
-    m_controller1,
-    Constants.OperatorConstants.kSquareInputsDrive,
-    Constants.OperatorConstants.kMaxOutputDrive,
-    Constants.OperatorConstants.kDeadband,
-    Constants.OperatorConstants.kGearBoxRatioDrive,
-    Constants.OperatorConstants.kWheelDiameterMetersDrive,
-    Constants.OperatorConstants.kSlewLimit,
-    Constants.OperatorConstants.kTurboSlew
-  );
+      Constants.OperatorConstants.kLeftMotorBackChannel,
+      Constants.OperatorConstants.kLeftMotorForwardChannel,
+      Constants.OperatorConstants.kRightMotorBackChannel,
+      Constants.OperatorConstants.kRightMotorForwardChannel,
+      m_controller1,
+      Constants.OperatorConstants.kSquareInputsDrive,
+      Constants.OperatorConstants.kMaxOutputDrive,
+      Constants.OperatorConstants.kDeadband,
+      Constants.OperatorConstants.kGearBoxRatioDrive,
+      Constants.OperatorConstants.kWheelDiameterMetersDrive,
+      Constants.OperatorConstants.kSlewLimit,
+      Constants.OperatorConstants.kTurboSlew);
 
   public final ArmSystem m_armSystem = ArmSystemSim.CreateArmSystemInstance(
-    Constants.OperatorConstants.kArmWinchChannel,
-    Constants.OperatorConstants.kArmExtenderChannel,
-    m_controller2,
-    Constants.OperatorConstants.kDeadband,
-    Constants.OperatorConstants.kSquareInputsArm,
-    Constants.OperatorConstants.kMaxOutputWinch
-  );
+      Constants.OperatorConstants.kArmWinchChannel,
+      Constants.OperatorConstants.kArmExtenderChannel,
+      m_controller2,
+      Constants.OperatorConstants.kDeadband,
+      Constants.OperatorConstants.kSquareInputsArm,
+      Constants.OperatorConstants.kMaxOutputWinch);
 
   public final GrabberSystem m_grabSystem = GrabberSystemSim.CreateGrabberSystemInstance(
-    Constants.OperatorConstants.kGrabberForwardChannel,
-    Constants.OperatorConstants.kGrabberBackwardChannel,
-    m_controller2
-  );
+      Constants.OperatorConstants.kGrabberForwardChannel,
+      Constants.OperatorConstants.kGrabberBackwardChannel,
+      m_controller2);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure default command for Drive Subsystem.  We want there to ALWAYS be a motor signal sent, even
-    // in autonomous mode.  If we didn't send a motor signal EVERY 20ms, then Slew would prevent
-    // the robot from ever stopping fully in some cases.  And also, the motor watchdog would trip
-    m_driveSystem.setDefaultCommand(
-        m_driveSystem.getDefaultDriveCommand());
+    // Configure default command for Drive Subsystem. We want there to ALWAYS be a motor signal
+    // sent, even
+    // in autonomous mode. If we didn't send a motor signal EVERY 20ms, then Slew would prevent
+    // the robot from ever stopping fully in some cases. And also, the motor watchdog would trip
+    m_driveSystem.setDefaultCommand(m_driveSystem.getDefaultDriveCommand());
 
-    m_armSystem.setDefaultCommand(
-        m_armSystem.getDefaultArmCommand());
+    m_armSystem.setDefaultCommand(m_armSystem.getDefaultArmCommand());
 
     // CameraServer.startAutomaticCapture();
 
     // Stitch together BooleanSupplier from GrabberSystemSim with ArmSystemSim
-    if (m_grabSystem instanceof GrabberSystemSim &&
-        m_armSystem instanceof ArmSystemSim) {
+    if (m_grabSystem instanceof GrabberSystemSim && m_armSystem instanceof ArmSystemSim) {
 
-      BooleanSupplier supplier = ((GrabberSystemSim)m_grabSystem).getGrabberOpenSupplier();
-      ((ArmSystemSim)m_armSystem).setGrabberOpenSupplier(supplier);
+      BooleanSupplier supplier = ((GrabberSystemSim) m_grabSystem).getGrabberOpenSupplier();
+      ((ArmSystemSim) m_armSystem).setGrabberOpenSupplier(supplier);
     }
   }
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
+   * predicate, or via the named factories in
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link CommandXboxController
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4} controllers or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
    */
   public void configureBindings() {
-    new Trigger(m_controller2::getAButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCone, 1));
-    new Trigger(m_controller2::getXButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCube, 1));
-    new Trigger(m_controller2::getBButtonReleased).onTrue(new RetractArmCommand(m_armSystem).andThen(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchGroundAngle, 1)));
-    // new Trigger(m_controller2::getYButtonReleased).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchRetractAngle, 0.5));
-    
-    new Trigger(m_controller2::getYButtonReleased).onTrue(new RetractArmCommand(m_armSystem).andThen(new SetSoftLimitCommand(m_armSystem)));
+    new Trigger(m_controller2::getAButtonReleased).onTrue(
+        new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCone, 1));
+    new Trigger(m_controller2::getXButtonReleased).onTrue(
+        new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCube, 1));
+    new Trigger(m_controller2::getBButtonReleased)
+        .onTrue(new RetractArmCommand(m_armSystem).andThen(
+            new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchGroundAngle, 1)));
+    // new Trigger(m_controller2::getYButtonReleased).onTrue(new SetWinchToAngle(m_armSystem,
+    // Constants.OperatorConstants.kWinchRetractAngle, 0.5));
 
-    // new Trigger(m_armSystem::isOffHigher).onTrue(new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kEmergencyAngle, 0.5));
+    new Trigger(m_controller2::getYButtonReleased)
+        .onTrue(new RetractArmCommand(m_armSystem).andThen(new SetSoftLimitCommand(m_armSystem)));
+
+    // new Trigger(m_armSystem::isOffHigher).onTrue(new SetWinchToAngle(m_armSystem,
+    // Constants.OperatorConstants.kEmergencyAngle, 0.5));
   }
 
   public Command getAutonomousCommand() {
@@ -126,7 +129,8 @@ public class RobotContainer {
     m_armSystem.initDashBoard();
     m_grabSystem.initDashBoard();
     // SmartDashboard.putNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed);
-    // SmartDashboard.putNumber("Auto Motor Distance", Constants.OperatorConstants.kAutoMotorDistance);
+    // SmartDashboard.putNumber("Auto Motor Distance",
+    // Constants.OperatorConstants.kAutoMotorDistance);
     // SmartDashboard.putBoolean("Auto Turn Left", true);
     // SmartDashboard.putNumber("Starting Position", 0);
   }

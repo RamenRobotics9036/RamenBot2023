@@ -19,8 +19,7 @@ public class ArmSimulation {
   private CalcArmAngle m_calcArmAngle;
 
   // Constructor
-  public ArmSimulation(
-      WinchSimulation winchSimulation,
+  public ArmSimulation(WinchSimulation winchSimulation,
       DutyCycleEncoderSim winchAbsoluteEncoderSim,
       double topRotationsLimit,
       double bottomRotationsLimit,
@@ -37,19 +36,21 @@ public class ArmSimulation {
 
     if (armLengthFromEdgeToPivot < armLengthFromEdgeToPivot_Min) {
       throw new IllegalArgumentException("armLengthFromEdgeToPivot needs to be at least "
-          + armLengthFromEdgeToPivot_Min
-          + " meters, otherwise the arm cant be pivoted");
+          + armLengthFromEdgeToPivot_Min + " meters, otherwise the arm cant be pivoted");
     }
 
     if (encoderRotationsOffset < 0 || encoderRotationsOffset >= 1) {
       throw new IllegalArgumentException("encoderRotationsOffset must be between 0 and 1");
     }
 
-    m_topSignedDegreesLimit = toNonOffsetSignedDegrees(topRotationsLimit + deltaRotationsBeforeBroken,
+    m_topSignedDegreesLimit = toNonOffsetSignedDegrees(
+        topRotationsLimit + deltaRotationsBeforeBroken,
         encoderRotationsOffset);
-    m_bottomSignedDegreesLimit = toNonOffsetSignedDegrees(bottomRotationsLimit - deltaRotationsBeforeBroken,
+    m_bottomSignedDegreesLimit = toNonOffsetSignedDegrees(
+        bottomRotationsLimit - deltaRotationsBeforeBroken,
         encoderRotationsOffset);
-    m_grabberBreaksIfOpenBelowSignedDegreesLimit = toNonOffsetSignedDegrees(grabberBreaksIfOpenBelowThisLimit,
+    m_grabberBreaksIfOpenBelowSignedDegreesLimit = toNonOffsetSignedDegrees(
+        grabberBreaksIfOpenBelowThisLimit,
         encoderRotationsOffset);
 
     if (!isInRightHalfPlane(m_topSignedDegreesLimit)) {
@@ -61,15 +62,17 @@ public class ArmSimulation {
     }
 
     if (!isInRightHalfPlane(m_grabberBreaksIfOpenBelowSignedDegreesLimit)) {
-      throw new IllegalArgumentException("m_grabberBreaksIfOpenBelowSignedDegreesLimit must be between -90 and 90");
+      throw new IllegalArgumentException(
+          "m_grabberBreaksIfOpenBelowSignedDegreesLimit must be between -90 and 90");
     }
 
     if (m_topSignedDegreesLimit <= m_bottomSignedDegreesLimit) {
-      throw new IllegalArgumentException("m_topSignedDegreesLimit must be > m_bottomSignedDegreesLimit");
+      throw new IllegalArgumentException(
+          "m_topSignedDegreesLimit must be > m_bottomSignedDegreesLimit");
     }
 
-    if (m_grabberBreaksIfOpenBelowSignedDegreesLimit >= m_topSignedDegreesLimit ||
-        m_grabberBreaksIfOpenBelowSignedDegreesLimit <= m_bottomSignedDegreesLimit) {
+    if (m_grabberBreaksIfOpenBelowSignedDegreesLimit >= m_topSignedDegreesLimit
+        || m_grabberBreaksIfOpenBelowSignedDegreesLimit <= m_bottomSignedDegreesLimit) {
       throw new IllegalArgumentException(
           "m_grabberBreaksIfOpenBelowSignedDegreesLimit must be between m_topSignedDegreesLimit and m_bottomSignedDegreesLimit");
     }
@@ -102,7 +105,8 @@ public class ArmSimulation {
 
     if (signedDegrees > 180) {
       signedDegrees -= 360;
-    } else if (signedDegrees < -180) {
+    }
+    else if (signedDegrees < -180) {
       signedDegrees += 360;
     }
     return signedDegrees;
@@ -154,13 +158,13 @@ public class ArmSimulation {
 
     double newAbsoluteEncoderSignedDegrees = toSignedDegrees(newAbsoluteEncoderNonSignedDegrees);
 
-    if (isGrabberOpen &&
-        m_IsCurrentSignedDegreesSet &&
-        IsInGrabberBreakRange(newAbsoluteEncoderSignedDegrees)) {
+    if (isGrabberOpen && m_IsCurrentSignedDegreesSet
+        && IsInGrabberBreakRange(newAbsoluteEncoderSignedDegrees)) {
 
       if (!IsInGrabberBreakRange(m_currentSignedDegrees)) {
 
-        // If the arm is ABOUT to go into the breakable range with the grabber open, the arm gets stuck
+        // If the arm is ABOUT to go into the breakable range with the grabber open, the arm gets
+        // stuck
         // but doesn't break
         System.out.println("ARM: Grabber is open while try to move arm to ground");
 
@@ -198,8 +202,7 @@ public class ArmSimulation {
     newAbsoluteEncoderNonSignedDegrees = toUnsignedDegrees(newAbsoluteEncoderSignedDegrees);
     double newAbsoluteEncoderPosition = newAbsoluteEncoderNonSignedDegrees / 360.0;
 
-    double newOffsetAbsoluteEncoderPosition = OffsetArmRotationPosition(
-        newAbsoluteEncoderPosition,
+    double newOffsetAbsoluteEncoderPosition = OffsetArmRotationPosition(newAbsoluteEncoderPosition,
         m_encoderRotationsOffset);
 
     m_winchAbsoluteEncoderSim.set(newOffsetAbsoluteEncoderPosition);

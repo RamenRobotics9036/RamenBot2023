@@ -16,44 +16,44 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public class TankDriveSystemSim extends TankDriveSystem {
   private DriveSimulation m_driveSimulation = null;
 
-  public static TankDriveSystem CreateTankDriveSystemInstance(int leftMotorBackChannel, int leftMotorForwardChannel,
+  public static TankDriveSystem CreateTankDriveSystemInstance(int leftMotorBackChannel,
+      int leftMotorForwardChannel,
       int rightMotorBackChannel,
-      int rightMotorForwardChannel, XboxController controller, boolean squareInputs,
-      double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters,
-      double slewLimit, double turboSlew) {
+      int rightMotorForwardChannel,
+      XboxController controller,
+      boolean squareInputs,
+      double maxOutput,
+      double Deadband,
+      double gearBoxRatio,
+      double wheelDiameterMeters,
+      double slewLimit,
+      double turboSlew) {
     TankDriveSystem result;
 
     if (RobotBase.isSimulation()) {
-      result = new TankDriveSystemSim(
-          Constants.OperatorConstants.kLeftMotorBackChannel,
+      result = new TankDriveSystemSim(Constants.OperatorConstants.kLeftMotorBackChannel,
           Constants.OperatorConstants.kLeftMotorForwardChannel,
           Constants.OperatorConstants.kRightMotorBackChannel,
-          Constants.OperatorConstants.kRightMotorForwardChannel,
-          controller,
+          Constants.OperatorConstants.kRightMotorForwardChannel, controller,
           Constants.OperatorConstants.kSquareInputsDrive,
-          Constants.OperatorConstants.kMaxOutputDrive,
-          Constants.OperatorConstants.kDeadband,
+          Constants.OperatorConstants.kMaxOutputDrive, Constants.OperatorConstants.kDeadband,
           Constants.OperatorConstants.kGearBoxRatioDrive,
           Constants.OperatorConstants.kWheelDiameterMetersDrive,
-          Constants.OperatorConstants.kSlewLimit,
-          Constants.OperatorConstants.kTurboSlew);
+          Constants.OperatorConstants.kSlewLimit, Constants.OperatorConstants.kTurboSlew);
 
       System.out.println("TANKDRIVESYSTEM: **** Simulation ****");
 
-    } else {
-      result = new TankDriveSystem(
-          Constants.OperatorConstants.kLeftMotorBackChannel,
+    }
+    else {
+      result = new TankDriveSystem(Constants.OperatorConstants.kLeftMotorBackChannel,
           Constants.OperatorConstants.kLeftMotorForwardChannel,
           Constants.OperatorConstants.kRightMotorBackChannel,
-          Constants.OperatorConstants.kRightMotorForwardChannel,
-          controller,
+          Constants.OperatorConstants.kRightMotorForwardChannel, controller,
           Constants.OperatorConstants.kSquareInputsDrive,
-          Constants.OperatorConstants.kMaxOutputDrive,
-          Constants.OperatorConstants.kDeadband,
+          Constants.OperatorConstants.kMaxOutputDrive, Constants.OperatorConstants.kDeadband,
           Constants.OperatorConstants.kGearBoxRatioDrive,
           Constants.OperatorConstants.kWheelDiameterMetersDrive,
-          Constants.OperatorConstants.kSlewLimit,
-          Constants.OperatorConstants.kTurboSlew);
+          Constants.OperatorConstants.kSlewLimit, Constants.OperatorConstants.kTurboSlew);
 
       System.out.println("TANKDRIVESYSTEM: Physical Robot version");
     }
@@ -62,23 +62,22 @@ public class TankDriveSystemSim extends TankDriveSystem {
   }
 
   // Constructor
-  public TankDriveSystemSim(int leftMotorBackChannel, int leftMotorForwardChannel, int rightMotorBackChannel,
-      int rightMotorForwardChannel, XboxController controller, boolean squareInputs,
-      double maxOutput, double Deadband, double gearBoxRatio, double wheelDiameterMeters,
-      double slewLimit, double turboSlew) {
+  public TankDriveSystemSim(int leftMotorBackChannel,
+      int leftMotorForwardChannel,
+      int rightMotorBackChannel,
+      int rightMotorForwardChannel,
+      XboxController controller,
+      boolean squareInputs,
+      double maxOutput,
+      double Deadband,
+      double gearBoxRatio,
+      double wheelDiameterMeters,
+      double slewLimit,
+      double turboSlew) {
     // FIRST, we call superclass
-    super(leftMotorBackChannel,
-        leftMotorForwardChannel,
-        rightMotorBackChannel,
-        rightMotorForwardChannel,
-        controller,
-        squareInputs,
-        maxOutput,
-        Deadband,
-        gearBoxRatio,
-        wheelDiameterMeters,
-        slewLimit,
-        turboSlew);
+    super(leftMotorBackChannel, leftMotorForwardChannel, rightMotorBackChannel,
+        rightMotorForwardChannel, controller, squareInputs, maxOutput, Deadband, gearBoxRatio,
+        wheelDiameterMeters, slewLimit, turboSlew);
 
     // This entire class should only be instantiated when we're under simulation.
     // But just in-case someone tries to instantiate it otherwise, we do an extra
@@ -96,7 +95,8 @@ public class TankDriveSystemSim extends TankDriveSystem {
         .add(Constants.SimWidgets.kFieldWidget.name, m_driveSimulation.getField())
         .withWidget(BuiltInWidgets.kField)
         .withPosition(Constants.SimWidgets.kFieldWidget.x, Constants.SimWidgets.kFieldWidget.y)
-        .withSize(Constants.SimWidgets.kFieldWidget.width, Constants.SimWidgets.kFieldWidget.height);
+        .withSize(Constants.SimWidgets.kFieldWidget.width,
+            Constants.SimWidgets.kFieldWidget.height);
 
     Shuffleboard.getTab("Simulation")
         .add(Constants.SimWidgets.kGyroWidget.name, m_driveSimulation.getGyro())
@@ -105,6 +105,7 @@ public class TankDriveSystemSim extends TankDriveSystem {
         .withSize(Constants.SimWidgets.kGyroWidget.width, Constants.SimWidgets.kGyroWidget.height)
         .withProperties(Map.of("Starting angle", 90));
   }
+
   private boolean isRobotEnabled() {
     return RobotState.isEnabled();
   }
@@ -153,7 +154,8 @@ public class TankDriveSystemSim extends TankDriveSystem {
     // the field in meters.
     // But we want to return number of MOTOR rotations that our PHYSICAL robot would
     // have had to take to move that distance in real life.
-    return m_driveSimulation.getRelativeDistanceLeft() * m_gearBoxRatio / (m_wheelDiameterMeters * Math.PI);
+    return m_driveSimulation.getRelativeDistanceLeft() * m_gearBoxRatio
+        / (m_wheelDiameterMeters * Math.PI);
   }
 
   // RETURN SIMULATED VALUE: Overrides physical encoder value in parent class
@@ -163,7 +165,8 @@ public class TankDriveSystemSim extends TankDriveSystem {
     // the field in meters.
     // But we want to return number of MOTOR rotations that our PHYSICAL robot would
     // have had to take to move that distance in real life.
-    return m_driveSimulation.getRelativeDistanceRight() * m_gearBoxRatio / (m_wheelDiameterMeters * Math.PI);
+    return m_driveSimulation.getRelativeDistanceRight() * m_gearBoxRatio
+        / (m_wheelDiameterMeters * Math.PI);
   }
 
   @Override

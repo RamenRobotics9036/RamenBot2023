@@ -5,21 +5,23 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 
-// DutyCycleEncoderSim class sets the "position" as a double, so that the base DutyCycleEncoder class
-// can read it.  Unfortunately, it doesn't set the "absPosition" as a double too, even though
-// some Robot code accesses the absolute position by calling DutyCycleEncoder->getAbsolutePosition().
+// DutyCycleEncoderSim class sets the "position" as a double, so that the base DutyCycleEncoder
+// class
+// can read it. Unfortunately, it doesn't set the "absPosition" as a double too, even though
+// some Robot code accesses the absolute position by calling
+// DutyCycleEncoder->getAbsolutePosition().
 // So this wrapper adds that functionality
-public class DutyCycleEncoderSim2 extends DutyCycleEncoderSim{
+public class DutyCycleEncoderSim2 extends DutyCycleEncoderSim {
   private final SimDouble m_simAbsolutePosition;
 
   // Constructor
-  public DutyCycleEncoderSim2(DutyCycleEncoder encoder) {  
+  public DutyCycleEncoderSim2(DutyCycleEncoder encoder) {
     // FIRST, we call superclass
     super(encoder);
 
-    SimDeviceSim wrappedSimDevice =
-        new SimDeviceSim("DutyCycle:DutyCycleEncoder" + "[" + encoder.getSourceChannel() + "]");
-        m_simAbsolutePosition = wrappedSimDevice.getDouble("absPosition");
+    SimDeviceSim wrappedSimDevice = new SimDeviceSim(
+        "DutyCycle:DutyCycleEncoder" + "[" + encoder.getSourceChannel() + "]");
+    m_simAbsolutePosition = wrappedSimDevice.getDouble("absPosition");
   }
 
   @Override
