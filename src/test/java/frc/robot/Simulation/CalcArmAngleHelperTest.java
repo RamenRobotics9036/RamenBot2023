@@ -5,16 +5,16 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CalcArmAngleTest {
+public class CalcArmAngleHelperTest {
   private final double toleranceDegrees = 2;
   private final double toleranceRotations = 0.01;
-  private CalcArmAngle m_calcArmAngle;
+  private CalcArmAngleHelper m_calcArmAngleHelper;
   private final double m_armHeightFromWinchToPivotPoint = 1;
   private final double m_armLengthFromEdgeToPivot = 0.25;
 
   @BeforeEach
   public void setUp() {
-    m_calcArmAngle = new CalcArmAngle(m_armHeightFromWinchToPivotPoint, m_armLengthFromEdgeToPivot);
+    m_calcArmAngleHelper = new CalcArmAngleHelper(m_armHeightFromWinchToPivotPoint, m_armLengthFromEdgeToPivot);
   }
 
   @Test
@@ -25,7 +25,7 @@ public class CalcArmAngleTest {
         - amountBeyondLimit);
     double expectedResult = 90;
 
-    CalcArmAngle.Result resultPair = m_calcArmAngle.GetDegreesForStringLength(stringLen);
+    CalcArmAngleHelper.Result resultPair = m_calcArmAngleHelper.CalcSignedDegreesForStringLength(stringLen);
     assertTrue(!resultPair.m_isValid);
     assertTrue(resultPair.m_value == expectedResult);
   }
@@ -38,7 +38,7 @@ public class CalcArmAngleTest {
         + amountBeyondLimit);
     double expectedResult = 270;
 
-    CalcArmAngle.Result resultPair = m_calcArmAngle.GetDegreesForStringLength(stringLen);
+    CalcArmAngleHelper.Result resultPair = m_calcArmAngleHelper.CalcSignedDegreesForStringLength(stringLen);
     assertTrue(resultPair.m_isValid);
     assertTrue(resultPair.m_value == expectedResult);
   }
@@ -48,7 +48,7 @@ public class CalcArmAngleTest {
     double stringLen = (m_armHeightFromWinchToPivotPoint - m_armLengthFromEdgeToPivot);
     double expectedResult = 90;
 
-    assertEquals(m_calcArmAngle.GetDegreesForStringLength(stringLen).m_value,
+    assertEquals(m_calcArmAngleHelper.CalcSignedDegreesForStringLength(stringLen).m_value,
         expectedResult,
         toleranceDegrees);
   }
@@ -58,7 +58,7 @@ public class CalcArmAngleTest {
     double stringLen = m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot;
     double expectedResult = 270;
 
-    assertEquals(m_calcArmAngle.GetDegreesForStringLength(stringLen).m_value,
+    assertEquals(m_calcArmAngleHelper.CalcSignedDegreesForStringLength(stringLen).m_value,
         expectedResult,
         toleranceDegrees);
   }
@@ -68,19 +68,9 @@ public class CalcArmAngleTest {
     double stringLen = m_armHeightFromWinchToPivotPoint;
     double expectedResult = 0;
 
-    assertEquals(m_calcArmAngle.GetDegreesForStringLength(stringLen).m_value,
+    assertEquals(m_calcArmAngleHelper.CalcSignedDegreesForStringLength(stringLen).m_value,
         expectedResult,
         toleranceDegrees);
-  }
-
-  @Test
-  public void ArmAtFullyDownShouldReturnThreeQuartersRotations() {
-    double stringLen = m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot;
-    double expectedResult = 0.75;
-
-    assertEquals(m_calcArmAngle.GetRotationsForStringLength(stringLen).m_value,
-        expectedResult,
-        toleranceRotations);
   }
 
   @Test
@@ -88,7 +78,7 @@ public class CalcArmAngleTest {
     double stringLen = (m_armHeightFromWinchToPivotPoint - 0.17678);
     double expectedResult = 45;
 
-    assertEquals(m_calcArmAngle.GetDegreesForStringLength(stringLen).m_value,
+    assertEquals(m_calcArmAngleHelper.CalcSignedDegreesForStringLength(stringLen).m_value,
         expectedResult,
         toleranceDegrees);
   }

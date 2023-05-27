@@ -100,7 +100,7 @@ public class ArmSystemSim extends ArmSystem {
         Constants.SimConstants.kgrabberBreaksIfOpenBelowThisLimit,
         Constants.SimConstants.karmHeightFromWinchToPivotPoint,
         Constants.SimConstants.karmLengthFromEdgeToPivot,
-        Constants.SimConstants.karmLengthFromEdgeToPivot_Min,
+        Constants.SimConstants.klengthFromPivotPointToArmBackEnd_Min,
         Constants.SimConstants.karmEncoderRotationsOffset);
   }
 
@@ -318,11 +318,6 @@ public class ArmSystemSim extends ArmSystem {
   @Override
   public void periodic() {
     super.periodic();
-
-    // $TODO - This will move into ArmSimulation
-    // if (m_grabberOpenSupplier != null) {
-    // System.out.println(m_grabberOpenSupplier.getAsBoolean());
-    // }
 
     // When Robot is disabled, the entire simulation freezes
     if (isRobotEnabled()) {
