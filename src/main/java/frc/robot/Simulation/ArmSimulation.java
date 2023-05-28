@@ -82,7 +82,8 @@ public class ArmSimulation {
     m_encoderRotationsOffset = encoderRotationsOffset;
     m_IsBroken = false;
 
-    m_calcArmAngleHelper = new CalcArmAngleHelper(heightFromWinchToPivotPoint, armLengthFromEdgeToPivot);
+    m_calcArmAngleHelper = new CalcArmAngleHelper(heightFromWinchToPivotPoint,
+        armLengthFromEdgeToPivot);
 
     // Forces the absolute encoder to show the correct position
     UpdateAbsoluteEncoderPosition();
@@ -107,7 +108,8 @@ public class ArmSimulation {
   }
 
   private boolean IsInGrabberBreakRange(double positionSignedDegrees) {
-    return positionSignedDegrees < m_grabberBreaksIfOpenBelowSignedDegreesLimit;
+    return UnitConversions.lessThanButNotEqual(positionSignedDegrees,
+        m_grabberBreaksIfOpenBelowSignedDegreesLimit);
   }
 
   private void UpdateAbsoluteEncoderPosition() {
@@ -122,8 +124,8 @@ public class ArmSimulation {
     }
 
     double newStringLen = m_winchSimulation.GetStringExtendedLen();
-    CalcArmAngleHelper.Result resultPair = m_calcArmAngleHelper.CalcSignedDegreesForStringLength(newStringLen);
-    double newAbsoluteEncoderNonSignedDegrees = resultPair.m_value;
+    CalcArmAngleHelper.Result resultPair = m_calcArmAngleHelper
+        .CalcSignedDegreesForStringLength(newStringLen);
 
     // Check if we got back that string length was invalid
     if (!resultPair.m_isValid) {
@@ -131,7 +133,7 @@ public class ArmSimulation {
       m_IsBroken = true;
     }
 
-    double newAbsoluteEncoderSignedDegrees = UnitConversions.toSignedDegrees(newAbsoluteEncoderNonSignedDegrees);
+    double newAbsoluteEncoderSignedDegrees = resultPair.m_value;
 
     if (isGrabberOpen && m_IsCurrentSignedDegreesSet
         && IsInGrabberBreakRange(newAbsoluteEncoderSignedDegrees)) {
@@ -174,7 +176,8 @@ public class ArmSimulation {
     m_currentSignedDegrees = newAbsoluteEncoderSignedDegrees;
     m_IsCurrentSignedDegreesSet = true;
 
-    newAbsoluteEncoderNonSignedDegrees = UnitConversions.toUnsignedDegrees(newAbsoluteEncoderSignedDegrees);
+    double newAbsoluteEncoderNonSignedDegrees = UnitConversions
+        .toUnsignedDegrees(newAbsoluteEncoderSignedDegrees);
     double newAbsoluteEncoderPosition = newAbsoluteEncoderNonSignedDegrees / 360.0;
 
     double newOffsetAbsoluteEncoderPosition = OffsetArmRotationPosition(newAbsoluteEncoderPosition,

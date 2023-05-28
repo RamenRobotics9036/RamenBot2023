@@ -32,8 +32,6 @@ public class ArmSimulationTest {
   private final double m_armLengthFromEdgeToPivot_Min = 0.1;
   private final double m_encoderPositionOffsetRotations = 0;
 
-  private final double toleranceDegrees = 2;
-
   private WinchSimulation m_winchSimulation;
   private RelativeEncoderSim m_winchRelEncoderSim;
   private DutyCycleEncoder m_winchAbsoluteEncoder = null;
@@ -116,7 +114,7 @@ public class ArmSimulationTest {
     assertTrue(!tempwinchSimulation.GetIsBroken());
 
     assertTrue(!tempArmSimulation.GetIsBroken());
-    assertEquals(m_winchAbsoluteEncoder.get() * 360, 90, toleranceDegrees);
+    assertEquals(m_winchAbsoluteEncoder.get() * 360, 90, UnitConversions.kAngleTolerance);
   }
 
   @Test
@@ -153,7 +151,7 @@ public class ArmSimulationTest {
     tempArmSimulation.simulationPeriodic();
 
     assertTrue(tempArmSimulation.GetIsBroken());
-    assertEquals(m_winchAbsoluteEncoder.get() * 360, 360 - 90, toleranceDegrees);
+    assertEquals(m_winchAbsoluteEncoder.get() * 360, 360 - 90, UnitConversions.kAngleTolerance);
   }
 
   @Test
@@ -198,7 +196,7 @@ public class ArmSimulationTest {
     assertTrue(!tempArmSimulation.GetIsBroken());
     double expect = initialPosSignedDegrees + 360;
     double actual = m_winchAbsoluteEncoder.get() * 360;
-    assertEquals(expect, actual, toleranceDegrees);
+    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
 
     // Now calculate how much to turn the winch motor to get it to the target position
     backArmAbovePivot = -1
@@ -224,7 +222,7 @@ public class ArmSimulationTest {
     // target degrees
     expect = breakLimitSignedDegrees + 360;
     actual = m_winchAbsoluteEncoder.get() * 360;
-    assertEquals(expect, actual, toleranceDegrees);
+    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
   }
 
   @Test
@@ -269,7 +267,7 @@ public class ArmSimulationTest {
     assertTrue(!tempArmSimulation.GetIsBroken());
     double expect = initialPosSignedDegrees + 360;
     double actual = m_winchAbsoluteEncoder.get() * 360;
-    assertEquals(expect, actual, toleranceDegrees);
+    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
 
     // Now calculate how much to turn the winch motor to get it to the target position
     backArmAbovePivot = -1
@@ -295,7 +293,7 @@ public class ArmSimulationTest {
     // target degrees
     expect = targetPosSignedDegrees + 360;
     actual = m_winchAbsoluteEncoder.get() * 360;
-    assertEquals(expect, actual, toleranceDegrees);
+    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
   }
 
   @Test
@@ -340,7 +338,7 @@ public class ArmSimulationTest {
     assertTrue(!tempArmSimulation.GetIsBroken());
     double expect = initialPosSignedDegrees + 360;
     double actual = m_winchAbsoluteEncoder.get() * 360;
-    assertEquals(expect, actual, toleranceDegrees);
+    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
 
     // Now calculate how much to turn the winch motor to get it to the target position
     backArmAbovePivot = -1
@@ -366,7 +364,7 @@ public class ArmSimulationTest {
     // target degrees
     expect = targetPosSignedDegrees + 360;
     actual = m_winchAbsoluteEncoder.get() * 360;
-    assertEquals(expect, actual, toleranceDegrees);
+    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
   }
 
   @Test
@@ -411,7 +409,7 @@ public class ArmSimulationTest {
     assertTrue(tempArmSimulation.GetIsBroken());
     double expect = initialPosSignedDegrees + 360;
     double actual = m_winchAbsoluteEncoder.get() * 360;
-    assertEquals(expect, actual, toleranceDegrees);
+    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
 
     // Now calculate how much to turn the winch motor to get it to the target position
     backArmAbovePivot = -1
@@ -437,7 +435,7 @@ public class ArmSimulationTest {
     // target degrees
     expect = initialPosSignedDegrees + 360;
     actual = m_winchAbsoluteEncoder.get() * 360;
-    assertEquals(expect, actual, toleranceDegrees);
+    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
   }
 
   private void CreateWithNDegreeArm_Helper(double backArmAbovePivot,
@@ -471,7 +469,9 @@ public class ArmSimulationTest {
     }
     else {
       assertTrue(!tempArmSimulation.GetIsBroken());
-      assertEquals(m_winchAbsoluteEncoder.get() * 360, expectedDegrees, toleranceDegrees);
+      assertEquals(m_winchAbsoluteEncoder.get() * 360,
+          expectedDegrees,
+          UnitConversions.kAngleTolerance);
     }
   }
 
@@ -561,7 +561,9 @@ public class ArmSimulationTest {
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempwinchSimulation.GetIsBroken());
     assertTrue(!tempArmSimulation.GetIsBroken());
-    assertEquals(m_winchAbsoluteEncoder.get() * 360, expectedDegrees, toleranceDegrees);
+    assertEquals(m_winchAbsoluteEncoder.get() * 360,
+        expectedDegrees,
+        UnitConversions.kAngleTolerance);
   }
 
   @Test
@@ -589,10 +591,9 @@ public class ArmSimulationTest {
     double position = 0.6;
     double offset = 0.5; // 180
     double expectedResult = 0.1;
-    double tolerance = 0.00001;
 
     double actualResult = ArmSimulation.OffsetArmRotationPosition(position, offset);
-    assertEquals(expectedResult, actualResult, tolerance);
+    assertEquals(expectedResult, actualResult, UnitConversions.kAngleTolerance);
   }
 
   @Test

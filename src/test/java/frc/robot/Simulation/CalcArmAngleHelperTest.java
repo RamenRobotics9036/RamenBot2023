@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CalcArmAngleHelperTest {
-  private final double toleranceDegrees = 2;
-  private final double toleranceRotations = 0.01;
   private CalcArmAngleHelper m_calcArmAngleHelper;
   private final double m_armHeightFromWinchToPivotPoint = 1;
   private final double m_armLengthFromEdgeToPivot = 0.25;
@@ -36,7 +34,7 @@ public class CalcArmAngleHelperTest {
 
     double stringLen = (m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot
         + amountBeyondLimit);
-    double expectedResult = 270;
+    double expectedResult = -90;
 
     CalcArmAngleHelper.Result resultPair = m_calcArmAngleHelper.CalcSignedDegreesForStringLength(stringLen);
     assertTrue(resultPair.m_isValid);
@@ -50,17 +48,17 @@ public class CalcArmAngleHelperTest {
 
     assertEquals(m_calcArmAngleHelper.CalcSignedDegreesForStringLength(stringLen).m_value,
         expectedResult,
-        toleranceDegrees);
+        UnitConversions.kAngleTolerance);
   }
 
   @Test
-  public void ArmAtFullyDownShouldReturn270Degrees() {
+  public void ArmAtFullyDownShouldReturnNegative90Degrees() {
     double stringLen = m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot;
-    double expectedResult = 270;
+    double expectedResult = -90;
 
     assertEquals(m_calcArmAngleHelper.CalcSignedDegreesForStringLength(stringLen).m_value,
         expectedResult,
-        toleranceDegrees);
+        UnitConversions.kAngleTolerance);
   }
 
   @Test
@@ -70,7 +68,7 @@ public class CalcArmAngleHelperTest {
 
     assertEquals(m_calcArmAngleHelper.CalcSignedDegreesForStringLength(stringLen).m_value,
         expectedResult,
-        toleranceDegrees);
+        UnitConversions.kAngleTolerance);
   }
 
   @Test
@@ -80,6 +78,6 @@ public class CalcArmAngleHelperTest {
 
     assertEquals(m_calcArmAngleHelper.CalcSignedDegreesForStringLength(stringLen).m_value,
         expectedResult,
-        toleranceDegrees);
+        UnitConversions.kAngleTolerance);
   }
 }
