@@ -74,7 +74,8 @@ public class ArmSimulation {
     if (m_grabberBreaksIfOpenBelowSignedDegreesLimit >= m_topSignedDegreesLimit
         || m_grabberBreaksIfOpenBelowSignedDegreesLimit <= m_bottomSignedDegreesLimit) {
       throw new IllegalArgumentException(
-          "m_grabberBreaksIfOpenBelowSignedDegreesLimit must be between m_topSignedDegreesLimit and m_bottomSignedDegreesLimit");
+          "m_grabberBreaksIfOpenBelowSignedDegreesLimit must be between "
+              + "m_topSignedDegreesLimit and m_bottomSignedDegreesLimit");
     }
 
     m_winchSimulation = winchSimulation;
