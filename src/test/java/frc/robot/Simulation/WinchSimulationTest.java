@@ -30,6 +30,7 @@ public class WinchSimulationTest {
     assertThrows(IllegalArgumentException.class, () -> {
       WinchSimulation tempWinchSimulation = new WinchSimulation(null, m_SpoolDiameterMeters,
           m_TotalStringLenMeters, m_InitialLenSpooled, m_InitialStringOrientation, m_invertMotor);
+      assertTrue(tempWinchSimulation != null);
     });
   }
 
@@ -54,6 +55,7 @@ public class WinchSimulationTest {
     assertThrows(IllegalArgumentException.class, () -> {
       WinchSimulation tempWinchSimulation = new WinchSimulation(m_relEncoderSim,
           m_SpoolDiameterMeters, 5, 5.1, m_InitialStringOrientation, m_invertMotor);
+      assertTrue(tempWinchSimulation != null);
     });
   }
 
@@ -70,6 +72,7 @@ public class WinchSimulationTest {
     assertThrows(IllegalArgumentException.class, () -> {
       WinchSimulation tempWinchSimulation = new WinchSimulation(m_relEncoderSim,
           m_SpoolDiameterMeters, 5, -1, m_InitialStringOrientation, m_invertMotor);
+      assertTrue(tempWinchSimulation != null);
     });
   }
 

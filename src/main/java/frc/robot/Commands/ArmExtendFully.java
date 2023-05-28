@@ -1,6 +1,5 @@
 package frc.robot.Commands;
 
-import frc.robot.Constants;
 import frc.robot.Subsystems.ArmSystem;
 
 public class ArmExtendFully extends SetExtenderToLength {

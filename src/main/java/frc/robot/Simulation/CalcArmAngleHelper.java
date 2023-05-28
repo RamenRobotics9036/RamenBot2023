@@ -1,6 +1,5 @@
 package frc.robot.Simulation;
 
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 /*
@@ -56,13 +55,15 @@ public class CalcArmAngleHelper {
     // Is arm beyond lowest possible point?
     // If the string is too long, it means the string is no longer taut.
     // Still, we consider this a valid position of the arm; arm is dangling down
-    if (heightArmBackendAbovePivot > m_lengthFromPivotPointToArmBackEnd) {
+    if (UnitConversions.greaterThanButNotEqual(heightArmBackendAbovePivot,
+        m_lengthFromPivotPointToArmBackEnd)) {
       System.out.println("String too long, and is no longer taut");
       return new Result(true, down);
     }
 
     // Is arm beyond highest possible point?
-    if (heightArmBackendAbovePivot < -1 * m_lengthFromPivotPointToArmBackEnd) {
+    if (UnitConversions.lessThanButNotEqual(heightArmBackendAbovePivot,
+        -1 * m_lengthFromPivotPointToArmBackEnd)) {
       System.out.println("Above highest point: String too short!");
       return new Result(false, up);
     }

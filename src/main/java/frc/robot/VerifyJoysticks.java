@@ -45,10 +45,6 @@ public class VerifyJoysticks {
       return m_lastSuccess;
     }
 
-    public String get_joystickTestName() {
-      return m_joystickTestName;
-    }
-
     public boolean is_stopRestOfTestsIfFailed() {
       return m_stopRestOfTestsIfFailed;
     }
