@@ -1,6 +1,16 @@
 plugins {
+    id "checkstyle"
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2023.1.1"
+    id "edu.wpi.first.GradleRIO" version "2023.4.3"
+}
+
+apply plugin: 'checkstyle'
+
+checkstyle {
+    toolVersion = '10.12.0'  // specify the version of checkstyle
+    configFile = file("${project.rootDir}/config/checkstyle/checkstyle.xml")  // specify the path to your checkstyle config file
+    sourceSets = [sourceSets.main]  // specify the source sets to be checked, in this case, it's the main source set
+    showViolations = true  // whether to show the violations in the console
 }
 
 sourceCompatibility = JavaVersion.VERSION_11

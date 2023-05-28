@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.TankDriveSystem;
 
 public class AutoBalanceCommand extends CommandBase {
-  private boolean finished = false;
   private TankDriveSystem m_driveSystem;
   private double rate;
   private Timer timer = new Timer();

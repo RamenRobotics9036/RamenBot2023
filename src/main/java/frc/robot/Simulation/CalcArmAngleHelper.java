@@ -1,6 +1,5 @@
 package frc.robot.Simulation;
 
-import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 /*
@@ -48,7 +47,6 @@ public class CalcArmAngleHelper {
     m_lengthFromPivotPointToArmBackEnd = lengthFromPivotPointToArmBackEnd;
   }
 
-  // $TODO - Note that this is incorrectly calling toUnsignedDegrees - fix
   public Result CalcSignedDegreesForStringLength(double stringLen) {
     double heightArmBackendAbovePivot = stringLen - m_lengthFromWinchToPivotPoint;
     double up = 90;
@@ -57,21 +55,21 @@ public class CalcArmAngleHelper {
     // Is arm beyond lowest possible point?
     // If the string is too long, it means the string is no longer taut.
     // Still, we consider this a valid position of the arm; arm is dangling down
-    if (heightArmBackendAbovePivot > m_lengthFromPivotPointToArmBackEnd) {
+    if (UnitConversions.greaterThanButNotEqual(heightArmBackendAbovePivot,
+        m_lengthFromPivotPointToArmBackEnd)) {
       System.out.println("String too long, and is no longer taut");
-      return new Result(true, UnitConversions.toUnsignedDegrees(down));
+      return new Result(true, down);
     }
 
     // Is arm beyond highest possible point?
-    if (heightArmBackendAbovePivot < -1 * m_lengthFromPivotPointToArmBackEnd) {
+    if (UnitConversions.lessThanButNotEqual(heightArmBackendAbovePivot,
+        -1 * m_lengthFromPivotPointToArmBackEnd)) {
       System.out.println("Above highest point: String too short!");
-      return new Result(false, UnitConversions.toUnsignedDegrees(up));
+      return new Result(false, up);
     }
 
-    return new Result(true,
-        UnitConversions
-            .toUnsignedDegrees(-1 * CalcAngleOnRightTriangle(m_lengthFromPivotPointToArmBackEnd,
-                heightArmBackendAbovePivot)));
+    return new Result(true, -1
+        * CalcAngleOnRightTriangle(m_lengthFromPivotPointToArmBackEnd, heightArmBackendAbovePivot));
   }
 
   // We are calculating the angle of a right triangle at point (0,0). We know the length of the

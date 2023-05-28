@@ -27,7 +27,6 @@ public class TankDriveSystem extends SubsystemBase {
   private SlewRateLimiter turboLimiter2;
 
   private double slewLimit;
-  private double turboSlew;
 
   private CANSparkMax m_leftMotor1;
   private CANSparkMax m_leftMotor2;
@@ -85,7 +84,6 @@ public class TankDriveSystem extends SubsystemBase {
     this.maxOutput = maxOutput;
 
     this.slewLimit = slewLimit;
-    this.turboSlew = turboSlew;
     if (this.slewLimit > 0) {
       slewLimiter1 = new SlewRateLimiter(slewLimit);
       slewLimiter2 = new SlewRateLimiter(slewLimit);

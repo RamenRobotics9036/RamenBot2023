@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Commands.RotateMotorCommand;
 
 public class ArmSystem extends SubsystemBase {
   private XboxController m_controller;
@@ -175,22 +174,6 @@ public class ArmSystem extends SubsystemBase {
 
   public Double getExtenderEncoder() {
     return m_extenderEncoder.getPosition();
-  }
-
-  public RotateMotorCommand rotateWinchMotor(double rotations,
-      double gearBoxRatio,
-      double percentOutput,
-      double winchCircumference) {
-    return new RotateMotorCommand(m_armWinch, m_extenderEncoder, rotations, gearBoxRatio,
-        percentOutput, winchCircumference);
-  }
-
-  public RotateMotorCommand rotateExtenderMotor(double rotations,
-      double gearBoxRatio,
-      double percentOutput,
-      double extenderCircumference) {
-    return new RotateMotorCommand(m_armExtender, m_extenderEncoder, rotations, gearBoxRatio,
-        percentOutput, extenderCircumference);
   }
 
   public void setWinchSpeed(double speed) {

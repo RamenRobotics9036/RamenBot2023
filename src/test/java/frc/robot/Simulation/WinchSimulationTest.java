@@ -30,6 +30,7 @@ public class WinchSimulationTest {
     assertThrows(IllegalArgumentException.class, () -> {
       WinchSimulation tempWinchSimulation = new WinchSimulation(null, m_SpoolDiameterMeters,
           m_TotalStringLenMeters, m_InitialLenSpooled, m_InitialStringOrientation, m_invertMotor);
+      assertTrue(tempWinchSimulation != null);
     });
   }
 
@@ -54,6 +55,7 @@ public class WinchSimulationTest {
     assertThrows(IllegalArgumentException.class, () -> {
       WinchSimulation tempWinchSimulation = new WinchSimulation(m_relEncoderSim,
           m_SpoolDiameterMeters, 5, 5.1, m_InitialStringOrientation, m_invertMotor);
+      assertTrue(tempWinchSimulation != null);
     });
   }
 
@@ -70,6 +72,7 @@ public class WinchSimulationTest {
     assertThrows(IllegalArgumentException.class, () -> {
       WinchSimulation tempWinchSimulation = new WinchSimulation(m_relEncoderSim,
           m_SpoolDiameterMeters, 5, -1, m_InitialStringOrientation, m_invertMotor);
+      assertTrue(tempWinchSimulation != null);
     });
   }
 
@@ -139,8 +142,6 @@ public class WinchSimulationTest {
       double expectedResult,
       boolean expectIsBroken) {
 
-    double tolerance = 0.01;
-
     WinchSimulation tempWinchSimulation = new WinchSimulation(m_relEncoderSim,
         m_SpoolDiameterMeters, m_TotalStringLenMeters, m_InitialLenSpooled, stringOrientation,
         flipWinchPolarity);
@@ -153,7 +154,7 @@ public class WinchSimulationTest {
     tempWinchSimulation.simulationPeriodic();
     double result = tempWinchSimulation.GetStringExtendedLen();
 
-    assertEquals(result, expectedResult, tolerance);
+    assertEquals(result, expectedResult, UnitConversions.kAngleTolerance);
     assertTrue(tempWinchSimulation.GetIsBroken() == expectIsBroken);
   }
 
@@ -213,7 +214,6 @@ public class WinchSimulationTest {
 
   @Test
   public void TwoMotorMovesShouldMoveStringCumulatively() {
-    double tolerance = 0.01;
     double expectedResult = 4.4;
 
     WinchSimulation tempWinchSimulation = new WinchSimulation(m_relEncoderSim,
@@ -233,7 +233,7 @@ public class WinchSimulationTest {
 
     double result = tempWinchSimulation.GetStringExtendedLen();
 
-    assertEquals(result, expectedResult, tolerance);
+    assertEquals(result, expectedResult, UnitConversions.kAngleTolerance);
     assertTrue(!tempWinchSimulation.GetIsBroken());
 
   }
