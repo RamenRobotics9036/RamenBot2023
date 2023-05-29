@@ -180,7 +180,7 @@ public class ArmSystemSim extends ArmSystem {
     // Extender functional
     Shuffleboard.getTab("Simulation")
         .addBoolean(Constants.SimWidgets.kExtenderFunctional.name,
-            () -> !m_ExtenderSimulation.GetIsBroken())
+            () -> !m_ExtenderSimulation.getIsBroken())
         .withWidget(BuiltInWidgets.kBooleanBox)
         .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"))
         .withPosition(Constants.SimWidgets.kExtenderFunctional.x,
@@ -202,7 +202,7 @@ public class ArmSystemSim extends ArmSystem {
     // Extender percent extended
     Shuffleboard.getTab("Simulation")
         .addDouble(Constants.SimWidgets.kExtenderExtendedPercent.name,
-            () -> m_ExtenderSimulation.GetExtendedPercent())
+            () -> m_ExtenderSimulation.getExtendedPercent())
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of("min", 0.0, "max", 1.0, "show text", false))
         .withPosition(Constants.SimWidgets.kExtenderExtendedPercent.x,
@@ -224,7 +224,7 @@ public class ArmSystemSim extends ArmSystem {
   private void AddShuffleboardArmList() {
     // Arm functional display
     Shuffleboard.getTab("Simulation")
-        .addBoolean(Constants.SimWidgets.kArmFunctional.name, () -> !m_ArmSimulation.GetIsBroken())
+        .addBoolean(Constants.SimWidgets.kArmFunctional.name, () -> !m_ArmSimulation.getIsBroken())
         .withWidget(BuiltInWidgets.kBooleanBox)
         .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"))
         .withPosition(Constants.SimWidgets.kArmFunctional.x, Constants.SimWidgets.kArmFunctional.y)
@@ -366,7 +366,7 @@ public class ArmSystemSim extends ArmSystem {
       m_ArmSimulation.simulationPeriodic();
 
       boolean isExtenderSensorOn = m_ExtenderSimulation
-          .GetExtendedLen() <= Constants.SimConstants.kextenderFullyRetractedLen;
+          .getExtendedLen() <= Constants.SimConstants.kextenderFullyRetractedLen;
       m_sensorSim.setValue(!isExtenderSensorOn);
     }
   }

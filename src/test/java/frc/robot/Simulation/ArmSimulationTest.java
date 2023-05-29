@@ -70,7 +70,7 @@ public class ArmSimulationTest {
         m_armLengthFromEdgeToPivot_Min, m_encoderPositionOffsetRotations);
 
     assertTrue(tempArmSimulation != null);
-    assertTrue(!tempArmSimulation.GetIsBroken() && !m_winchSimulation.GetIsBroken());
+    assertTrue(!tempArmSimulation.getIsBroken() && !m_winchSimulation.GetIsBroken());
   }
 
   @Test
@@ -113,7 +113,7 @@ public class ArmSimulationTest {
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempwinchSimulation.GetIsBroken());
 
-    assertTrue(!tempArmSimulation.GetIsBroken());
+    assertTrue(!tempArmSimulation.getIsBroken());
     assertEquals(m_winchAbsoluteEncoder.get() * 360, 90, UnitConversions.kAngleTolerance);
   }
 
@@ -145,12 +145,12 @@ public class ArmSimulationTest {
 
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempwinchSimulation.GetIsBroken());
-    assertTrue(!tempArmSimulation.GetIsBroken());
+    assertTrue(!tempArmSimulation.getIsBroken());
 
     // Now that grabber is set open, need to simulate one cycle
     tempArmSimulation.simulationPeriodic();
 
-    assertTrue(tempArmSimulation.GetIsBroken());
+    assertTrue(tempArmSimulation.getIsBroken());
     assertEquals(m_winchAbsoluteEncoder.get() * 360, 360 - 90, UnitConversions.kAngleTolerance);
   }
 
@@ -188,12 +188,12 @@ public class ArmSimulationTest {
 
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempwinchSimulation.GetIsBroken());
-    assertTrue(!tempArmSimulation.GetIsBroken());
+    assertTrue(!tempArmSimulation.getIsBroken());
 
     // Now that grabber is set open, need to simulate one cycle
     tempArmSimulation.simulationPeriodic();
 
-    assertTrue(!tempArmSimulation.GetIsBroken());
+    assertTrue(!tempArmSimulation.getIsBroken());
     double expect = initialPosSignedDegrees + 360;
     double actual = m_winchAbsoluteEncoder.get() * 360;
     assertEquals(expect, actual, UnitConversions.kAngleTolerance);
@@ -216,7 +216,7 @@ public class ArmSimulationTest {
     tempArmSimulation.simulationPeriodic();
 
     assertTrue(!tempwinchSimulation.GetIsBroken());
-    assertTrue(!tempArmSimulation.GetIsBroken());
+    assertTrue(!tempArmSimulation.getIsBroken());
 
     // We expect that the arm gets stuck at the break limit, instead of going all the way to the
     // target degrees
@@ -259,12 +259,12 @@ public class ArmSimulationTest {
 
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempwinchSimulation.GetIsBroken());
-    assertTrue(!tempArmSimulation.GetIsBroken());
+    assertTrue(!tempArmSimulation.getIsBroken());
 
     // Now that grabber is set open, need to simulate one cycle
     tempArmSimulation.simulationPeriodic();
 
-    assertTrue(!tempArmSimulation.GetIsBroken());
+    assertTrue(!tempArmSimulation.getIsBroken());
     double expect = initialPosSignedDegrees + 360;
     double actual = m_winchAbsoluteEncoder.get() * 360;
     assertEquals(expect, actual, UnitConversions.kAngleTolerance);
@@ -287,7 +287,7 @@ public class ArmSimulationTest {
     tempArmSimulation.simulationPeriodic();
 
     assertTrue(!tempwinchSimulation.GetIsBroken());
-    assertTrue(!tempArmSimulation.GetIsBroken());
+    assertTrue(!tempArmSimulation.getIsBroken());
 
     // We expect that the arm gets stuck at the break limit, instead of going all the way to the
     // target degrees
@@ -330,12 +330,12 @@ public class ArmSimulationTest {
 
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempwinchSimulation.GetIsBroken());
-    assertTrue(!tempArmSimulation.GetIsBroken());
+    assertTrue(!tempArmSimulation.getIsBroken());
 
     // Now that grabber is set open, need to simulate one cycle
     tempArmSimulation.simulationPeriodic();
 
-    assertTrue(!tempArmSimulation.GetIsBroken());
+    assertTrue(!tempArmSimulation.getIsBroken());
     double expect = initialPosSignedDegrees + 360;
     double actual = m_winchAbsoluteEncoder.get() * 360;
     assertEquals(expect, actual, UnitConversions.kAngleTolerance);
@@ -358,7 +358,7 @@ public class ArmSimulationTest {
     tempArmSimulation.simulationPeriodic();
 
     assertTrue(!tempwinchSimulation.GetIsBroken());
-    assertTrue(!tempArmSimulation.GetIsBroken());
+    assertTrue(!tempArmSimulation.getIsBroken());
 
     // We expect that the arm gets stuck at the break limit, instead of going all the way to the
     // target degrees
@@ -401,12 +401,12 @@ public class ArmSimulationTest {
 
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempwinchSimulation.GetIsBroken());
-    assertTrue(!tempArmSimulation.GetIsBroken());
+    assertTrue(!tempArmSimulation.getIsBroken());
 
     // Now that grabber is set open, need to simulate one cycle
     tempArmSimulation.simulationPeriodic();
 
-    assertTrue(tempArmSimulation.GetIsBroken());
+    assertTrue(tempArmSimulation.getIsBroken());
     double expect = initialPosSignedDegrees + 360;
     double actual = m_winchAbsoluteEncoder.get() * 360;
     assertEquals(expect, actual, UnitConversions.kAngleTolerance);
@@ -429,7 +429,7 @@ public class ArmSimulationTest {
     tempArmSimulation.simulationPeriodic();
 
     assertTrue(!tempwinchSimulation.GetIsBroken());
-    assertTrue(tempArmSimulation.GetIsBroken());
+    assertTrue(tempArmSimulation.getIsBroken());
 
     // We expect that the arm gets stuck at the break limit, instead of going all the way to the
     // target degrees
@@ -465,10 +465,10 @@ public class ArmSimulationTest {
     assertTrue(!tempwinchSimulation.GetIsBroken());
 
     if (expectArmBroken) {
-      assertTrue(tempArmSimulation.GetIsBroken());
+      assertTrue(tempArmSimulation.getIsBroken());
     }
     else {
-      assertTrue(!tempArmSimulation.GetIsBroken());
+      assertTrue(!tempArmSimulation.getIsBroken());
       assertEquals(m_winchAbsoluteEncoder.get() * 360,
           expectedDegrees,
           UnitConversions.kAngleTolerance);
@@ -560,7 +560,7 @@ public class ArmSimulationTest {
 
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempwinchSimulation.GetIsBroken());
-    assertTrue(!tempArmSimulation.GetIsBroken());
+    assertTrue(!tempArmSimulation.getIsBroken());
     assertEquals(m_winchAbsoluteEncoder.get() * 360,
         expectedDegrees,
         UnitConversions.kAngleTolerance);
@@ -572,7 +572,7 @@ public class ArmSimulationTest {
     double offset = 0.5; // 180
     double expectedResult = 0.5;
 
-    double actualResult = ArmSimulation.OffsetArmRotationPosition(position, offset);
+    double actualResult = ArmSimulation.offsetArmRotationPosition(position, offset);
     assertEquals(expectedResult, actualResult);
   }
 
@@ -582,7 +582,7 @@ public class ArmSimulationTest {
     double offset = 0.5; // 180
     double expectedResult = 0.75;
 
-    double actualResult = ArmSimulation.OffsetArmRotationPosition(position, offset);
+    double actualResult = ArmSimulation.offsetArmRotationPosition(position, offset);
     assertEquals(expectedResult, actualResult);
   }
 
@@ -592,7 +592,7 @@ public class ArmSimulationTest {
     double offset = 0.5; // 180
     double expectedResult = 0.1;
 
-    double actualResult = ArmSimulation.OffsetArmRotationPosition(position, offset);
+    double actualResult = ArmSimulation.offsetArmRotationPosition(position, offset);
     assertEquals(expectedResult, actualResult, UnitConversions.kAngleTolerance);
   }
 
@@ -602,7 +602,7 @@ public class ArmSimulationTest {
     double offset = -0.25; // 90
     double expectedResult = 0.25;
 
-    double actualResult = ArmSimulation.OffsetArmRotationPosition(position, offset);
+    double actualResult = ArmSimulation.offsetArmRotationPosition(position, offset);
     assertEquals(expectedResult, actualResult);
   }
 }

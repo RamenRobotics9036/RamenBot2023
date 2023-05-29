@@ -1,8 +1,7 @@
 package frc.robot.Simulation;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
+import java.util.function.BooleanSupplier;
 
 public class ArmSimulation {
   private WinchSimulation m_winchSimulation;
@@ -12,9 +11,9 @@ public class ArmSimulation {
   private double m_grabberBreaksIfOpenBelowSignedDegreesLimit;
   private double m_encoderRotationsOffset;
   private double m_currentSignedDegrees;
-  private boolean m_IsCurrentSignedDegreesSet = false;
+  private boolean m_isCurrentSignedDegreesSet = false;
   private BooleanSupplier m_grabberOpenSupplier = null;
-  private boolean m_IsBroken;
+  private boolean m_isBroken;
 
   private CalcArmAngleHelper m_calcArmAngleHelper;
 
@@ -27,16 +26,16 @@ public class ArmSimulation {
       double grabberBreaksIfOpenBelowThisLimit,
       double heightFromWinchToPivotPoint,
       double armLengthFromEdgeToPivot,
-      double armLengthFromEdgeToPivot_Min,
+      double armLengthFromEdgeToPivotMin,
       double encoderRotationsOffset) {
 
     if (winchSimulation == null) {
       throw new IllegalArgumentException("winchSimulation");
     }
 
-    if (armLengthFromEdgeToPivot < armLengthFromEdgeToPivot_Min) {
+    if (armLengthFromEdgeToPivot < armLengthFromEdgeToPivotMin) {
       throw new IllegalArgumentException("armLengthFromEdgeToPivot needs to be at least "
-          + armLengthFromEdgeToPivot_Min + " meters, otherwise the arm cant be pivoted");
+          + armLengthFromEdgeToPivotMin + " meters, otherwise the arm cant be pivoted");
     }
 
     if (encoderRotationsOffset < 0 || encoderRotationsOffset >= 1) {
@@ -81,41 +80,41 @@ public class ArmSimulation {
     m_winchSimulation = winchSimulation;
     m_winchAbsoluteEncoderSim = winchAbsoluteEncoderSim;
     m_encoderRotationsOffset = encoderRotationsOffset;
-    m_IsBroken = false;
+    m_isBroken = false;
 
     m_calcArmAngleHelper = new CalcArmAngleHelper(heightFromWinchToPivotPoint,
         armLengthFromEdgeToPivot);
 
     // Forces the absolute encoder to show the correct position
-    UpdateAbsoluteEncoderPosition();
+    updateAbsoluteEncoderPosition();
   }
 
-  public boolean GetIsBroken() {
-    return m_IsBroken;
+  public boolean getIsBroken() {
+    return m_isBroken;
   }
 
   public void periodic() {
   }
 
-  public static double OffsetArmRotationPosition(double position, double offset) {
+  public static double offsetArmRotationPosition(double position, double offset) {
     double positionWithOffset = position + offset;
     return positionWithOffset - Math.floor(positionWithOffset);
   }
 
   public static double toNonOffsetSignedDegrees(double position, double offset) {
-    double positionWithoutOffset = OffsetArmRotationPosition(position, -1 * offset);
+    double positionWithoutOffset = offsetArmRotationPosition(position, -1 * offset);
     double degreesWithoutOffset = positionWithoutOffset * 360;
     return UnitConversions.toSignedDegrees(degreesWithoutOffset);
   }
 
-  private boolean IsInGrabberBreakRange(double positionSignedDegrees) {
+  private boolean isInGrabberBreakRange(double positionSignedDegrees) {
     return UnitConversions.lessThanButNotEqual(positionSignedDegrees,
         m_grabberBreaksIfOpenBelowSignedDegreesLimit);
   }
 
-  private void UpdateAbsoluteEncoderPosition() {
+  private void updateAbsoluteEncoderPosition() {
     // If the arm is broken, there's nothing to update
-    if (m_IsBroken) {
+    if (m_isBroken) {
       return;
     }
 
@@ -126,20 +125,20 @@ public class ArmSimulation {
 
     double newStringLen = m_winchSimulation.GetStringExtendedLen();
     CalcArmAngleHelper.Result resultPair = m_calcArmAngleHelper
-        .CalcSignedDegreesForStringLength(newStringLen);
+        .calcSignedDegreesForStringLength(newStringLen);
 
     // Check if we got back that string length was invalid
     if (!resultPair.m_isValid) {
       System.out.println("ARM: Angle is out of bounds, needs to be in right half plane");
-      m_IsBroken = true;
+      m_isBroken = true;
     }
 
     double newAbsoluteEncoderSignedDegrees = resultPair.m_value;
 
-    if (isGrabberOpen && m_IsCurrentSignedDegreesSet
-        && IsInGrabberBreakRange(newAbsoluteEncoderSignedDegrees)) {
+    if (isGrabberOpen && m_isCurrentSignedDegreesSet
+        && isInGrabberBreakRange(newAbsoluteEncoderSignedDegrees)) {
 
-      if (!IsInGrabberBreakRange(m_currentSignedDegrees)) {
+      if (!isInGrabberBreakRange(m_currentSignedDegrees)) {
 
         // If the arm is ABOUT to go into the breakable range with the grabber open, the arm gets
         // stuck
@@ -154,7 +153,7 @@ public class ArmSimulation {
         // If the arm is ALREADY below a certain level, and grabber is broken, arm is broken
 
         System.out.println("ARM: Grabber is open while arm is in breakable range");
-        m_IsBroken = true;
+        m_isBroken = true;
 
         // Note that we don't let the arm move from where it was
         newAbsoluteEncoderSignedDegrees = m_currentSignedDegrees;
@@ -164,24 +163,24 @@ public class ArmSimulation {
     if (newAbsoluteEncoderSignedDegrees > m_topSignedDegreesLimit) {
       System.out.println("ARM: Angle is above top limit of " + m_topSignedDegreesLimit);
       newAbsoluteEncoderSignedDegrees = m_topSignedDegreesLimit;
-      m_IsBroken = true;
+      m_isBroken = true;
     }
 
     if (newAbsoluteEncoderSignedDegrees < m_bottomSignedDegreesLimit) {
       System.out.println("ARM: Angle is below limit of " + m_bottomSignedDegreesLimit);
       newAbsoluteEncoderSignedDegrees = m_bottomSignedDegreesLimit;
-      m_IsBroken = true;
+      m_isBroken = true;
     }
 
     // Update the current position
     m_currentSignedDegrees = newAbsoluteEncoderSignedDegrees;
-    m_IsCurrentSignedDegreesSet = true;
+    m_isCurrentSignedDegreesSet = true;
 
     double newAbsoluteEncoderNonSignedDegrees = UnitConversions
         .toUnsignedDegrees(newAbsoluteEncoderSignedDegrees);
     double newAbsoluteEncoderPosition = newAbsoluteEncoderNonSignedDegrees / 360.0;
 
-    double newOffsetAbsoluteEncoderPosition = OffsetArmRotationPosition(newAbsoluteEncoderPosition,
+    double newOffsetAbsoluteEncoderPosition = offsetArmRotationPosition(newAbsoluteEncoderPosition,
         m_encoderRotationsOffset);
 
     m_winchAbsoluteEncoderSim.set(newOffsetAbsoluteEncoderPosition);
@@ -192,6 +191,6 @@ public class ArmSimulation {
   }
 
   public void simulationPeriodic() {
-    UpdateAbsoluteEncoderPosition();
+    updateAbsoluteEncoderPosition();
   }
 }

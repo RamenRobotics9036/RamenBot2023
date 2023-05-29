@@ -71,7 +71,7 @@ public class VerifyJoysticksTest {
     assertTrue(verifyTemp != null);
     assertTrue(verifyTemp.getAreAllJoysticksHealth());
 
-    verifyTemp.VerifyJoysticksPeriodically();
+    verifyTemp.verifyJoysticksPeriodically();
     assertTrue(!verifyTemp.getAreAllJoysticksHealth());
     assertTrue(!verifyTemp.getIsJoystickConnected(0));
   }
@@ -96,7 +96,7 @@ public class VerifyJoysticksTest {
     assertTrue(verifyTemp != null);
     assertTrue(verifyTemp.getAreAllJoysticksHealth());
 
-    verifyTemp.VerifyJoysticksPeriodically();
+    verifyTemp.verifyJoysticksPeriodically();
     assertTrue(verifyTemp.getAreAllJoysticksHealth());
     assertTrue(verifyTemp.getIsJoystickConnected(0));
   }
@@ -121,7 +121,7 @@ public class VerifyJoysticksTest {
     assertTrue(verifyTemp != null);
     assertTrue(verifyTemp.getAreAllJoysticksHealth());
 
-    verifyTemp.VerifyJoysticksPeriodically();
+    verifyTemp.verifyJoysticksPeriodically();
     assertTrue(!verifyTemp.getAreAllJoysticksHealth());
     assertTrue(!verifyTemp.getIsAxisCountCorrect(0));
   }
@@ -147,7 +147,7 @@ public class VerifyJoysticksTest {
     assertTrue(verifyTemp != null);
     assertTrue(verifyTemp.getAreAllJoysticksHealth());
 
-    verifyTemp.VerifyJoysticksPeriodically();
+    verifyTemp.verifyJoysticksPeriodically();
     assertTrue(!verifyTemp.getAreAllJoysticksHealth());
     assertTrue(!verifyTemp.getIsTestButtonCountCorrect(0));
   }
@@ -172,7 +172,7 @@ public class VerifyJoysticksTest {
     assertTrue(verifyTemp != null);
     assertTrue(verifyTemp.getAreAllJoysticksHealth());
 
-    verifyTemp.VerifyJoysticksPeriodically();
+    verifyTemp.verifyJoysticksPeriodically();
     assertTrue(!verifyTemp.getAreAllJoysticksHealth());
     assertTrue(!verifyTemp.getIsPOVCountCorrect(0));
   }
@@ -199,7 +199,7 @@ public class VerifyJoysticksTest {
     assertTrue(verifyTemp != null);
     assertTrue(verifyTemp.getAreAllJoysticksHealth());
 
-    verifyTemp.VerifyJoysticksPeriodically();
+    verifyTemp.verifyJoysticksPeriodically();
     assertTrue(!verifyTemp.getAreAllJoysticksHealth());
     assertTrue(!verifyTemp.getIsJoystickNameCorrect(0));
   }
@@ -224,7 +224,7 @@ public class VerifyJoysticksTest {
     assertTrue(verifyTemp != null);
     assertTrue(verifyTemp.getAreAllJoysticksHealth());
 
-    verifyTemp.VerifyJoysticksPeriodically();
+    verifyTemp.verifyJoysticksPeriodically();
     assertTrue(!verifyTemp.getAreAllJoysticksHealth());
     assertTrue(!verifyTemp.getIsJoystickTypeCorrect(0));
 
@@ -263,7 +263,7 @@ public class VerifyJoysticksTest {
     assertTrue(verifyTemp != null);
     assertTrue(verifyTemp.getAreAllJoysticksHealth());
 
-    verifyTemp.VerifyJoysticksPeriodically();
+    verifyTemp.verifyJoysticksPeriodically();
     assertTrue(verifyTemp.getAreAllJoysticksHealth());
 
     // Verify joystick on port 1
@@ -303,7 +303,7 @@ public class VerifyJoysticksTest {
     assertTrue(verifyTemp != null);
     assertTrue(verifyTemp.getAreAllJoysticksHealth());
 
-    verifyTemp.VerifyJoysticksPeriodically();
+    verifyTemp.verifyJoysticksPeriodically();
 
     // On the first round, JoystickType should be unhealthy
     assertTrue(!verifyTemp.getAreAllJoysticksHealth());
@@ -314,7 +314,7 @@ public class VerifyJoysticksTest {
     assertTrue(verifyTemp.getIsPOVCountCorrect(0));
     assertTrue(verifyTemp.getIsJoystickNameCorrect(0));
 
-    verifyTemp.VerifyJoysticksPeriodically();
+    verifyTemp.verifyJoysticksPeriodically();
 
     // Now, the joystick was unplugged. All other params should be healthy
     assertTrue(!verifyTemp.getAreAllJoysticksHealth());
@@ -347,7 +347,7 @@ public class VerifyJoysticksTest {
     assertTrue(verifyTemp != null);
     assertTrue(verifyTemp.getAreAllJoysticksHealth());
 
-    verifyTemp.VerifyJoysticksPeriodically();
+    verifyTemp.verifyJoysticksPeriodically();
 
     // On the first round, JoystickType should be unhealthy
     assertTrue(!verifyTemp.getAreAllJoysticksHealth());
@@ -358,7 +358,7 @@ public class VerifyJoysticksTest {
     assertTrue(verifyTemp.getIsPOVCountCorrect(0));
     assertTrue(verifyTemp.getIsJoystickNameCorrect(0));
 
-    verifyTemp.VerifyJoysticksPeriodically();
+    verifyTemp.verifyJoysticksPeriodically();
 
     // Since timer is set to 24 hours, status on second query shouldnt change
     assertTrue(!verifyTemp.getAreAllJoysticksHealth());

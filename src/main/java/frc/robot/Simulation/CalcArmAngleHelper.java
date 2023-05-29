@@ -2,18 +2,27 @@ package frc.robot.Simulation;
 
 import frc.robot.Constants;
 
-/*
+/**
+ * The CalcArmAngleHelper class is responsible for calculating the signed degrees
+ * for a given string length. It is based on the lengths from the winch to the pivot point
+ * and from the pivot point to the arm's back end.
+ * 
+ * <p>
  * Parts of the robot:
- *
  * Winch - The winch is the motor that pulls the string
  * Arm - Robot arm, which rotates around the pivot point
  * Pivot Point - The pivot point is the point where the arm rotates around
  * Arm Back End - The back end of the arm, which is the end that is furthest away from the grabber
  * Arm Angle - The angle of the arm, relative to the ground
  * String - Connects winch to arm back end
+ * </p>
  */
-
 public class CalcArmAngleHelper {
+  /**
+   * The Result class represents the outcome of an operation that
+   * includes a validity status and a numeric result.
+   * This class is immutable; once an instance is created, it cannot be changed.
+   */
   public class Result {
     public final boolean m_isValid;
     public final double m_value;
@@ -27,7 +36,23 @@ public class CalcArmAngleHelper {
   private double m_lengthFromWinchToPivotPoint;
   private double m_lengthFromPivotPointToArmBackEnd;
 
-  // Constructor
+  /**
+   * Constructs a new instance of CalcArmAngleHelper.
+   *
+   * <p>
+   * The lengths from the winch to the pivot and from the pivot point to the arm's back end are
+   * used for angle calculation in the helper.
+   * </p>
+   *
+   * @param lengthFromWinchToPivotPoint      The distance from the winch to the pivot point in
+   *                                         meters.
+   * @param lengthFromPivotPointToArmBackEnd Distance from the pivot to the arm's back end
+   *                                         in meters.
+   *
+   * @throws IllegalArgumentException If lengthFromWinchToPivotPoint is less than min.
+   *                                  or
+   *                                  lengthFromPivotPointToArmBackEnd is less than min.
+   */
   public CalcArmAngleHelper(double lengthFromWinchToPivotPoint,
       double lengthFromPivotPointToArmBackEnd) {
     if (lengthFromWinchToPivotPoint < Constants.SimConstants.klengthFromWinchToPivotPoint_Min) {
@@ -47,7 +72,25 @@ public class CalcArmAngleHelper {
     m_lengthFromPivotPointToArmBackEnd = lengthFromPivotPointToArmBackEnd;
   }
 
-  public Result CalcSignedDegreesForStringLength(double stringLen) {
+  /**
+   * Calculates the signed degrees for a given string length. The result is based on
+   * the height of the arm backend above the pivot point, calculated from the input.
+   *
+   * <p>
+   * If the string length implies the arm is beyond its lowest point (string is no
+   * longer taut), a Result is returned indicating the arm is down.
+   * </p>
+   * <p>
+   * If the string length implies the arm is beyond its highest point, a Result is
+   * returned indicating the arm is up and the result is invalid.
+   * </p>
+   *
+   * @param stringLen The length of the string in meters.
+   * @return A Result object indicating whether the degrees are valid and the
+   *         calculated degrees. If the arm is beyond its highest or lowest point,
+   *         the degrees will be 90 or -90, respectively.
+   */
+  public Result calcSignedDegreesForStringLength(double stringLen) {
     double heightArmBackendAbovePivot = stringLen - m_lengthFromWinchToPivotPoint;
     double up = 90;
     double down = -90;
@@ -69,12 +112,12 @@ public class CalcArmAngleHelper {
     }
 
     return new Result(true, -1
-        * CalcAngleOnRightTriangle(m_lengthFromPivotPointToArmBackEnd, heightArmBackendAbovePivot));
+        * calcAngleOnRightTriangle(m_lengthFromPivotPointToArmBackEnd, heightArmBackendAbovePivot));
   }
 
   // We are calculating the angle of a right triangle at point (0,0). We know the length of the
   // hypotenus, and we know it's other side is exactly H height above the x-axis
-  private double CalcAngleOnRightTriangle(double lenHypotenuse, double height) {
+  private double calcAngleOnRightTriangle(double lenHypotenuse, double height) {
     return Math.toDegrees(Math.asin(height / lenHypotenuse));
   }
 }

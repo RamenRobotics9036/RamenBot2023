@@ -4,25 +4,21 @@
 
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
-
-// import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Auto;
-import frc.robot.Commands.SetWinchToAngle;
-import frc.robot.Commands.SetSoftLimitCommand;
 import frc.robot.Commands.RetractArmCommand;
+import frc.robot.Commands.SetSoftLimitCommand;
+import frc.robot.Commands.SetWinchToAngle;
 import frc.robot.Subsystems.ArmSystem;
+import frc.robot.Subsystems.ArmSystemSim;
 import frc.robot.Subsystems.GrabberSystem;
 import frc.robot.Subsystems.GrabberSystemSim;
 import frc.robot.Subsystems.TankDriveSystem;
 import frc.robot.Subsystems.TankDriveSystemSim;
-import frc.robot.Subsystems.ArmSystemSim;
+import java.util.function.BooleanSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -118,11 +114,6 @@ public class RobotContainer {
   public void putShuffleBoardAutoCommands() {
     Auto.putShuffleBoardCommands(m_driveSystem, m_armSystem, m_grabSystem);
     // m_armSystem.putSensorOutputs();
-  }
-
-  public void resetEncoders() {
-    m_driveSystem.resetEncoders();
-    m_armSystem.resetEncoders();
   }
 
   public void initDashboard() {
