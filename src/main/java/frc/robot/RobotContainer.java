@@ -4,25 +4,20 @@
 
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
-
-// import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.Auto;
-import frc.robot.Commands.SetWinchToAngle;
-import frc.robot.Commands.SetSoftLimitCommand;
 import frc.robot.Commands.RetractArmCommand;
+import frc.robot.Commands.SetSoftLimitCommand;
+import frc.robot.Commands.SetWinchToAngle;
 import frc.robot.Subsystems.ArmSystem;
+import frc.robot.Subsystems.ArmSystemSim;
 import frc.robot.Subsystems.GrabberSystem;
 import frc.robot.Subsystems.GrabberSystemSim;
 import frc.robot.Subsystems.TankDriveSystem;
 import frc.robot.Subsystems.TankDriveSystemSim;
-import frc.robot.Subsystems.ArmSystemSim;
+import java.util.function.BooleanSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -63,17 +58,19 @@ public class RobotContainer {
       Constants.OperatorConstants.kGrabberBackwardChannel,
       m_controller2);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   * 
+   * <p>
+   * Configure default command for Drive Subsystem. We want there to ALWAYS be a motor signal
+   * sent, even in autonomous mode. If we didn't send a motor signal EVERY 20ms,
+   * then Slew would prevent the robot from ever stopping fully in some cases.
+   * Also, the motor watchdog would trip.
+   * </p>
+   */
   public RobotContainer() {
-    // Configure default command for Drive Subsystem. We want there to ALWAYS be a motor signal
-    // sent, even
-    // in autonomous mode. If we didn't send a motor signal EVERY 20ms, then Slew would prevent
-    // the robot from ever stopping fully in some cases. And also, the motor watchdog would trip
     m_driveSystem.setDefaultCommand(m_driveSystem.getDefaultDriveCommand());
-
     m_armSystem.setDefaultCommand(m_armSystem.getDefaultArmCommand());
-
-    // CameraServer.startAutomaticCapture();
 
     // Stitch together BooleanSupplier from GrabberSystemSim with ArmSystemSim
     if (m_grabSystem instanceof GrabberSystemSim && m_armSystem instanceof ArmSystemSim) {
@@ -84,30 +81,21 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4} controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
+   * Use this method to define your trigger->command mappings.
    */
   public void configureBindings() {
     new Trigger(m_controller2::getAButtonReleased).onTrue(
         new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCone, 1));
+
     new Trigger(m_controller2::getXButtonReleased).onTrue(
         new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCube, 1));
+
     new Trigger(m_controller2::getBButtonReleased)
         .onTrue(new RetractArmCommand(m_armSystem).andThen(
             new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchGroundAngle, 1)));
-    // new Trigger(m_controller2::getYButtonReleased).onTrue(new SetWinchToAngle(m_armSystem,
-    // Constants.OperatorConstants.kWinchRetractAngle, 0.5));
 
     new Trigger(m_controller2::getYButtonReleased)
         .onTrue(new RetractArmCommand(m_armSystem).andThen(new SetSoftLimitCommand(m_armSystem)));
-
-    // new Trigger(m_armSystem::isOffHigher).onTrue(new SetWinchToAngle(m_armSystem,
-    // Constants.OperatorConstants.kEmergencyAngle, 0.5));
   }
 
   public Command getAutonomousCommand() {
@@ -115,28 +103,22 @@ public class RobotContainer {
     return Auto.getAutoCommand(m_driveSystem, m_armSystem, m_grabSystem);
   }
 
-  public void putShuffleBoardAutoCommands() {
-    Auto.putShuffleBoardCommands(m_driveSystem, m_armSystem, m_grabSystem);
-    // m_armSystem.putSensorOutputs();
-  }
-
-  public void resetEncoders() {
-    m_driveSystem.resetEncoders();
-    m_armSystem.resetEncoders();
-  }
-
+  /**
+   * This is the single point in code that sets up Shuffleboard. It calls
+   * each subsystem in-turn to setup up Shuffleboard for that system.
+   */
   public void initDashboard() {
+    m_driveSystem.initDashBoard();
     m_armSystem.initDashBoard();
     m_grabSystem.initDashBoard();
-    // SmartDashboard.putNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed);
-    // SmartDashboard.putNumber("Auto Motor Distance",
-    // Constants.OperatorConstants.kAutoMotorDistance);
-    // SmartDashboard.putBoolean("Auto Turn Left", true);
-    // SmartDashboard.putNumber("Starting Position", 0);
   }
 
+  /**
+   * This is the single point in code that updates Shuffleboard.
+   */
   public void updateDashBoard() {
     m_driveSystem.updateDashBoard();
     m_armSystem.updateDashBoard();
+    m_grabSystem.updateDashBoard();
   }
 }

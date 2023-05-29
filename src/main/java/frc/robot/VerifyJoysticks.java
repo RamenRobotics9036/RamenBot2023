@@ -1,9 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.time.Instant;
 import java.util.function.Supplier;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class VerifyJoysticks {
   private class JoystickTest {
@@ -162,34 +161,34 @@ public class VerifyJoysticks {
   private JoystickTest[] CreateInitializedJoystickTest(int port,
       int expectedAxisCount,
       int expectedButtonCount,
-      int expectedPOVCount,
+      int expectedPovCount,
       String expectedJoystickName,
       int expectedJoystickType) {
 
     JoystickTest[] tests = new JoystickTest[] {
-        new JoystickTest("isJoystickConnected", true, () -> TestIsJoystickConnected(port)),
-        new JoystickTest("TestAxisCount", false, () -> TestAxisCount(port, expectedAxisCount)),
+        new JoystickTest("isJoystickConnected", true, () -> testIsJoystickConnected(port)),
+        new JoystickTest("TestAxisCount", false, () -> testAxisCount(port, expectedAxisCount)),
         new JoystickTest("TestButtonCount", false,
-            () -> TestButtonCount(port, expectedButtonCount)),
-        new JoystickTest("TestPOVCount", false, () -> TestPOVCount(port, expectedPOVCount)),
+            () -> testButtonCount(port, expectedButtonCount)),
+        new JoystickTest("TestPOVCount", false, () -> testPovCount(port, expectedPovCount)),
         new JoystickTest("TestJoystickName", false,
-            () -> TestJoystickName(port, expectedJoystickName)),
+            () -> testJoystickName(port, expectedJoystickName)),
         new JoystickTest("TestJoystickType", false,
-            () -> TestJoystickType(port, expectedJoystickType))
+            () -> testJoystickType(port, expectedJoystickType))
     };
 
     return tests;
   }
 
-  public boolean VerifyJoysticksPeriodically() {
+  public boolean verifyJoysticksPeriodically() {
     Instant currentTime = Instant.now();
-    boolean AllSuccess = true;
+    boolean allSuccess = true;
 
     if (m_firstCall
         || (currentTime.getEpochSecond() - m_recordedTime.getEpochSecond()) >= m_periodSeconds) {
 
       for (int i = 0; i < m_joystickConfigs.length; i++) {
-        if (!VerifySingleJoystick(m_joystickConfigs[i].port,
+        if (!verifySingleJoystick(m_joystickConfigs[i].port,
             m_joystickConfigs[i].expectedAxisCount,
             m_joystickConfigs[i].expectedButtonCount,
             m_joystickConfigs[i].expectedPOVCount,
@@ -197,26 +196,27 @@ public class VerifyJoysticks {
             m_joystickConfigs[i].expectedJoystickType,
             m_tests[i])) {
 
-          AllSuccess = false;
+          allSuccess = false;
         }
       }
 
-      m_lastResult = AllSuccess;
+      m_lastResult = allSuccess;
       m_recordedTime = currentTime;
       m_firstCall = false;
 
       // We only update the dashboard every few seconds
-      UpdateDashboard();
+      updateDashboard();
     }
 
     return m_lastResult;
   }
 
-  private void UpdateDashboard() {
+  private void updateDashboard() {
+    // $TODO - This should be in init or update DashBoard?  THIS IS JUST FOR JOYSTICKS?
     SmartDashboard.putBoolean("Joystick health", m_lastResult);
   }
 
-  private String TestIsJoystickConnected(int port) {
+  private String testIsJoystickConnected(int port) {
     if (!m_driverStationFunctions.isJoystickConnected(port)) {
       return "No joystick plugged into port " + port;
     }
@@ -224,7 +224,7 @@ public class VerifyJoysticks {
     return null;
   }
 
-  private String TestAxisCount(int port, int expectedAxisCount) {
+  private String testAxisCount(int port, int expectedAxisCount) {
     int actualAxisCount = m_driverStationFunctions.getStickAxisCount(port);
     if (expectedAxisCount != actualAxisCount) {
       return String.format("Port=%d, Expected AxisCount=%d, Actual AxisCount=%d, ",
@@ -236,7 +236,7 @@ public class VerifyJoysticks {
     return null;
   }
 
-  private String TestButtonCount(int port, int expectedButtonCount) {
+  private String testButtonCount(int port, int expectedButtonCount) {
     int actualButtonCount = m_driverStationFunctions.getStickButtonCount(port);
     if (expectedButtonCount != actualButtonCount) {
       return String.format("Port=%d, Expected ButtonCount=%d, Actual ButtonCount=%d",
@@ -248,7 +248,7 @@ public class VerifyJoysticks {
     return null;
   }
 
-  private String TestPOVCount(int port, int expectedPOVCount) {
+  private String testPovCount(int port, int expectedPOVCount) {
     int actualPovCount = m_driverStationFunctions.getStickPOVCount(port);
     if (expectedPOVCount != actualPovCount) {
       return String.format("Port=%d, Expected PovCount=%d, Actual PovCount=%d",
@@ -260,7 +260,7 @@ public class VerifyJoysticks {
     return null;
   }
 
-  private String TestJoystickName(int port, String expectedJoystickName) {
+  private String testJoystickName(int port, String expectedJoystickName) {
     String actualJoystickName = m_driverStationFunctions.getJoystickName(port);
     if (!expectedJoystickName.equals(actualJoystickName)) {
       return String.format("Port=%d, Expected JoystickName=%s, Actual JoystickName=%s",
@@ -272,7 +272,7 @@ public class VerifyJoysticks {
     return null;
   }
 
-  private String TestJoystickType(int port, int expectedJoystickType) {
+  private String testJoystickType(int port, int expectedJoystickType) {
     int actualJoystickType = m_driverStationFunctions.getJoystickType(port);
     if (expectedJoystickType != actualJoystickType) {
       return String.format("Port=%d, Expected JoystickType=%d, Actual JoystickType=%d",
@@ -284,7 +284,7 @@ public class VerifyJoysticks {
     return null;
   }
 
-  private static void ResetAllTestsToPassedExceptJoystickUnplugged(JoystickTest[] tests) {
+  private static void resetAllTestsToPassedExceptJoystickUnplugged(JoystickTest[] tests) {
     for (int i = 0; i < tests.length; i++) {
       if (!tests[i].is_stopRestOfTestsIfFailed()) {
         tests[i].setTestAsSucceeded();
@@ -292,10 +292,10 @@ public class VerifyJoysticks {
     }
   }
 
-  private boolean VerifySingleJoystick(int port,
+  private boolean verifySingleJoystick(int port,
       int expectedAxisCount,
       int expectedButtonCount,
-      int expectedPOVCount,
+      int expectedPovCount,
       String expectedJoystickName,
       int expectedJoystickType,
       JoystickTest[] tests) {
@@ -313,7 +313,7 @@ public class VerifyJoysticks {
           // all those other tests will rerun even if they were already failed on the
           // previously plugged-in Joystick. That will cause this system to print ALL
           // the unexpected configurations on the NEW joystick
-          ResetAllTestsToPassedExceptJoystickUnplugged(tests);
+          resetAllTestsToPassedExceptJoystickUnplugged(tests);
           break;
         }
       }

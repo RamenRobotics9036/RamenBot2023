@@ -4,7 +4,6 @@ import com.ctre.phoenix.sensors.Pigeon2;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
@@ -15,18 +14,23 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+/**
+ * This class represents a tank drive system for a robot. The drive system uses
+ * Xbox controller input (or autonomous drive) to control four motors.
+ * The system also has features such as slew rate limiting and turbo mode.
+ */
 public class TankDriveSystem extends SubsystemBase {
   private XboxController m_controller;
 
-  private boolean squareInputs;
-  private double maxOutput;
+  private boolean m_squareInputs;
+  private double m_maxOutput;
 
-  private SlewRateLimiter slewLimiter1;
-  private SlewRateLimiter slewLimiter2;
-  private SlewRateLimiter turboLimiter1;
-  private SlewRateLimiter turboLimiter2;
+  private SlewRateLimiter m_slewLimiter1;
+  private SlewRateLimiter m_slewLimiter2;
+  private SlewRateLimiter m_turboLimiter1;
+  private SlewRateLimiter m_turboLimiter2;
 
-  private double slewLimit;
+  private double m_slewLimit;
 
   private CANSparkMax m_leftMotor1;
   private CANSparkMax m_leftMotor2;
@@ -46,7 +50,9 @@ public class TankDriveSystem extends SubsystemBase {
   protected double m_wheelDiameterMeters;
   protected double m_gearBoxRatio;
 
-  // Constructor
+  /**
+   * Constructor for the TankDriveSystem.
+   */
   public TankDriveSystem(int leftMotorBackChannel,
       int leftMotorForwardChannel,
       int rightMotorBackChannel,
@@ -54,7 +60,7 @@ public class TankDriveSystem extends SubsystemBase {
       XboxController controller,
       boolean squareInputs,
       double maxOutput,
-      double Deadband,
+      double deadband,
       double gearBoxRatio,
       double wheelDiameterMeters,
       double slewLimit,
@@ -73,50 +79,42 @@ public class TankDriveSystem extends SubsystemBase {
     m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
 
     m_drive.setMaxOutput(maxOutput);
-    m_drive.setDeadband(Deadband);
+    m_drive.setDeadband(deadband);
 
     m_leftEncoder = m_leftMotor1.getEncoder();
     m_rightEncoder = m_rightMotor1.getEncoder();
 
     this.m_controller = controller;
 
-    this.squareInputs = squareInputs;
-    this.maxOutput = maxOutput;
+    this.m_squareInputs = squareInputs;
+    this.m_maxOutput = maxOutput;
 
-    this.slewLimit = slewLimit;
-    if (this.slewLimit > 0) {
-      slewLimiter1 = new SlewRateLimiter(slewLimit);
-      slewLimiter2 = new SlewRateLimiter(slewLimit);
+    this.m_slewLimit = slewLimit;
+    if (this.m_slewLimit > 0) {
+      m_slewLimiter1 = new SlewRateLimiter(slewLimit);
+      m_slewLimiter2 = new SlewRateLimiter(slewLimit);
     }
 
-    turboLimiter1 = new SlewRateLimiter(turboSlew);
-    turboLimiter2 = new SlewRateLimiter(turboSlew);
+    m_turboLimiter1 = new SlewRateLimiter(turboSlew);
+    m_turboLimiter2 = new SlewRateLimiter(turboSlew);
 
     initDashBoard();
   }
 
-  private void initDashBoard() {
-    // SmartDashboard.putNumber("Max Speed", maxOutput);
-    // SmartDashboard.putNumber("Left Encoder", m_leftEncoder.getPosition());
-    // SmartDashboard.putNumber("Right Encoder", m_rightEncoder.getPosition());
-    // SmartDashboard.putNumber("Slew Limit", slewLimit);
+  public void initDashBoard() {
   }
 
   public void updateDashBoard() {
-    // maxOutput = SmartDashboard.getNumber("Max Speed", maxOutput);
-    // m_drive.setMaxOutput(maxOutput);
-    // SmartDashboard.putNumber("Left Encoder", m_leftEncoder.getPosition());
-    // SmartDashboard.putNumber("Right Encoder", m_rightEncoder.getPosition());
   }
 
-  public boolean getCondition() {
-    return true;
-  }
-
+  /**
+   * Returns the default drive command, which in this case is Joystick input.
+   *
+   * @return The default drive command.
+   */
   public CommandBase getDefaultDriveCommand() {
     return run(() -> {
-      // System.out.println("DRIVECOMMAND");
-      ProcessJoystickInput();
+      processJoystickInput();
     });
   }
 
@@ -137,52 +135,47 @@ public class TankDriveSystem extends SubsystemBase {
     return (Math.abs(getLeftEncoder()) + Math.abs(getRightEncoder())) / 2;
   }
 
-  private void ProcessJoystickInput() {
+  private void processJoystickInput() {
     // In autonomous, the default command is to tell the robot to STOP. Recall
     // that we have to send a voltage-level to the motors EVERY 20ms, otherwise
     // the watchdog trips
     double leftAxisY = RobotState.isAutonomous() ? 0 : m_controller.getLeftY();
     double rightAxisY = RobotState.isAutonomous() ? 0 : m_controller.getRightY();
 
-    double xSpeed = (leftAxisY + rightAxisY) / 2;
-    double zRotation = (leftAxisY - rightAxisY) / 2;
+    double xspeed = (leftAxisY + rightAxisY) / 2;
+    double zrotation = (leftAxisY - rightAxisY) / 2;
 
     if (m_controller.getRightTriggerAxis() > Constants.OperatorConstants.kDeadband) {
       m_drive.setMaxOutput(1);
-      double slewLimit1 = turboLimiter1.calculate(xSpeed);
-      double slewLimit2 = turboLimiter2.calculate(zRotation);
+      double slewLimit1 = m_turboLimiter1.calculate(xspeed);
+      double slewLimit2 = m_turboLimiter2.calculate(zrotation);
 
       arcadeDrive(slewLimit1,
           slewLimit2 * Constants.OperatorConstants.kRotationDilation,
-          squareInputs);
-      slewLimiter1.reset(slewLimit1);
-      slewLimiter2.reset(slewLimit2);
+          m_squareInputs);
+      m_slewLimiter1.reset(slewLimit1);
+      m_slewLimiter2.reset(slewLimit2);
     }
     else {
 
-      m_drive.setMaxOutput(maxOutput);
-      double slewLimit1 = slewLimiter1.calculate(xSpeed);
-      double slewLimit2 = slewLimiter2.calculate(zRotation);
+      m_drive.setMaxOutput(m_maxOutput);
+      double slewLimit1 = m_slewLimiter1.calculate(xspeed);
+      double slewLimit2 = m_slewLimiter2.calculate(zrotation);
 
       arcadeDrive(slewLimit1,
           slewLimit2 * Constants.OperatorConstants.kRotationDilation,
-          squareInputs);
-      turboLimiter1.reset(slewLimit1);
-      turboLimiter2.reset(slewLimit2);
+          m_squareInputs);
+      m_turboLimiter1.reset(slewLimit1);
+      m_turboLimiter2.reset(slewLimit2);
     }
+
+    // $TODO - This should be in init or update DashBoard?
     SmartDashboard.putNumber("Left Motor", m_leftMotors.get());
     SmartDashboard.putNumber("Right Motor", m_rightMotors.get());
-
-    // if (m_controller.getRightTriggerAxis() > 0) {
-    // m_drive.tankDrive(1, 0, false);
-    // }
-    // if (m_controller.getLeftTriggerAxis() > 0) {
-    // m_drive.tankDrive(0, 1, false);
-    // }
   }
 
-  public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
-    m_drive.arcadeDrive(xSpeed, zRotation, squareInputs);
+  public void arcadeDrive(double xspeed, double zrotation, boolean squareInputs) {
+    m_drive.arcadeDrive(xspeed, zrotation, squareInputs);
   }
 
   public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {

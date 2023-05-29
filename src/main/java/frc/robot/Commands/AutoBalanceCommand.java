@@ -5,32 +5,45 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.TankDriveSystem;
 
+/**
+ * This class represents a command for an automated balance control system for a tank drive system.
+ * It makes use of a gyroscope to perform balance corrections at a defined rate.
+ */
 public class AutoBalanceCommand extends CommandBase {
   private TankDriveSystem m_driveSystem;
-  private double rate;
-  private Timer timer = new Timer();
-  private double cycle = 1;
+  private double m_rate;
+  private Timer m_timer = new Timer();
+  private double m_cycle = 1;
 
-  public AutoBalanceCommand(TankDriveSystem m_driveSystem, double rate) {
-    this.m_driveSystem = m_driveSystem;
-    this.rate = rate;
-    addRequirements(m_driveSystem);
+  /**
+   * Constructs a new AutoBalanceCommand with the given tank drive system and rate.
+   *
+   * @param driveSystem the tank drive system to control
+   * @param rate        the rate at which balance corrections should be applied
+   */
+  public AutoBalanceCommand(TankDriveSystem driveSystem, double rate) {
+    this.m_driveSystem = driveSystem;
+    this.m_rate = rate;
+    addRequirements(driveSystem);
   }
 
   @Override
   public void initialize() {
-    timer.start();
+    m_timer.start();
   }
 
+  /*
+   * This function is called every 20ms until the command is completed
+   */
   @Override
   public void execute() {
-    double executeRate = rate / cycle;
+    double executeRate = m_rate / m_cycle;
 
     if (MathUtil.applyDeadband(m_driveSystem.getGyroRate(), 3) > 0) {
       m_driveSystem.tankDrive(0, 0, false);
-      if (timer.get() >= 0.5) {
-        cycle += 0.5;
-        timer.reset();
+      if (m_timer.get() >= 0.5) {
+        m_cycle += 0.5;
+        m_timer.reset();
       }
     }
     else if (MathUtil.applyDeadband(m_driveSystem.getGyroAngle() + 2.5, 2) > 0) {
@@ -41,9 +54,9 @@ public class AutoBalanceCommand extends CommandBase {
     }
     else {
       m_driveSystem.tankDrive(0, 0, false);
-      if (timer.get() >= 0.5) {
-        cycle += 0.5; // Changed from 0.5
-        timer.reset();
+      if (m_timer.get() >= 0.5) {
+        m_cycle += 0.5; // Changed from 0.5
+        m_timer.reset();
       }
     }
 

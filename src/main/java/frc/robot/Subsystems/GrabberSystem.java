@@ -25,11 +25,10 @@ public class GrabberSystem extends SubsystemBase {
     this.m_controller = controller;
   }
 
-  public boolean getCondition() {
-    return true;
+  public void initDashBoard() {
   }
 
-  public void initDashBoard() {
+  public void updateDashBoard() {
   }
 
   @Override

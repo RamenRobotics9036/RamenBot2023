@@ -4,15 +4,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.TankDriveSystem;
 
 public class TurnDegrees extends CommandBase {
-  private double percentOutput;
-  private double degrees;
-  private double initialHeading;
-
-  TankDriveSystem m_drive;
+  private double m_percentOutput;
+  private double m_degrees;
+  private double m_initialHeading;
+  private TankDriveSystem m_drive;
 
   public TurnDegrees(TankDriveSystem m_drive, double percentOutput, double degrees) {
-    this.percentOutput = percentOutput;
-    this.degrees = degrees;
+    this.m_percentOutput = percentOutput;
+    this.m_degrees = degrees;
     this.m_drive = m_drive;
 
     addRequirements(m_drive);
@@ -20,13 +19,13 @@ public class TurnDegrees extends CommandBase {
 
   @Override
   public void initialize() {
-    this.initialHeading = m_drive.getGyroYaw();
+    this.m_initialHeading = m_drive.getGyroYaw();
   }
 
   @Override
   public void execute() {
     // Calculate the error
-    double error = degrees - (m_drive.getGyroYaw() - initialHeading);
+    double error = m_degrees - (m_drive.getGyroYaw() - m_initialHeading);
 
     // Wrap error to be within -180 to 180 degrees
     error = ((error + 180) % 360) - 180;
@@ -35,13 +34,13 @@ public class TurnDegrees extends CommandBase {
     }
 
     double direction = Math.signum(error);
-    m_drive.tankDrive(-1 * direction * percentOutput, direction * percentOutput, true);
+    m_drive.tankDrive(-1 * direction * m_percentOutput, direction * m_percentOutput, true);
   }
 
   @Override
   public boolean isFinished() {
     // Check if the robot is within an acceptable error range (e.g., 2 degrees)
-    return Math.abs(degrees - (m_drive.getGyroYaw() - initialHeading)) < 2;
+    return Math.abs(m_degrees - (m_drive.getGyroYaw() - m_initialHeading)) < 2;
   }
 
   @Override

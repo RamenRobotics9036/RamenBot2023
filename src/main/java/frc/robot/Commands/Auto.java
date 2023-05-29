@@ -66,6 +66,7 @@ public class Auto {
     return resultChooser;
   }
 
+  // Move the sequenced AutoCommands into Commands directory
   public static CommandBase getAutoCommand(TankDriveSystem m_driveSystem,
       ArmSystem m_armSystem,
       GrabberSystem m_grabSystem) {
@@ -84,6 +85,7 @@ public class Auto {
           new DriveCommand(m_driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive,
               0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive));
 
+    // $TODO Prune the ones that aren't used and are just dead code
     case kAutoBalanceMode:
       return Commands.sequence(new SetWinchToAngle(m_armSystem, 0.75, 1),
           // new SetExtenderToLength(m_armSystem, -100, 1),
@@ -180,66 +182,6 @@ public class Auto {
       System.out.println("UNEXPECTED AUTO MODE - auto mode will do nothing");
       return new InstantCommand();
     }
-
-  }
-
-  public static void putShuffleBoardCommands(TankDriveSystem m_driveSystem,
-      ArmSystem m_armSystem,
-      GrabberSystem m_grabSystem) {
-
-    // SmartDashboard.putBoolean("Auto Middle", false);
-    // SmartDashboard.putData("Retract Arm", new RetractArmCommand(m_armSystem));
-    // SmartDashboard.putData("Set Soft Limit", new SetSoftLimitCommand(m_armSystem));
-    // SmartDashboard.putData("Rotate Winch Forwards", m_armSystem.rotateWinchMotor(
-    // SmartDashboard.getNumber("Auto Motor Distance",
-    // Constants.OperatorConstants.kAutoMotorDistance),
-    // Constants.OperatorConstants.kGearBoxRatioArm,
-    // SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed),
-    // Constants.OperatorConstants.kWheelDiameterInchWinch));
-
-    // SmartDashboard.putData("Rotate Winch Backwards", m_armSystem.rotateWinchMotor(
-    // SmartDashboard.getNumber("Auto Motor Distance",
-    // Constants.OperatorConstants.kAutoMotorDistance),
-    // Constants.OperatorConstants.kGearBoxRatioArm,
-    // -SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed),
-    // Constants.OperatorConstants.kWheelDiameterInchWinch));
-
-    // SmartDashboard.putData("Rotate Extender Forwards", m_armSystem.rotateExtenderMotor(
-    // SmartDashboard.getNumber("Auto Motor Distance",
-    // Constants.OperatorConstants.kAutoMotorDistance),
-    // Constants.OperatorConstants.kGearBoxRatioArm,
-    // SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed),
-    // Constants.OperatorConstants.kWheelDiameterInchExtender));
-
-    // SmartDashboard.putData("Rotate Extender Backwards", m_armSystem.rotateExtenderMotor(
-    // SmartDashboard.getNumber("Auto Motor Distance",
-    // Constants.OperatorConstants.kAutoMotorDistance),
-    // Constants.OperatorConstants.kGearBoxRatioArm,
-    // -SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed),
-    // Constants.OperatorConstants.kWheelDiameterInchExtender));
-
-    // SmartDashboard.putData("Turn In Place", new TurnInPlaceCommand(m_driveSystem,
-    // SmartDashboard.getNumber("Auto Motor Distance",
-    // Constants.OperatorConstants.kAutoMotorDistance),
-    // Constants.OperatorConstants.kGearBoxRatioDrive, SmartDashboard.getNumber("Auto Motor Speed",
-    // Constants.OperatorConstants.kAutoMotorSpeed),
-    // SmartDashboard.getBoolean("Auto Turn Left", true),
-    // Constants.OperatorConstants.kWheelCircumferenceInchesDrive));
-
-    // SmartDashboard.putData("Drive Forwards", new DriveCommand(m_driveSystem,
-    // SmartDashboard.getNumber("Auto Motor Distance",
-    // Constants.OperatorConstants.kAutoMotorDistance),
-    // Constants.OperatorConstants.kGearBoxRatioDrive,
-    // SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed),
-    // Constants.OperatorConstants.kWheelCircumferenceInchesDrive));
-
-    // SmartDashboard.putData("Drive Backwards", new DriveCommand(m_driveSystem,
-    // SmartDashboard.getNumber("Auto Motor Distance",
-    // Constants.OperatorConstants.kAutoMotorDistance),
-    // Constants.OperatorConstants.kGearBoxRatioDrive,
-    // -SmartDashboard.getNumber("Auto Motor Speed", Constants.OperatorConstants.kAutoMotorSpeed),
-    // Constants.OperatorConstants.kWheelCircumferenceInchesDrive));
-
-    // SmartDashboard.putData("Grab Cargo", new GrabberToggleCommand(m_grabSystem));
   }
 }
+

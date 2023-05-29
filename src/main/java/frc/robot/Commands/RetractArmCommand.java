@@ -25,6 +25,7 @@ public class RetractArmCommand extends CommandBase {
     if (!armSystem.getDigitalSensor()) {
       return true;
     }
+
     return false;
   }
 
