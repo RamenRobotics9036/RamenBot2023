@@ -103,15 +103,22 @@ public class RobotContainer {
     return Auto.getAutoCommand(m_driveSystem, m_armSystem, m_grabSystem);
   }
 
-  // $TODO Get rid of?
+  /**
+   * This is the single point in code that sets up Shuffleboard. It calls
+   * each subsystem in-turn to setup up Shuffleboard for that system.
+   */
   public void initDashboard() {
+    m_driveSystem.initDashBoard();
     m_armSystem.initDashBoard();
     m_grabSystem.initDashBoard();
   }
 
-  // $TODO Get rid of?
+  /**
+   * This is the single point in code that updates Shuffleboard.
+   */
   public void updateDashBoard() {
     m_driveSystem.updateDashBoard();
     m_armSystem.updateDashBoard();
+    m_grabSystem.updateDashBoard();
   }
 }

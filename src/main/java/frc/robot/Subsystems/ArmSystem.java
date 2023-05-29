@@ -77,14 +77,11 @@ public class ArmSystem extends SubsystemBase {
     return m_winchAbsoluteEncoder.getAbsolutePosition();
   }
 
+  // $TODO - This should be in init or update DashBoard?
   public void putSensorOutputs() {
     SmartDashboard.putNumber("Winch Absolute Encoder Position",
         m_winchAbsoluteEncoder.getAbsolutePosition());
     SmartDashboard.putBoolean("Hall Effect Sensor Output", getDigitalSensor());
-  }
-
-  public boolean getCondition() {
-    return true;
   }
 
   public boolean isOffLower() {
@@ -106,8 +103,6 @@ public class ArmSystem extends SubsystemBase {
   }
 
   private void ProcessJoystickInputForArm() {
-    // SmartDashboard.putNumber("Absolute encoder", getWinchAbsoluteEncoder());
-    // SmartDashboard.putNumber("Extender encoder", getExtenderEncoder());
     double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
     double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
     winchOutput = winchOutput * Math.abs(winchOutput);
@@ -146,8 +141,8 @@ public class ArmSystem extends SubsystemBase {
   @Override
   public void periodic() {
     Double winchAbsoluteEncoder = Double.valueOf(getWinchAbsoluteEncoderPrivate());
-    // SmartDashboard.putNumber("Winch Absolute Position",
-    // getWinchAbsoluteEncoderPrivate());
+
+    // $TODO - This should be in init or update DashBoard?
     SmartDashboard.putBoolean("Winch Absolute Encoder", !(winchAbsoluteEncoder == 0.0));
   }
 

@@ -1,17 +1,15 @@
 package frc.robot.Subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import frc.robot.Simulation.DriveSimulation;
 import frc.robot.Constants;
-import edu.wpi.first.wpilibj.RobotState;
-import edu.wpi.first.wpilibj.RobotBase;
-
+import frc.robot.Simulation.DriveSimulation;
 import java.util.Map;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 
 public class TankDriveSystemSim extends TankDriveSystem {
   private DriveSimulation m_driveSimulation = null;

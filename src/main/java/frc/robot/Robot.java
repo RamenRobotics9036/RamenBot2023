@@ -46,7 +46,10 @@ public class Robot extends TimedRobot {
 
     m_robotContainer = new RobotContainer();
     m_robotContainer.initDashboard();
+
+    // $TODO - This should be in init or update DashBoard?
     SmartDashboard.putBoolean("Get Cube", true);
+
     m_chooser = Auto.addAutoModeChooser();
     m_ledLoop = 0;
     m_ledR = 0;
@@ -107,7 +110,7 @@ public class Robot extends TimedRobot {
 
     new RetractArmCommand(m_robotContainer.m_armSystem).schedule();
 
-    // m_LEDLight.setLength(m_LEDBuffer.getLength());
+    // $TODO - This should be in init or update DashBoard?
     SmartDashboard.putNumber("Winch Encoder",
         m_robotContainer.m_armSystem.getWinchAbsoluteEncoder());
   }
@@ -117,12 +120,14 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
     if (m_robotContainer.m_controller2.getLeftTriggerAxis() > 0.05) {
+      // $TODO - This should be in init or update DashBoard?
       SmartDashboard.putBoolean("Get Cube", true);
       m_ledR = 255;
       m_ledG = 255;
       m_ledB = 0;
     }
     else if (m_robotContainer.m_controller2.getRightTriggerAxis() > 0.05) {
+      // $TODO - This should be in init or update DashBoard?
       SmartDashboard.putBoolean("Get Cube", false);
 
       m_ledR = 255;
