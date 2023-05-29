@@ -6,15 +6,14 @@ import java.util.function.BooleanSupplier;
 public class ArmSimulation {
   private WinchSimulation m_winchSimulation;
   private DutyCycleEncoderSim m_winchAbsoluteEncoderSim;
+  private double m_currentSignedDegrees;
+  private boolean m_isCurrentSignedDegreesSet = false;
   private double m_topSignedDegreesLimit;
   private double m_bottomSignedDegreesLimit;
   private double m_grabberBreaksIfOpenBelowSignedDegreesLimit;
   private double m_encoderRotationsOffset;
-  private double m_currentSignedDegrees;
-  private boolean m_isCurrentSignedDegreesSet = false;
   private BooleanSupplier m_grabberOpenSupplier = null;
   private boolean m_isBroken;
-
   private CalcArmAngleHelper m_calcArmAngleHelper;
 
   // Constructor
@@ -22,7 +21,7 @@ public class ArmSimulation {
       DutyCycleEncoderSim winchAbsoluteEncoderSim,
       double topRotationsLimit,
       double bottomRotationsLimit,
-      double deltaRotationsBeforeBroken,
+      double deltaRotationsBeforeBroken, // $TODO Just make caller pass in degrees
       double grabberBreaksIfOpenBelowThisLimit,
       double heightFromWinchToPivotPoint,
       double armLengthFromEdgeToPivot,
@@ -96,11 +95,13 @@ public class ArmSimulation {
   public void periodic() {
   }
 
+  // $TODO This is ugly - probably don't need a method
   public static double offsetArmRotationPosition(double position, double offset) {
     double positionWithOffset = position + offset;
     return positionWithOffset - Math.floor(positionWithOffset);
   }
 
+  // $TODO This can be removed?
   public static double toNonOffsetSignedDegrees(double position, double offset) {
     double positionWithoutOffset = offsetArmRotationPosition(position, -1 * offset);
     double degreesWithoutOffset = positionWithoutOffset * 360;
@@ -108,7 +109,7 @@ public class ArmSimulation {
   }
 
   private boolean isInGrabberBreakRange(double positionSignedDegrees) {
-    return UnitConversions.lessThanButNotEqual(positionSignedDegrees,
+    return UnitConversions.lessThanButNotEqualDouble(positionSignedDegrees,
         m_grabberBreaksIfOpenBelowSignedDegreesLimit);
   }
 
@@ -123,7 +124,7 @@ public class ArmSimulation {
       isGrabberOpen = m_grabberOpenSupplier.getAsBoolean();
     }
 
-    double newStringLen = m_winchSimulation.GetStringExtendedLen();
+    double newStringLen = m_winchSimulation.getStringUnspooledLen();
     CalcArmAngleHelper.Result resultPair = m_calcArmAngleHelper
         .calcSignedDegreesForStringLength(newStringLen);
 
@@ -141,8 +142,7 @@ public class ArmSimulation {
       if (!isInGrabberBreakRange(m_currentSignedDegrees)) {
 
         // If the arm is ABOUT to go into the breakable range with the grabber open, the arm gets
-        // stuck
-        // but doesn't break
+        // stuck but doesn't break
         System.out.println("ARM: Grabber is open while try to move arm to ground");
 
         // With grabber open, arm is STUCK and not able to go lower than a certain point
@@ -151,7 +151,6 @@ public class ArmSimulation {
       else {
 
         // If the arm is ALREADY below a certain level, and grabber is broken, arm is broken
-
         System.out.println("ARM: Grabber is open while arm is in breakable range");
         m_isBroken = true;
 
@@ -176,6 +175,7 @@ public class ArmSimulation {
     m_currentSignedDegrees = newAbsoluteEncoderSignedDegrees;
     m_isCurrentSignedDegreesSet = true;
 
+    // $TODO cleanup
     double newAbsoluteEncoderNonSignedDegrees = UnitConversions
         .toUnsignedDegrees(newAbsoluteEncoderSignedDegrees);
     double newAbsoluteEncoderPosition = newAbsoluteEncoderNonSignedDegrees / 360.0;

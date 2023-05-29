@@ -19,7 +19,7 @@ import frc.robot.Commands.ArmExtendFully;
 import frc.robot.Commands.ArmToGround;
 import frc.robot.Simulation.ArmSimulation;
 import frc.robot.Simulation.WinchSimulation;
-import frc.robot.Simulation.WinchSimulation.StringOrientation;
+import frc.robot.Simulation.WinchSimulation.WindingOrientation;
 import frc.robot.Simulation.ExtenderSimulation;
 
 public class ArmSystemSim extends ArmSystem {
@@ -118,7 +118,7 @@ public class ArmSystemSim extends ArmSystem {
 
     m_WinchSimulation = new WinchSimulation(m_winchEncoderSim, 0.0254, // Spool diameter (1 inch)
         Constants.SimConstants.kTotalStringLenMeters, Constants.SimConstants.kCurrentLenSpooled,
-        StringOrientation.BackOfRobot, true); // invert motor for winch
+        WindingOrientation.BackOfRobot, true); // invert motor for winch
   }
 
   private void CreateExtenderSimParts() {
@@ -252,7 +252,7 @@ public class ArmSystemSim extends ArmSystem {
     // Winch functional display
     Shuffleboard.getTab("Simulation")
         .addBoolean(Constants.SimWidgets.kWinchFunctional.name,
-            () -> !m_WinchSimulation.GetIsBroken())
+            () -> !m_WinchSimulation.getIsBroken())
         .withWidget(BuiltInWidgets.kBooleanBox)
         .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"))
         .withPosition(Constants.SimWidgets.kWinchFunctional.x,
@@ -273,7 +273,7 @@ public class ArmSystemSim extends ArmSystem {
     // Winch String % extended
     Shuffleboard.getTab("Simulation")
         .addDouble(Constants.SimWidgets.kWinchStringPercentExtended.name,
-            () -> m_WinchSimulation.GetStringExtendedPercent())
+            () -> m_WinchSimulation.getStringUnspooledPercent())
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of("min", 0.0, "max", 1.0, "show text", false))
         .withPosition(Constants.SimWidgets.kWinchStringPercentExtended.x,
@@ -284,7 +284,7 @@ public class ArmSystemSim extends ArmSystem {
     // Winch string location
     Shuffleboard.getTab("Simulation")
         .addString(Constants.SimWidgets.kWinchStringLocation.name,
-            () -> m_WinchSimulation.GetStringOrientationName())
+            () -> m_WinchSimulation.getWindingOrientationName())
         .withWidget(BuiltInWidgets.kTextView)
         .withPosition(Constants.SimWidgets.kWinchStringLocation.x,
             Constants.SimWidgets.kWinchStringLocation.y)

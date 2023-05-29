@@ -15,7 +15,7 @@ import frc.robot.Commands.Auto;
 import frc.robot.Commands.RetractArmCommand;
 
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
+ * The JVM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
@@ -86,7 +86,6 @@ public class Robot extends TimedRobot {
     m_ledB = 0;
 
     CommandScheduler.getInstance().cancelAll();
-    m_robotContainer.putShuffleBoardAutoCommands();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_autonomousCommand.schedule();
   }
@@ -104,8 +103,6 @@ public class Robot extends TimedRobot {
 
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.configureBindings();
-
-    m_robotContainer.putShuffleBoardAutoCommands();
     m_robotContainer.updateDashBoard();
 
     new RetractArmCommand(m_robotContainer.m_armSystem).schedule();
@@ -135,6 +132,7 @@ public class Robot extends TimedRobot {
     // updateLeds();
   }
 
+  // $TODO move LED code into its own class
   private void updateLeds() {
     if (0 == m_ledR && 0 == m_ledG && 0 == m_ledB) {
       for (var i = 0; i < m_ledBuffer.getLength() / 2; i++) {

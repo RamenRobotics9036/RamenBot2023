@@ -2,7 +2,7 @@ package frc.robot.Simulation;
 
 import edu.wpi.first.hal.HAL;
 import frc.robot.Subsystems.RelativeEncoderSim;
-import frc.robot.Simulation.WinchSimulation.StringOrientation;
+import frc.robot.Simulation.WinchSimulation.WindingOrientation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,7 +13,7 @@ public class WinchSimulationTest {
   private final double m_SpoolDiameterMeters = 0.01; // (1 centimeter)
   private final double m_TotalStringLenMeters = 5;
   private final double m_InitialLenSpooled = 1;
-  private final StringOrientation m_InitialStringOrientation = StringOrientation.BackOfRobot;
+  private final WindingOrientation m_InitialStringOrientation = WindingOrientation.BackOfRobot;
   private final boolean m_invertMotor = false;
 
   private RelativeEncoderSim m_relEncoderSim;
@@ -80,63 +80,63 @@ public class WinchSimulationTest {
   public void QueryingStringLenExtendedShouldReturnCorrectValueWhenStringOnBack() {
     double totalStringLen = 5;
     double stringLenSpooled = 1;
-    StringOrientation stringOrientation = StringOrientation.BackOfRobot;
+    WindingOrientation stringOrientation = WindingOrientation.BackOfRobot;
 
     WinchSimulation tempWinchSimulation = new WinchSimulation(m_relEncoderSim,
         m_SpoolDiameterMeters, totalStringLen, stringLenSpooled, stringOrientation, m_invertMotor);
 
-    assertTrue(tempWinchSimulation.GetStringExtendedLen() == totalStringLen - stringLenSpooled);
+    assertTrue(tempWinchSimulation.getStringUnspooledLen() == totalStringLen - stringLenSpooled);
   }
 
   @Test
   public void QueryingStringLenExtendedShouldReturnCorrectValueWhenStringOnFront() {
     double totalStringLen = 5;
     double stringLenSpooled = 1;
-    StringOrientation stringOrientation = StringOrientation.FrontOfRobot;
+    WindingOrientation stringOrientation = WindingOrientation.FrontOfRobot;
 
     WinchSimulation tempWinchSimulation = new WinchSimulation(m_relEncoderSim,
         m_SpoolDiameterMeters, totalStringLen, stringLenSpooled, stringOrientation, m_invertMotor);
 
-    assertTrue(tempWinchSimulation.GetStringExtendedLen() == totalStringLen - stringLenSpooled);
+    assertTrue(tempWinchSimulation.getStringUnspooledLen() == totalStringLen - stringLenSpooled);
   }
 
   @Test
   public void QueryingStringOrientationFrontShouldReturnCorrectValue() {
     double initialLenSpooled = 1;
-    StringOrientation stringOrientation = StringOrientation.FrontOfRobot;
+    WindingOrientation stringOrientation = WindingOrientation.FrontOfRobot;
 
     WinchSimulation tempWinchSimulation = new WinchSimulation(m_relEncoderSim,
         m_SpoolDiameterMeters, m_TotalStringLenMeters, initialLenSpooled, stringOrientation,
         m_invertMotor);
 
-    assertTrue(tempWinchSimulation.GetStringOrientation() == stringOrientation);
+    assertTrue(tempWinchSimulation.getWindingOrientation() == stringOrientation);
   }
 
   @Test
   public void QueryingStringOrientationBackShouldReturnCorrectValue() {
     double initialLenSpooled = 1;
-    StringOrientation stringOrientation = StringOrientation.BackOfRobot;
+    WindingOrientation stringOrientation = WindingOrientation.BackOfRobot;
 
     WinchSimulation tempWinchSimulation = new WinchSimulation(m_relEncoderSim,
         m_SpoolDiameterMeters, m_TotalStringLenMeters, initialLenSpooled, stringOrientation,
         m_invertMotor);
 
-    assertTrue(tempWinchSimulation.GetStringOrientation() == stringOrientation);
+    assertTrue(tempWinchSimulation.getWindingOrientation() == stringOrientation);
   }
 
   @Test
   public void QueryingStringOrientationShouldReturnBackWhenSpooledAmountIsZero() {
-    StringOrientation stringOrientation = StringOrientation.FrontOfRobot;
+    WindingOrientation stringOrientation = WindingOrientation.FrontOfRobot;
     double initialLenSpooled = 0;
 
     WinchSimulation tempWinchSimulation = new WinchSimulation(m_relEncoderSim,
         m_SpoolDiameterMeters, m_TotalStringLenMeters, initialLenSpooled, stringOrientation,
         m_invertMotor);
 
-    assertTrue(tempWinchSimulation.GetStringOrientation() == StringOrientation.BackOfRobot);
+    assertTrue(tempWinchSimulation.getWindingOrientation() == WindingOrientation.BackOfRobot);
   }
 
-  private void TestWinchMove(StringOrientation stringOrientation,
+  private void TestWinchMove(WindingOrientation stringOrientation,
       double lenToGrowString,
       boolean flipWinchPolarity,
       double expectedResult,
@@ -152,15 +152,15 @@ public class WinchSimulationTest {
     m_relEncoderSim.setPosition(numRotations);
 
     tempWinchSimulation.simulationPeriodic();
-    double result = tempWinchSimulation.GetStringExtendedLen();
+    double result = tempWinchSimulation.getStringUnspooledLen();
 
     assertEquals(result, expectedResult, UnitConversions.kAngleTolerance);
-    assertTrue(tempWinchSimulation.GetIsBroken() == expectIsBroken);
+    assertTrue(tempWinchSimulation.getIsBroken() == expectIsBroken);
   }
 
   @Test
   public void WhenStringOnBackAndMotorTurnsClockwiseThenStringShouldGetLonger() {
-    TestWinchMove(StringOrientation.BackOfRobot,
+    TestWinchMove(WindingOrientation.BackOfRobot,
         0.5, // lenToGrowString
         false, // flipWinchPolarity
         4.5, // expectedResult
@@ -169,7 +169,7 @@ public class WinchSimulationTest {
 
   @Test
   public void WhenStringOnBackAndMotorTurnsCounterClockwiseThenStringShouldGetShorter() {
-    TestWinchMove(StringOrientation.BackOfRobot,
+    TestWinchMove(WindingOrientation.BackOfRobot,
         -0.5, // lenToGrowString
         false, // flipWinchPolarity
         3.5, // expectedResult
@@ -178,7 +178,7 @@ public class WinchSimulationTest {
 
   @Test
   public void WinchShouldMoveOtherDirectionWhenPolarityInverted() {
-    TestWinchMove(StringOrientation.BackOfRobot,
+    TestWinchMove(WindingOrientation.BackOfRobot,
         0.5, // lenToGrowString
         true, // flipWinchPolarity
         3.5, // expectedResult
@@ -187,7 +187,7 @@ public class WinchSimulationTest {
 
   @Test
   public void WinchShouldSpoolOtherDirectionIfStringExtendedTooLong() {
-    TestWinchMove(StringOrientation.BackOfRobot,
+    TestWinchMove(WindingOrientation.BackOfRobot,
         1.5, // lenToGrowString
         false, // flipWinchPolarity
         4.5, // expectedResult
@@ -196,7 +196,7 @@ public class WinchSimulationTest {
 
   @Test
   public void WinchShouldntBreakIfEntirelySpooled() {
-    TestWinchMove(StringOrientation.BackOfRobot,
+    TestWinchMove(WindingOrientation.BackOfRobot,
         5.99, // lenToGrowString
         false, // flipWinchPolarity
         0.01, // expectedResult
@@ -205,7 +205,7 @@ public class WinchSimulationTest {
 
   @Test
   public void WinchShouldBreakIfOverSpooled() {
-    TestWinchMove(StringOrientation.BackOfRobot,
+    TestWinchMove(WindingOrientation.BackOfRobot,
         6.01, // lenToGrowString
         false, // flipWinchPolarity
         0.0, // expectedResult
@@ -218,7 +218,7 @@ public class WinchSimulationTest {
 
     WinchSimulation tempWinchSimulation = new WinchSimulation(m_relEncoderSim,
         m_SpoolDiameterMeters, m_TotalStringLenMeters, m_InitialLenSpooled,
-        StringOrientation.BackOfRobot, false);
+        WindingOrientation.BackOfRobot, false);
 
     // Rotate the motor such that string gets a bit longer
     double spoolCircumference = m_SpoolDiameterMeters * Math.PI;
@@ -231,10 +231,10 @@ public class WinchSimulationTest {
     m_relEncoderSim.setPosition(m_relEncoderSim.getPosition() + numRotations);
     tempWinchSimulation.simulationPeriodic();
 
-    double result = tempWinchSimulation.GetStringExtendedLen();
+    double result = tempWinchSimulation.getStringUnspooledLen();
 
     assertEquals(result, expectedResult, UnitConversions.kAngleTolerance);
-    assertTrue(!tempWinchSimulation.GetIsBroken());
+    assertTrue(!tempWinchSimulation.getIsBroken());
 
   }
 }

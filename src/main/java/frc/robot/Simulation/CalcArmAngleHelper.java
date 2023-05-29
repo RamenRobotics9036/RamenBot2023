@@ -98,14 +98,14 @@ public class CalcArmAngleHelper {
     // Is arm beyond lowest possible point?
     // If the string is too long, it means the string is no longer taut.
     // Still, we consider this a valid position of the arm; arm is dangling down
-    if (UnitConversions.greaterThanButNotEqual(heightArmBackendAbovePivot,
+    if (UnitConversions.greaterThanButNotEqualDouble(heightArmBackendAbovePivot,
         m_lengthFromPivotPointToArmBackEnd)) {
       System.out.println("String too long, and is no longer taut");
       return new Result(true, down);
     }
 
     // Is arm beyond highest possible point?
-    if (UnitConversions.lessThanButNotEqual(heightArmBackendAbovePivot,
+    if (UnitConversions.lessThanButNotEqualDouble(heightArmBackendAbovePivot,
         -1 * m_lengthFromPivotPointToArmBackEnd)) {
       System.out.println("Above highest point: String too short!");
       return new Result(false, up);

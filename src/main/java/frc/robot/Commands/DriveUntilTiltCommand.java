@@ -6,10 +6,10 @@ import frc.robot.Subsystems.TankDriveSystem;
 
 public class DriveUntilTiltCommand extends CommandBase {
   private TankDriveSystem m_driveSystem;
-  private double percentOutput;
+  private double m_percentOutput;
 
   public DriveUntilTiltCommand(TankDriveSystem m_driveSystem, double percentOutput) {
-    this.percentOutput = percentOutput;
+    this.m_percentOutput = percentOutput;
 
     this.m_driveSystem = m_driveSystem;
     addRequirements(m_driveSystem);
@@ -22,7 +22,7 @@ public class DriveUntilTiltCommand extends CommandBase {
 
   @Override
   public void execute() {
-    m_driveSystem.tankDrive(percentOutput, percentOutput, false);
+    m_driveSystem.tankDrive(m_percentOutput, m_percentOutput, false);
   }
 
   @Override
