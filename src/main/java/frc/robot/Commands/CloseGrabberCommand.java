@@ -3,8 +3,11 @@ package frc.robot.Commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.GrabberSystem;
 
+/**
+ * Command to close the grabber.
+ */
 public class CloseGrabberCommand extends CommandBase {
-  private boolean finished = false;
+  private boolean m_finished = false;
   private GrabberSystem m_grabber;
 
   public CloseGrabberCommand(GrabberSystem grabber) {
@@ -19,12 +22,12 @@ public class CloseGrabberCommand extends CommandBase {
   @Override
   public void execute() {
     m_grabber.closeGrabber();
-    finished = true;
+    m_finished = true;
   }
 
   @Override
   public boolean isFinished() {
-    return finished;
+    return m_finished;
   }
 
   @Override

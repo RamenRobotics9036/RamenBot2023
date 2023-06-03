@@ -5,34 +5,41 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.TankDriveSystem;
 
+/**
+ * This class represents a command for an automated balance control system for tank drive.
+ */
 public class AutoBalanceCommandSlow extends CommandBase {
   private TankDriveSystem m_driveSystem;
-  private double rate;
-  private Timer timer = new Timer();
-  private double cycle = 1;
-  private double changeRate;
+  private double m_rate;
+  private Timer m_timer = new Timer();
+  private double m_cycle = 1;
+  private double m_changeRate;
 
-  public AutoBalanceCommandSlow(TankDriveSystem m_driveSystem, double rate, double changeRate) {
-    this.m_driveSystem = m_driveSystem;
-    this.rate = rate;
-    this.changeRate = changeRate;
-    addRequirements(m_driveSystem);
+  /**
+   * Constructor.
+   * 
+   */
+  public AutoBalanceCommandSlow(TankDriveSystem driveSystem, double rate, double changeRate) {
+    this.m_driveSystem = driveSystem;
+    this.m_rate = rate;
+    this.m_changeRate = changeRate;
+    addRequirements(driveSystem);
   }
 
   @Override
   public void initialize() {
-    timer.start();
+    m_timer.start();
   }
 
   @Override
   public void execute() {
-    double executeRate = rate / cycle;
+    double executeRate = m_rate / m_cycle;
 
     if (MathUtil.applyDeadband(m_driveSystem.getGyroRate(), 1) > 0) {
       m_driveSystem.tankDrive(0, 0, false);
-      if (timer.get() >= 0.5) {
-        cycle += changeRate;
-        timer.reset();
+      if (m_timer.get() >= 0.5) {
+        m_cycle += m_changeRate;
+        m_timer.reset();
       }
     }
     else if (MathUtil.applyDeadband(m_driveSystem.getGyroAngle() + 2.5, 2) > 0) {
@@ -43,14 +50,13 @@ public class AutoBalanceCommandSlow extends CommandBase {
     }
     else {
       m_driveSystem.tankDrive(0, 0, false);
-      if (timer.get() >= 0.5) {
-        cycle += changeRate; // Changed from 0.5
-        timer.reset();
+      if (m_timer.get() >= 0.5) {
+        m_cycle += m_changeRate; // Changed from 0.5
+        m_timer.reset();
       }
     }
 
     m_driveSystem.setRate();
-    // new WaitCommand(0.5).schedule();
   }
 
   @Override
