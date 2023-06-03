@@ -1,4 +1,4 @@
-package frc.robot.Simulation;
+package frc.robot.simulation;
 
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import java.util.function.BooleanSupplier;

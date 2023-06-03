@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Constants;
-import frc.robot.Simulation.DriveSimulation;
+import frc.robot.simulation.DriveSimulation;
 import java.util.Map;
 
 public class TankDriveSystemSim extends TankDriveSystem {

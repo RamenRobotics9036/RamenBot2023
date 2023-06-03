@@ -13,14 +13,14 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 
 import frc.robot.Constants;
-import frc.robot.Commands.ArmToMiddleNodeCone;
-import frc.robot.Commands.RetractArmCommand;
-import frc.robot.Commands.ArmExtendFully;
-import frc.robot.Commands.ArmToGround;
-import frc.robot.Simulation.ArmSimulation;
-import frc.robot.Simulation.WinchSimulation;
-import frc.robot.Simulation.WinchSimulation.WindingOrientation;
-import frc.robot.Simulation.ExtenderSimulation;
+import frc.robot.commands.ArmToMiddleNodeCone;
+import frc.robot.commands.RetractArmCommand;
+import frc.robot.commands.ArmExtendFully;
+import frc.robot.commands.ArmToGround;
+import frc.robot.simulation.ArmSimulation;
+import frc.robot.simulation.WinchSimulation;
+import frc.robot.simulation.WinchSimulation.WindingOrientation;
+import frc.robot.simulation.ExtenderSimulation;
 
 public class ArmSystemSim extends ArmSystem {
   private DutyCycleEncoderSim m_winchAbsoluteEncoderSim;

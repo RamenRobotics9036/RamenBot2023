@@ -1,4 +1,4 @@
-package frc.robot.Simulation;
+package frc.robot.simulation;
 
 /**
  * This class provides utility methods for performing various unit conversions.
