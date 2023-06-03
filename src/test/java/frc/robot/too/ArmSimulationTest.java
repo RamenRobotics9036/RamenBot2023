@@ -5,7 +5,7 @@ import frc.robot.Subsystems.RelativeEncoderSim;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import frc.robot.Subsystems.DutyCycleEncoderSim2;
-import frc.robot.Simulation.WinchSimulation.WindingOrientation;
+import frc.robot.simulation.WinchSimulation.WindingOrientation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

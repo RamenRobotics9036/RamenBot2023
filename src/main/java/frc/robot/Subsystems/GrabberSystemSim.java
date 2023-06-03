@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 
 import frc.robot.Constants;
-import frc.robot.Commands.CloseGrabberCommand;
-import frc.robot.Commands.GrabberToggleCommand;
+import frc.robot.commands.CloseGrabberCommand;
+import frc.robot.commands.GrabberToggleCommand;
 
 public class GrabberSystemSim extends GrabberSystem {
   private Value m_solenoidStatus;
@@ -100,18 +100,18 @@ public class GrabberSystemSim extends GrabberSystem {
     String physicalGrabberText;
 
     switch (m_solenoidStatus) {
-    case kForward:
-      solenoidStatusText = "Forward";
-      break;
-    case kReverse:
-      solenoidStatusText = "Reverse";
-      break;
-    case kOff:
-      solenoidStatusText = "Off";
-      break;
-    default:
-      solenoidStatusText = "Unknown";
-      break;
+      case kForward:
+        solenoidStatusText = "Forward";
+        break;
+      case kReverse:
+        solenoidStatusText = "Reverse";
+        break;
+      case kOff:
+        solenoidStatusText = "Off";
+        break;
+      default:
+        solenoidStatusText = "Unknown";
+        break;
     }
 
     physicalGrabberText = m_grabberPhysicallyOpened ? "Open" : "Closed";
