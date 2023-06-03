@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
-import frc.robot.Subsystems.ArmSystem;
-import frc.robot.Subsystems.GrabberSystem;
-import frc.robot.Subsystems.TankDriveSystem;
+import frc.robot.subsystems.ArmSystem;
+import frc.robot.subsystems.GrabberSystem;
+import frc.robot.subsystems.TankDriveSystem;
 
 /**
  * This class contains the logic for autonomous.

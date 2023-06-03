@@ -1,6 +1,6 @@
 package frc.robot.commands;
 
-import frc.robot.Subsystems.ArmSystem;
+import frc.robot.subsystems.ArmSystem;
 
 /**
  * Command to extend the arm fully.
