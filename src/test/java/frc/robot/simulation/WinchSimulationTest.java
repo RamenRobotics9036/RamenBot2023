@@ -1,8 +1,8 @@
-package frc.robot.Simulation;
+package frc.robot.simulation;
 
 import edu.wpi.first.hal.HAL;
 import frc.robot.Subsystems.RelativeEncoderSim;
-import frc.robot.Simulation.WinchSimulation.WindingOrientation;
+import frc.robot.simulation.WinchSimulation.WindingOrientation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
