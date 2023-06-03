@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import frc.robot.Constants;
-import frc.robot.Subsystems.ArmSystem;
+import frc.robot.subsystems.ArmSystem;
 
 /**
  * Raises arm to middle node cone.

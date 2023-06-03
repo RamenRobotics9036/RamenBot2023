@@ -11,12 +11,12 @@ import frc.robot.commands.Auto;
 import frc.robot.commands.RetractArmCommand;
 import frc.robot.commands.SetSoftLimitCommand;
 import frc.robot.commands.SetWinchToAngle;
-import frc.robot.Subsystems.ArmSystem;
-import frc.robot.Subsystems.ArmSystemSim;
-import frc.robot.Subsystems.GrabberSystem;
-import frc.robot.Subsystems.GrabberSystemSim;
-import frc.robot.Subsystems.TankDriveSystem;
-import frc.robot.Subsystems.TankDriveSystemSim;
+import frc.robot.subsystems.ArmSystem;
+import frc.robot.subsystems.ArmSystemSim;
+import frc.robot.subsystems.GrabberSystem;
+import frc.robot.subsystems.GrabberSystemSim;
+import frc.robot.subsystems.TankDriveSystem;
+import frc.robot.subsystems.TankDriveSystemSim;
 import java.util.function.BooleanSupplier;
 
 /**

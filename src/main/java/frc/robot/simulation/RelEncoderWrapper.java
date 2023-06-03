@@ -2,6 +2,10 @@ package frc.robot.simulation;
 
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 
+/**
+ * Wraps an absolute encoder with an encoder that can track relative position instead.
+ * Very useful if I want to reset the encoder to 0 at a certain point.
+ */
 public class RelEncoderWrapper {
   private EncoderSim m_encoderSim;
   private double m_offset;

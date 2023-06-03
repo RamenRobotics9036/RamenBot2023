@@ -26,6 +26,10 @@ import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
+/**
+ * Simulates a real world drivetrain. E.g. the position of the robot is even shown
+ * on the field.
+ */
 public class DriveSimulation {
   // 3 meters per second.
   public static final double kMaxSpeed = 3.0;
@@ -33,7 +37,7 @@ public class DriveSimulation {
   public static final double kMaxAngularSpeed = Math.PI;
 
   private static final double kTrackWidth = 0.381 * 2;
-  private final double m_WheelRadius;
+  private final double m_wheelRadius;
   private static final int kEncoderResolution = -4096;
 
   private final PWMSparkMax m_leftLeader = new PWMSparkMax(1);
@@ -49,8 +53,8 @@ public class DriveSimulation {
   private final Encoder m_leftEncoder = new Encoder(0, 1);
   private final Encoder m_rightEncoder = new Encoder(2, 3);
 
-  private final PIDController m_leftPIDController = new PIDController(8.5, 0, 0);
-  private final PIDController m_rightPIDController = new PIDController(8.5, 0, 0);
+  private final PIDController m_leftPidController = new PIDController(8.5, 0, 0);
+  private final PIDController m_rightPidController = new PIDController(8.5, 0, 0);
 
   private final AnalogGyro m_gyro = new AnalogGyro(0);
 
@@ -98,10 +102,10 @@ public class DriveSimulation {
 
   /** Subsystem constructor. */
   public DriveSimulation(double wheelRadiusMeters) {
-    m_WheelRadius = wheelRadiusMeters;
+    m_wheelRadius = wheelRadiusMeters;
 
     m_drivetrainSimulator = new DifferentialDrivetrainSim(m_drivetrainSystem, DCMotor.getCIM(2), 8,
-        kTrackWidth, m_WheelRadius, null);
+        kTrackWidth, m_wheelRadius, null);
 
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
@@ -111,8 +115,8 @@ public class DriveSimulation {
     // Set the distance per pulse for the drive encoders. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
-    m_leftEncoder.setDistancePerPulse(2 * Math.PI * m_WheelRadius / kEncoderResolution);
-    m_rightEncoder.setDistancePerPulse(2 * Math.PI * m_WheelRadius / kEncoderResolution);
+    m_leftEncoder.setDistancePerPulse(2 * Math.PI * m_wheelRadius / kEncoderResolution);
+    m_rightEncoder.setDistancePerPulse(2 * Math.PI * m_wheelRadius / kEncoderResolution);
 
     m_leftEncoderSimWrapper = new RelEncoderWrapper(m_leftEncoderSim);
     m_rightEncoderSimWrapper = new RelEncoderWrapper(m_rightEncoderSim);
@@ -126,9 +130,9 @@ public class DriveSimulation {
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
     var leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
     var rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
-    double leftOutput = m_leftPIDController.calculate(m_leftEncoder.getRate(),
+    double leftOutput = m_leftPidController.calculate(m_leftEncoder.getRate(),
         speeds.leftMetersPerSecond);
-    double rightOutput = m_rightPIDController.calculate(m_rightEncoder.getRate(),
+    double rightOutput = m_rightPidController.calculate(m_rightEncoder.getRate(),
         speeds.rightMetersPerSecond);
 
     m_leftGroup.setVoltage(leftOutput + leftFeedforward);
@@ -141,38 +145,38 @@ public class DriveSimulation {
    * @param leftSpeed  for left wheels
    * @param rightSpeed for right wheels
    */
-  public void tankDrive(double leftSpeed, double rightSpeed, boolean SquareInputs) {
+  public void tankDrive(double leftSpeed, double rightSpeed, boolean squareInputs) {
     // System.out.println("TANK: xLeft = " + leftSpeed + ", xRight = " +
     // rightSpeed);
 
-    double xForward = (leftSpeed + rightSpeed) / 2;
-    double zRotation = (leftSpeed - rightSpeed) / 2;
+    double xforward = (leftSpeed + rightSpeed) / 2;
+    double zrotation = (leftSpeed - rightSpeed) / 2;
 
-    this.arcadeDrive(xForward, zRotation, SquareInputs);
+    this.arcadeDrive(xforward, zrotation, squareInputs);
   }
 
   /**
    * Controls the robot using arcade drive.
    *
-   * @param xSpeed the speed for the x axis
+   * @param xspeed the speed for the x axis
    * @param rot    the rotation
    */
-  public void arcadeDrive(double xSpeed, double rot, boolean SquareInputs) {
+  public void arcadeDrive(double xspeed, double rot, boolean squareInputs) {
     // System.out.println("ARCADE: xSpeed = " + xSpeed);
 
-    xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
+    xspeed = MathUtil.clamp(xspeed, -1.0, 1.0);
     rot = MathUtil.clamp(rot, -1.0, 1.0);
 
     // $TODO - Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
     // private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(3);
     // private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
-    if (SquareInputs) {
-      xSpeed = Math.copySign(xSpeed * xSpeed, xSpeed);
+    if (squareInputs) {
+      xspeed = Math.copySign(xspeed * xspeed, xspeed);
       rot = Math.copySign(rot * rot, rot);
     }
 
-    setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0, rot)));
+    setSpeeds(m_kinematics.toWheelSpeeds(new ChassisSpeeds(xspeed, 0, rot)));
   }
 
   /** Update robot odometry. */
@@ -181,7 +185,7 @@ public class DriveSimulation {
         .update(m_gyro.getRotation2d(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
   }
 
-  private void DrawRobotOnField() {
+  private void drawRobotOnField() {
     m_fieldSim.setRobotPose(m_odometry.getPoseMeters());
   }
 
@@ -196,7 +200,7 @@ public class DriveSimulation {
 
     // Even if robot is in Disabled state, we want to update the Field view to show
     // where it is initially
-    DrawRobotOnField();
+    drawRobotOnField();
   }
 
   /** Check the current robot pose. */
@@ -236,6 +240,6 @@ public class DriveSimulation {
   /** Update odometry - this should be run every robot loop. */
   public void periodic() {
     updateOdometry();
-    DrawRobotOnField();
+    drawRobotOnField();
   }
 }

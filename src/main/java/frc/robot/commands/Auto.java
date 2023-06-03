@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
-import frc.robot.Subsystems.ArmSystem;
-import frc.robot.Subsystems.GrabberSystem;
-import frc.robot.Subsystems.TankDriveSystem;
+import frc.robot.subsystems.ArmSystem;
+import frc.robot.subsystems.GrabberSystem;
+import frc.robot.subsystems.TankDriveSystem;
 
 /**
  * This class contains the logic for autonomous.
@@ -87,7 +87,7 @@ public class Auto {
         return Commands.sequence(new SetWinchToAngle(armSystem, 0.75, 0.9),
             new SetExtenderToLength(armSystem, -100, 0.9),
             new WaitCommand(0.5),
-            new GrabberToggleCommand(grabSystem),
+            new GrabberOpenCommand(grabSystem),
             new WaitCommand(0.5),
             new DriveCommand(driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive,
                 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive));
@@ -112,7 +112,7 @@ public class Auto {
         return Commands.sequence(new SetWinchToAngle(armSystem, 0.75, 0.9),
             new SetExtenderToLength(armSystem, -100, 0.9),
             new WaitCommand(0.5),
-            new GrabberToggleCommand(grabSystem));
+            new GrabberOpenCommand(grabSystem));
 
       case kAutoTestBackUp: // Good and no overshoots but takes too long | Needs tuning
         return Commands.sequence(new SetWinchToAngle(armSystem, 0.75, 1),

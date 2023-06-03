@@ -1,10 +1,10 @@
 package frc.robot.simulation;
 
 import edu.wpi.first.hal.HAL;
-import frc.robot.Subsystems.RelativeEncoderSim;
+import frc.robot.subsystems.RelativeEncoderSim;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
-import frc.robot.Subsystems.DutyCycleEncoderSim2;
+import frc.robot.subsystems.DutyCycleEncoderSim2;
 import frc.robot.simulation.WinchSimulation.WindingOrientation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;

@@ -1,4 +1,4 @@
-package frc.robot.Subsystems;
+package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
@@ -13,7 +13,7 @@ import java.util.function.BooleanSupplier;
 
 import frc.robot.Constants;
 import frc.robot.commands.CloseGrabberCommand;
-import frc.robot.commands.GrabberToggleCommand;
+import frc.robot.commands.GrabberOpenCommand;
 
 public class GrabberSystemSim extends GrabberSystem {
   private Value m_solenoidStatus;
@@ -69,7 +69,7 @@ public class GrabberSystemSim extends GrabberSystem {
   private void AddCommandButtons() {
     // Open grabber
     Shuffleboard.getTab("Simulation")
-        .add(Constants.SimWidgets.kOpenGrabber.name, new GrabberToggleCommand(this))
+        .add(Constants.SimWidgets.kOpenGrabber.name, new GrabberOpenCommand(this))
         .withWidget(BuiltInWidgets.kCommand)
         .withPosition(Constants.SimWidgets.kOpenGrabber.x, Constants.SimWidgets.kOpenGrabber.y)
         .withSize(Constants.SimWidgets.kOpenGrabber.width,

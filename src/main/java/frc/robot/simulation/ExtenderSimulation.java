@@ -1,6 +1,6 @@
 package frc.robot.simulation;
 
-import frc.robot.Subsystems.RelativeEncoderSim;
+import frc.robot.subsystems.RelativeEncoderSim;
 
 /**
  * This class represents a simulation of an extender.

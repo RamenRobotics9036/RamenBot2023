@@ -2,17 +2,24 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Subsystems.TankDriveSystem;
+import frc.robot.subsystems.TankDriveSystem;
 
+/**
+ * Command to drive forward until the robot gyro indicates that the robot is
+ * tilted.
+ */
 public class DriveUntilTiltCommand extends CommandBase {
   private TankDriveSystem m_driveSystem;
   private double m_percentOutput;
 
-  public DriveUntilTiltCommand(TankDriveSystem m_driveSystem, double percentOutput) {
+  /**
+   * Constructor.
+   */
+  public DriveUntilTiltCommand(TankDriveSystem driveSystem, double percentOutput) {
     this.m_percentOutput = percentOutput;
 
-    this.m_driveSystem = m_driveSystem;
-    addRequirements(m_driveSystem);
+    this.m_driveSystem = driveSystem;
+    addRequirements(driveSystem);
   }
 
   @Override

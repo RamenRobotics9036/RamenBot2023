@@ -1,19 +1,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Subsystems.ArmSystem;
+import frc.robot.subsystems.ArmSystem;
 
+/**
+ * Command to set the soft limit of the arm.
+ */
 public class SetSoftLimitCommand extends CommandBase {
-  ArmSystem armSystem;
+  ArmSystem m_armSystem;
 
   public SetSoftLimitCommand(ArmSystem armSystem) {
-    this.armSystem = armSystem;
+    this.m_armSystem = armSystem;
     addRequirements(armSystem);
   }
 
   @Override
   public void initialize() {
-    armSystem.setSoftLimit();
+    m_armSystem.setSoftLimit();
   }
 
   @Override
@@ -27,6 +30,6 @@ public class SetSoftLimitCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    armSystem.setExtenderSpeed(0);
+    m_armSystem.setExtenderSpeed(0);
   }
 }

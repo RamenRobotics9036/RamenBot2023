@@ -1,6 +1,6 @@
 package frc.robot.simulation;
 
-import frc.robot.Subsystems.RelativeEncoderSim;
+import frc.robot.subsystems.RelativeEncoderSim;
 
 /**
  * Simulates a winch with a spool and a string. The string can be extended and retracted,

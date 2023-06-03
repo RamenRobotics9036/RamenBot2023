@@ -61,7 +61,8 @@ public class CalcArmAngleHelper {
               + Constants.SimConstants.klengthFromWinchToPivotPoint_Min + " meters");
     }
 
-    if (lengthFromPivotPointToArmBackEnd < Constants.SimConstants.klengthFromPivotPointToArmBackEnd_Min) {
+    double pivotToArmBackEndMin = Constants.SimConstants.klengthFromPivotPointToArmBackEnd_Min;
+    if (lengthFromPivotPointToArmBackEnd < pivotToArmBackEndMin) {
       throw new IllegalArgumentException(
           "Length from arm pivot point to arm back end needs to be at least "
               + Constants.SimConstants.klengthFromPivotPointToArmBackEnd_Min

@@ -1,13 +1,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Subsystems.ArmSystem;
+import frc.robot.subsystems.ArmSystem;
 
+/**
+ * Command to retract the arm fully.
+ */
 public class RetractArmCommand extends CommandBase {
-  ArmSystem armSystem;
+  ArmSystem m_armSystem;
 
   public RetractArmCommand(ArmSystem armSystem) {
-    this.armSystem = armSystem;
+    this.m_armSystem = armSystem;
     addRequirements(armSystem);
   }
 
@@ -17,12 +20,12 @@ public class RetractArmCommand extends CommandBase {
 
   @Override
   public void execute() {
-    armSystem.setExtenderSpeed(0.7);
+    m_armSystem.setExtenderSpeed(0.7);
   }
 
   @Override
   public boolean isFinished() {
-    if (!armSystem.getDigitalSensor()) {
+    if (!m_armSystem.getDigitalSensor()) {
       return true;
     }
 
@@ -31,7 +34,7 @@ public class RetractArmCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    armSystem.setExtenderSpeed(0);
-    armSystem.resetExtenderEncoder();
+    m_armSystem.setExtenderSpeed(0);
+    m_armSystem.resetExtenderEncoder();
   }
 }
