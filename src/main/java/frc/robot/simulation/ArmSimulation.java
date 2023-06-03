@@ -3,6 +3,10 @@ package frc.robot.simulation;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import java.util.function.BooleanSupplier;
 
+/**
+ * Simulates the arm as-if it were a real-world object. E.g. if the arm
+ * is extended too far, it will break.
+ */
 public class ArmSimulation {
   private WinchSimulation m_winchSimulation;
   private DutyCycleEncoderSim m_winchAbsoluteEncoderSim;
@@ -16,7 +20,9 @@ public class ArmSimulation {
   private boolean m_isBroken;
   private CalcArmAngleHelper m_calcArmAngleHelper;
 
-  // Constructor
+  /**
+   * Constructor.
+   */
   public ArmSimulation(WinchSimulation winchSimulation,
       DutyCycleEncoderSim winchAbsoluteEncoderSim,
       double topRotationsLimit,
@@ -101,7 +107,9 @@ public class ArmSimulation {
     return positionWithOffset - Math.floor(positionWithOffset);
   }
 
-  // $TODO This can be removed?
+  /**
+   * $TODO This can be removed.
+   */
   public static double toNonOffsetSignedDegrees(double position, double offset) {
     double positionWithoutOffset = offsetArmRotationPosition(position, -1 * offset);
     double degreesWithoutOffset = positionWithoutOffset * 360;
