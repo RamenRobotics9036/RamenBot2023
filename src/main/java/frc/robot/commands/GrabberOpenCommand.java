@@ -3,11 +3,14 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Subsystems.GrabberSystem;
 
-public class GrabberToggleCommand extends CommandBase {
+/**
+ * Command to open the grabber.
+ */
+public class GrabberOpenCommand extends CommandBase {
   private boolean m_finished = false;
   GrabberSystem m_grabSystem;
 
-  public GrabberToggleCommand(GrabberSystem grabSystem) {
+  public GrabberOpenCommand(GrabberSystem grabSystem) {
     this.m_grabSystem = grabSystem;
     addRequirements(m_grabSystem);
   }

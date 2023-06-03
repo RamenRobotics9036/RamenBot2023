@@ -87,7 +87,7 @@ public class Auto {
         return Commands.sequence(new SetWinchToAngle(armSystem, 0.75, 0.9),
             new SetExtenderToLength(armSystem, -100, 0.9),
             new WaitCommand(0.5),
-            new GrabberToggleCommand(grabSystem),
+            new GrabberOpenCommand(grabSystem),
             new WaitCommand(0.5),
             new DriveCommand(driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive,
                 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive));
@@ -112,7 +112,7 @@ public class Auto {
         return Commands.sequence(new SetWinchToAngle(armSystem, 0.75, 0.9),
             new SetExtenderToLength(armSystem, -100, 0.9),
             new WaitCommand(0.5),
-            new GrabberToggleCommand(grabSystem));
+            new GrabberOpenCommand(grabSystem));
 
       case kAutoTestBackUp: // Good and no overshoots but takes too long | Needs tuning
         return Commands.sequence(new SetWinchToAngle(armSystem, 0.75, 1),
