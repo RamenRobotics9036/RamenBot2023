@@ -31,12 +31,13 @@ public class RobotContainer {
   public final XboxController m_controller2 = new XboxController(
       Constants.OperatorConstants.kDriverControllerPort2);
 
-  // $TODO - Stop passing around a ton of constants
-  public final TankDriveSystem m_driveSystem = TankDriveSystemSim.createTankDriveSystemInstance(m_controller1);
+  public final TankDriveSystem m_driveSystem = TankDriveSystemSim
+      .createTankDriveSystemInstance(m_controller1);
 
   public final ArmSystem m_armSystem = ArmSystemSim.createArmSystemInstance(m_controller2);
 
-  public final GrabberSystem m_grabSystem = GrabberSystemSim.createGrabberSystemInstance(m_controller2);
+  public final GrabberSystem m_grabSystem = GrabberSystemSim
+      .createGrabberSystemInstance(m_controller2);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
