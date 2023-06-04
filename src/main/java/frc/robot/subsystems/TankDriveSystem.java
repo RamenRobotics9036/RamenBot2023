@@ -53,50 +53,43 @@ public class TankDriveSystem extends SubsystemBase {
   /**
    * Constructor for the TankDriveSystem.
    */
-  public TankDriveSystem(int leftMotorBackChannel,
-      int leftMotorForwardChannel,
-      int rightMotorBackChannel,
-      int rightMotorForwardChannel,
-      XboxController controller,
-      boolean squareInputs,
-      double maxOutput,
-      double deadband,
-      double gearBoxRatio,
-      double wheelDiameterMeters,
-      double slewLimit,
-      double turboSlew) {
-    m_gearBoxRatio = gearBoxRatio;
-    m_wheelDiameterMeters = wheelDiameterMeters;
+  public TankDriveSystem(XboxController controller) {
+    m_gearBoxRatio = Constants.OperatorConstants.kGearBoxRatioDrive;
+    m_wheelDiameterMeters = Constants.OperatorConstants.kWheelDiameterMetersDrive;
 
-    m_leftMotor1 = new CANSparkMax(leftMotorBackChannel, MotorType.kBrushless);
-    m_leftMotor2 = new CANSparkMax(leftMotorForwardChannel, MotorType.kBrushless);
-    m_rightMotor1 = new CANSparkMax(rightMotorForwardChannel, MotorType.kBrushless);
-    m_rightMotor2 = new CANSparkMax(rightMotorBackChannel, MotorType.kBrushless);
+    m_leftMotor1 = new CANSparkMax(Constants.OperatorConstants.kLeftMotorBackChannel,
+        MotorType.kBrushless);
+    m_leftMotor2 = new CANSparkMax(Constants.OperatorConstants.kLeftMotorForwardChannel,
+        MotorType.kBrushless);
+    m_rightMotor1 = new CANSparkMax(Constants.OperatorConstants.kRightMotorForwardChannel,
+        MotorType.kBrushless);
+    m_rightMotor2 = new CANSparkMax(Constants.OperatorConstants.kRightMotorBackChannel,
+        MotorType.kBrushless);
 
     m_leftMotors = new MotorControllerGroup(m_leftMotor1, m_leftMotor2);
     m_rightMotors = new MotorControllerGroup(m_rightMotor1, m_rightMotor2);
     m_rightMotors.setInverted(true);
     m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
 
-    m_drive.setMaxOutput(maxOutput);
-    m_drive.setDeadband(deadband);
+    m_drive.setMaxOutput(Constants.OperatorConstants.kMaxOutputDrive);
+    m_drive.setDeadband(Constants.OperatorConstants.kDeadband);
 
     m_leftEncoder = m_leftMotor1.getEncoder();
     m_rightEncoder = m_rightMotor1.getEncoder();
 
     this.m_controller = controller;
 
-    this.m_squareInputs = squareInputs;
-    this.m_maxOutput = maxOutput;
+    this.m_squareInputs = Constants.OperatorConstants.kSquareInputsDrive;
+    this.m_maxOutput = Constants.OperatorConstants.kMaxOutputDrive;
 
-    this.m_slewLimit = slewLimit;
+    this.m_slewLimit = Constants.OperatorConstants.kSlewLimit;
     if (this.m_slewLimit > 0) {
-      m_slewLimiter1 = new SlewRateLimiter(slewLimit);
-      m_slewLimiter2 = new SlewRateLimiter(slewLimit);
+      m_slewLimiter1 = new SlewRateLimiter(Constants.OperatorConstants.kSlewLimit);
+      m_slewLimiter2 = new SlewRateLimiter(Constants.OperatorConstants.kSlewLimit);
     }
 
-    m_turboLimiter1 = new SlewRateLimiter(turboSlew);
-    m_turboLimiter2 = new SlewRateLimiter(turboSlew);
+    m_turboLimiter1 = new SlewRateLimiter(Constants.OperatorConstants.kTurboSlew);
+    m_turboLimiter2 = new SlewRateLimiter(Constants.OperatorConstants.kTurboSlew);
 
     initDashBoard();
   }

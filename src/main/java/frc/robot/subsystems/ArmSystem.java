@@ -34,7 +34,7 @@ public class ArmSystem extends SubsystemBase {
   /**
    * Constructor.
    */
-  public ArmSystem(XboxController controller, boolean squareInputs, double maxOutputWinch) {
+  public ArmSystem(XboxController controller) {
 
     m_armWinch = new CANSparkMax(Constants.OperatorConstants.kArmWinchChannel,
         MotorType.kBrushless);
@@ -50,7 +50,7 @@ public class ArmSystem extends SubsystemBase {
     m_extenderEncoder = m_armExtender.getEncoder();
 
     this.m_controller = controller;
-    this.m_maxOutputWinch = maxOutputWinch;
+    this.m_maxOutputWinch = Constants.OperatorConstants.kMaxOutputWinch;
 
     m_winchAbsoluteEncoder = new DutyCycleEncoder(
         Constants.OperatorConstants.kAbsoluteEncoderWinchChannel);

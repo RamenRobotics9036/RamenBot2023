@@ -21,44 +21,17 @@ public class TankDriveSystemSim extends TankDriveSystem {
   /**
    * Factory method to create a TankDriveSystemSim or TankDriveSystem object.
    */
-  public static TankDriveSystem createTankDriveSystemInstance(int leftMotorBackChannel,
-      int leftMotorForwardChannel,
-      int rightMotorBackChannel,
-      int rightMotorForwardChannel,
-      XboxController controller,
-      boolean squareInputs,
-      double maxOutput,
-      double deadband,
-      double gearBoxRatio,
-      double wheelDiameterMeters,
-      double slewLimit,
-      double turboSlew) {
+  public static TankDriveSystem createTankDriveSystemInstance(XboxController controller) {
     TankDriveSystem result;
 
     if (RobotBase.isSimulation()) {
-      result = new TankDriveSystemSim(Constants.OperatorConstants.kLeftMotorBackChannel,
-          Constants.OperatorConstants.kLeftMotorForwardChannel,
-          Constants.OperatorConstants.kRightMotorBackChannel,
-          Constants.OperatorConstants.kRightMotorForwardChannel, controller,
-          Constants.OperatorConstants.kSquareInputsDrive,
-          Constants.OperatorConstants.kMaxOutputDrive, Constants.OperatorConstants.kDeadband,
-          Constants.OperatorConstants.kGearBoxRatioDrive,
-          Constants.OperatorConstants.kWheelDiameterMetersDrive,
-          Constants.OperatorConstants.kSlewLimit, Constants.OperatorConstants.kTurboSlew);
+      result = new TankDriveSystemSim(controller);
 
       System.out.println("TANKDRIVESYSTEM: **** Simulation ****");
 
     }
     else {
-      result = new TankDriveSystem(Constants.OperatorConstants.kLeftMotorBackChannel,
-          Constants.OperatorConstants.kLeftMotorForwardChannel,
-          Constants.OperatorConstants.kRightMotorBackChannel,
-          Constants.OperatorConstants.kRightMotorForwardChannel, controller,
-          Constants.OperatorConstants.kSquareInputsDrive,
-          Constants.OperatorConstants.kMaxOutputDrive, Constants.OperatorConstants.kDeadband,
-          Constants.OperatorConstants.kGearBoxRatioDrive,
-          Constants.OperatorConstants.kWheelDiameterMetersDrive,
-          Constants.OperatorConstants.kSlewLimit, Constants.OperatorConstants.kTurboSlew);
+      result = new TankDriveSystem(controller);
 
       System.out.println("TANKDRIVESYSTEM: Physical Robot version");
     }
@@ -69,28 +42,16 @@ public class TankDriveSystemSim extends TankDriveSystem {
   /**
    * Constructor.
    */
-  public TankDriveSystemSim(int leftMotorBackChannel,
-      int leftMotorForwardChannel,
-      int rightMotorBackChannel,
-      int rightMotorForwardChannel,
-      XboxController controller,
-      boolean squareInputs,
-      double maxOutput,
-      double deadband,
-      double gearBoxRatio,
-      double wheelDiameterMeters,
-      double slewLimit,
-      double turboSlew) {
+  public TankDriveSystemSim(XboxController controller) {
     // FIRST, we call superclass
-    super(leftMotorBackChannel, leftMotorForwardChannel, rightMotorBackChannel,
-        rightMotorForwardChannel, controller, squareInputs, maxOutput, deadband, gearBoxRatio,
-        wheelDiameterMeters, slewLimit, turboSlew);
+    super(controller);
 
     // This entire class should only be instantiated when we're under simulation.
     // But just in-case someone tries to instantiate it otherwise, we do an extra
     // check here.
     if (RobotBase.isSimulation()) {
-      m_driveSimulation = new DriveSimulation(wheelDiameterMeters / 2);
+      m_driveSimulation = new DriveSimulation(
+          Constants.OperatorConstants.kWheelDiameterMetersDrive / 2);
       resetSimulationRobotPosition();
     }
 
