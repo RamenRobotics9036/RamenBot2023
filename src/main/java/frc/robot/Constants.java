@@ -14,6 +14,9 @@ package frc.robot;
  * </p>
  */
 public final class Constants {
+  /**
+   * Constants for the robot.
+   */
   public static class OperatorConstants {
     public static final int kDriverControllerPort1 = 0;
     public static final int kDriverControllerPort2 = 1;
@@ -84,6 +87,9 @@ public final class Constants {
     public static int kLEDLightsLength = 40;
   }
 
+  /**
+   * Constants that we specifically use in simulation mode.
+   */
   public static class SimConstants {
     // Winch
     public static double kTotalStringLenMeters = 1;
@@ -112,21 +118,29 @@ public final class Constants {
     public static boolean kgrabberInitiallyOpened = false;
   }
 
+  /**
+   * Class to hold widgetPosition classes for each object on shuffleboard.
+   */
   public static class SimWidgets {
+    /**
+     * Describes position of a single widget.
+     */
     public static class WidgetPosition {
-      public String name;
-      public int x;
-      public int y;
-      public int width;
-      public int height;
+      public String m_name;
+      public int m_xpos;
+      public int m_ypos;
+      public int m_width;
+      public int m_height;
 
-      // Constructor
+      /**
+       * Constructor.
+       */
       public WidgetPosition(String name, int x, int y, int width, int height) {
-        this.name = name;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        this.m_name = name;
+        this.m_xpos = x;
+        this.m_ypos = y;
+        this.m_width = width;
+        this.m_height = height;
       }
     }
 

@@ -22,10 +22,7 @@ public class Auto {
   public static final String kOnlyScore = "Only Score";
   public static final String kScoreLow = "Score Low";
 
-  public static final String kAutoTestBackUp = "DO NOT USE (Auto Test Back Up)";
-  public static final String kAutoBalanceWithMobility = "DO NOT USE (Auto Balance with Mobility)";
   public static final String kAutoTestSlow = "DO NOT USE (Auto Test Slow Auto Balance)";
-  public static final String kPrestonAuto = "DO NOT USE (Preston Autobalance)";
   public static final String kTestDriveOnly = "DO NOT USE (Simple test of drive only)";
 
   public static final String kDefaultAutoModeValue = kOnlyScore;
@@ -61,9 +58,6 @@ public class Auto {
     resultChooser.addOption(Auto.kOnlyScore, Auto.kOnlyScore);
     resultChooser.addOption(Auto.kScoreLow, Auto.kScoreLow);
     resultChooser.addOption(Auto.kAutoTestSlow, Auto.kAutoTestSlow);
-    resultChooser.addOption(Auto.kAutoTestBackUp, Auto.kAutoTestBackUp);
-    resultChooser.addOption(Auto.kPrestonAuto, Auto.kPrestonAuto);
-    resultChooser.addOption(Auto.kAutoBalanceWithMobility, Auto.kAutoBalanceWithMobility);
     resultChooser.addOption(Auto.kTestDriveOnly, Auto.kTestDriveOnly);
 
     resultChooser.setDefaultOption(Auto.kDefaultAutoModeValue, Auto.kDefaultAutoModeValue);
@@ -92,18 +86,9 @@ public class Auto {
             new DriveCommand(driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive,
                 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive));
 
-      // $TODO Prune the ones that aren't used and are just dead code
       case kAutoBalanceMode:
         return Commands.sequence(new SetWinchToAngle(armSystem, 0.75, 1),
-            // new SetExtenderToLength(m_armSystem, -100, 1),
             new WaitCommand(0.25),
-            // new GrabberToggleCommand(m_grabSystem),
-            // new WaitCommand(0.25),
-            // new DriveCommand(m_driveSystem, -0.5 * 12,
-            // Constants.OperatorConstants.kGearBoxRatioDrive, -0.6,
-            // Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-            // new TurnDegrees(m_driveSystem, 0.7, 75),
-            // new WaitCommand(0.25),
             new DriveCommand(driveSystem, 8 * 12, Constants.OperatorConstants.kGearBoxRatioDrive,
                 -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
             new AutoBalanceCommand(driveSystem, 0.25));
@@ -114,32 +99,9 @@ public class Auto {
             new WaitCommand(0.5),
             new GrabberOpenCommand(grabSystem));
 
-      case kAutoTestBackUp: // Good and no overshoots but takes too long | Needs tuning
+      case kAutoTestSlow:
         return Commands.sequence(new SetWinchToAngle(armSystem, 0.75, 1),
-            // new SetExtenderToLength(m_armSystem, -100, 1),
             new WaitCommand(0.25),
-            // new GrabberToggleCommand(m_grabSystem),
-            // new WaitCommand(0.25),
-            // new DriveCommand(m_driveSystem, -0.5 * 12,
-            // Constants.OperatorConstants.kGearBoxRatioDrive, -0.6,
-            // Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-            // new TurnDegrees(m_driveSystem, 0.7, 75),
-            // new WaitCommand(0.25),
-            new DriveUntilTiltCommand(driveSystem, -0.4),
-            new DriveCommand(driveSystem, 1.5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive,
-                -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-            new AutoBalanceCommandSlow(driveSystem, 0.25, 0.75));
-
-      case kAutoTestSlow: // Works well and might get mobility
-        return Commands.sequence(new SetWinchToAngle(armSystem, 0.75, 1),
-            // new SetExtenderToLength(m_armSystem, -100, 1),
-            new WaitCommand(0.25),
-            // new GrabberToggleCommand(m_grabSystem),
-            // new WaitCommand(0.25),
-            // new DriveCommand(m_driveSystem, -0.5 * 12,
-            // Constants.OperatorConstants.kGearBoxRatioDrive, -0.6,
-            // Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-            // new TurnDegrees(m_driveSystem, 0.7, 75),
             new WaitCommand(0.25),
             new DriveUntilTiltCommand(driveSystem, -0.4),
             new DriveCommand(driveSystem, 1.5 * 12, Constants.OperatorConstants.kGearBoxRatioDrive,
@@ -151,30 +113,6 @@ public class Auto {
             new WaitCommand(0.5),
             new DriveCommand(driveSystem, 15 * 12, Constants.OperatorConstants.kGearBoxRatioDrive,
                 0.5, Constants.OperatorConstants.kWheelCircumferenceInchesDrive));
-
-      case kAutoBalanceWithMobility:
-        return Commands.sequence(new SetWinchToAngle(armSystem, 0.75, 1),
-            // new SetExtenderToLength(m_armSystem, -100, 1),
-            new WaitCommand(0.25),
-            // new GrabberToggleCommand(m_grabSystem),
-            // new WaitCommand(0.25),
-            // new DriveCommand(m_driveSystem, -0.5 * 12,
-            // Constants.OperatorConstants.kGearBoxRatioDrive, -0.6,
-            // Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-            // new TurnDegrees(m_driveSystem, 0.7, 75),
-            // new WaitCommand(0.25),
-            new DriveCommand(driveSystem, 14 * 12, Constants.OperatorConstants.kGearBoxRatioDrive,
-                -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-            new TurnDegrees(driveSystem, 0.6, 75),
-            new DriveCommand(driveSystem, 3 * 12, Constants.OperatorConstants.kGearBoxRatioDrive,
-                0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-
-            new AutoBalanceCommand(driveSystem, 0.25));
-      case kPrestonAuto:
-        return Commands.sequence(
-            new DriveCommand(driveSystem, -7 * 12, Constants.OperatorConstants.kGearBoxRatioDrive,
-                -0.4, Constants.OperatorConstants.kWheelCircumferenceInchesDrive),
-            new AutoBalanceCommandSlow(driveSystem, 0.1, 0.1));
 
       case kTestDriveOnly:
         return Commands.sequence(new WaitCommand(0.25),

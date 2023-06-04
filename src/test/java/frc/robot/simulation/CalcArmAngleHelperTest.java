@@ -1,10 +1,14 @@
 package frc.robot.simulation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Tests the CalcArmAngleHelper class.
+ */
 public class CalcArmAngleHelperTest {
   private CalcArmAngleHelper m_calcArmAngleHelper;
   private final double m_armHeightFromWinchToPivotPoint = 1;
@@ -17,7 +21,7 @@ public class CalcArmAngleHelperTest {
   }
 
   @Test
-  public void ArmBeyondFullyUpShouldReturnError() {
+  public void armBeyondFullyUpShouldReturnError() {
     double amountBeyondLimit = 0.0001;
 
     double stringLen = (m_armHeightFromWinchToPivotPoint - m_armLengthFromEdgeToPivot
@@ -31,7 +35,7 @@ public class CalcArmAngleHelperTest {
   }
 
   @Test
-  public void ArmBeyondFullyDownShouldReturnSuccessSinceStringDangling() {
+  public void armBeyondFullyDownShouldReturnSuccessSinceStringDangling() {
     double amountBeyondLimit = 0.0001;
 
     double stringLen = (m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot
@@ -45,7 +49,7 @@ public class CalcArmAngleHelperTest {
   }
 
   @Test
-  public void ArmAtFullyUpShouldReturn90Degrees() {
+  public void armAtFullyUpShouldReturn90Degrees() {
     double stringLen = (m_armHeightFromWinchToPivotPoint - m_armLengthFromEdgeToPivot);
     double expectedResult = 90;
 
@@ -55,7 +59,7 @@ public class CalcArmAngleHelperTest {
   }
 
   @Test
-  public void ArmAtFullyDownShouldReturnNegative90Degrees() {
+  public void armAtFullyDownShouldReturnNegative90Degrees() {
     double stringLen = m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot;
     double expectedResult = -90;
 
@@ -65,7 +69,7 @@ public class CalcArmAngleHelperTest {
   }
 
   @Test
-  public void LevelArmShouldReturn0Degrees() {
+  public void levelArmShouldReturn0Degrees() {
     double stringLen = m_armHeightFromWinchToPivotPoint;
     double expectedResult = 0;
 
@@ -75,7 +79,7 @@ public class CalcArmAngleHelperTest {
   }
 
   @Test
-  public void ArmAt45DegreesShouldSucceed() {
+  public void armAt45DegreesShouldSucceed() {
     double stringLen = (m_armHeightFromWinchToPivotPoint - 0.17678);
     double expectedResult = 45;
 

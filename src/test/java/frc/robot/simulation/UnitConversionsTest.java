@@ -1,9 +1,13 @@
 package frc.robot.simulation;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+/**
+ * Tests the UnitConversions class.
+ */
 public class UnitConversionsTest {
   @BeforeEach
   public void setUp() {

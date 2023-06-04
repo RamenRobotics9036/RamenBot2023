@@ -31,7 +31,7 @@ public class RobotContainer {
   public final XboxController m_controller2 = new XboxController(
       Constants.OperatorConstants.kDriverControllerPort2);
 
-  public final TankDriveSystem m_driveSystem = TankDriveSystemSim.CreateTankDriveSystemInstance(
+  public final TankDriveSystem m_driveSystem = TankDriveSystemSim.createTankDriveSystemInstance(
       Constants.OperatorConstants.kLeftMotorBackChannel,
       Constants.OperatorConstants.kLeftMotorForwardChannel,
       Constants.OperatorConstants.kRightMotorBackChannel,
@@ -45,7 +45,7 @@ public class RobotContainer {
       Constants.OperatorConstants.kSlewLimit,
       Constants.OperatorConstants.kTurboSlew);
 
-  public final ArmSystem m_armSystem = ArmSystemSim.CreateArmSystemInstance(
+  public final ArmSystem m_armSystem = ArmSystemSim.createArmSystemInstance(
       Constants.OperatorConstants.kArmWinchChannel,
       Constants.OperatorConstants.kArmExtenderChannel,
       m_controller2,
@@ -53,7 +53,7 @@ public class RobotContainer {
       Constants.OperatorConstants.kSquareInputsArm,
       Constants.OperatorConstants.kMaxOutputWinch);
 
-  public final GrabberSystem m_grabSystem = GrabberSystemSim.CreateGrabberSystemInstance(
+  public final GrabberSystem m_grabSystem = GrabberSystemSim.createGrabberSystemInstance(
       Constants.OperatorConstants.kGrabberForwardChannel,
       Constants.OperatorConstants.kGrabberBackwardChannel,
       m_controller2);

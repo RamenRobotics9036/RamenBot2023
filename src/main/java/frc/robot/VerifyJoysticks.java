@@ -4,6 +4,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.time.Instant;
 import java.util.function.Supplier;
 
+/**
+ * VerifyJoysticks class is used to verify that the joysticks are connected and have the expected
+ * number of buttons, axes, etc. This is done by running a series of tests, each of which is
+ * implemented as a lambda. The lambda returns null if the test passes, or an error message if the
+ * test fails.
+ */
 public class VerifyJoysticks {
   private class JoystickTest {
     private boolean m_lastSuccess;
@@ -62,7 +68,9 @@ public class VerifyJoysticks {
   private JoystickTest[][] m_tests;
   private final int m_periodSeconds;
 
-  // Constructor
+  /**
+   * Constructor.
+   */
   public VerifyJoysticks(JoystickConfig[] joystickConfigs,
       DriverStationFunctions driverStationFunctions,
       int periodSeconds) {
@@ -79,13 +87,17 @@ public class VerifyJoysticks {
 
     m_driverStationFunctions = driverStationFunctions;
     m_joystickConfigs = joystickConfigs;
-    m_tests = CreateAllJoystickTests(m_joystickConfigs);
+    m_tests = createAllJoystickTests(m_joystickConfigs);
 
     m_firstCall = true;
     m_lastResult = true;
   }
 
-  public static JoystickConfig[] GetDefaultJoystickConfigs() {
+  /**
+   * Returns the default hardcoded default configuration used by the Ramen robotics Miso
+   * robot.
+   */
+  public static JoystickConfig[] getDefaultJoystickConfigs() {
     // Hardcoded expected joystick values
     return new JoystickConfig[] {
         new JoystickConfig(1, // port
@@ -97,11 +109,11 @@ public class VerifyJoysticks {
     };
   }
 
-  private JoystickTest[][] CreateAllJoystickTests(JoystickConfig[] joystickConfigs) {
+  private JoystickTest[][] createAllJoystickTests(JoystickConfig[] joystickConfigs) {
     JoystickTest[][] allTests = new JoystickTest[joystickConfigs.length][];
 
     for (int i = 0; i < joystickConfigs.length; i++) {
-      allTests[i] = CreateInitializedJoystickTest(joystickConfigs[i].port,
+      allTests[i] = createInitializedJoystickTest(joystickConfigs[i].port,
           joystickConfigs[i].expectedAxisCount,
           joystickConfigs[i].expectedButtonCount,
           joystickConfigs[i].expectedPOVCount,
@@ -112,13 +124,21 @@ public class VerifyJoysticks {
     return allTests;
   }
 
-  public boolean getIsJoystickConnected(int index) {
+  /**
+   * Returns whether the last test of whether joystick is connected
+   * returned the expected value.
+   */
+  public boolean getIsJoystickConnectedCorrect(int index) {
     if (index >= m_joystickConfigs.length) {
       throw new IllegalArgumentException("index is out of range");
     }
     return m_tests[index][0].wasLastTestSuccessful();
   }
 
+  /**
+   * Returns whether the last test of whether the joystick has the expected number of axes
+   * returned the expected value.
+   */
   public boolean getIsAxisCountCorrect(int index) {
     if (index >= m_joystickConfigs.length) {
       throw new IllegalArgumentException("index is out of range");
@@ -126,6 +146,10 @@ public class VerifyJoysticks {
     return m_tests[index][1].wasLastTestSuccessful();
   }
 
+  /**
+   * Returns whether the last test of whether the joystick has the expected number of buttons
+   * returned the expected value.
+   */
   public boolean getIsTestButtonCountCorrect(int index) {
     if (index >= m_joystickConfigs.length) {
       throw new IllegalArgumentException("index is out of range");
@@ -133,13 +157,21 @@ public class VerifyJoysticks {
     return m_tests[index][2].wasLastTestSuccessful();
   }
 
-  public boolean getIsPOVCountCorrect(int index) {
+  /**
+   * Returns whether the last test of whether the joystick has the expected number of POVs
+   * returned the expected value.
+   */
+  public boolean getIsPovCountCorrect(int index) {
     if (index >= m_joystickConfigs.length) {
       throw new IllegalArgumentException("index is out of range");
     }
     return m_tests[index][3].wasLastTestSuccessful();
   }
 
+  /**
+   * Returns whether the last test of whether the joystick has the expected name
+   * returned the expected value.
+   */
   public boolean getIsJoystickNameCorrect(int index) {
     if (index >= m_joystickConfigs.length) {
       throw new IllegalArgumentException("index is out of range");
@@ -147,6 +179,10 @@ public class VerifyJoysticks {
     return m_tests[index][4].wasLastTestSuccessful();
   }
 
+  /**
+   * Returns whether the last test of whether the joystick has the expected type
+   * returned the expected value.
+   */
   public boolean getIsJoystickTypeCorrect(int index) {
     if (index >= m_joystickConfigs.length) {
       throw new IllegalArgumentException("index is out of range");
@@ -158,7 +194,7 @@ public class VerifyJoysticks {
     return m_lastResult;
   }
 
-  private JoystickTest[] CreateInitializedJoystickTest(int port,
+  private JoystickTest[] createInitializedJoystickTest(int port,
       int expectedAxisCount,
       int expectedButtonCount,
       int expectedPovCount,
@@ -180,6 +216,10 @@ public class VerifyJoysticks {
     return tests;
   }
 
+  /**
+   * Call this every 20ms from the robot periodic function. Checks whether
+   * the joysticks are connected and have the expected number of axes, buttons, and POVs.
+   */
   public boolean verifyJoysticksPeriodically() {
     Instant currentTime = Instant.now();
     boolean allSuccess = true;
@@ -212,7 +252,7 @@ public class VerifyJoysticks {
   }
 
   private void updateDashboard() {
-    // $TODO - This should be in init or update DashBoard?  THIS IS JUST FOR JOYSTICKS?
+    // $TODO - This should be in init or update DashBoard? THIS IS JUST FOR JOYSTICKS?
     SmartDashboard.putBoolean("Joystick health", m_lastResult);
   }
 
@@ -248,12 +288,12 @@ public class VerifyJoysticks {
     return null;
   }
 
-  private String testPovCount(int port, int expectedPOVCount) {
-    int actualPovCount = m_driverStationFunctions.getStickPOVCount(port);
-    if (expectedPOVCount != actualPovCount) {
+  private String testPovCount(int port, int expectedPovCount) {
+    int actualPovCount = m_driverStationFunctions.getStickPovCount(port);
+    if (expectedPovCount != actualPovCount) {
       return String.format("Port=%d, Expected PovCount=%d, Actual PovCount=%d",
           port,
-          expectedPOVCount,
+          expectedPovCount,
           actualPovCount);
     }
 
