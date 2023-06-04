@@ -2,6 +2,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
+/**
+ * Holds methods used to query joystick information. Injected into
+ * VerifyJoysticksTest.java, which is run as a unit test.
+ */
 public class DriverStationFunctions {
   public boolean isJoystickConnected(int port) {
     return DriverStation.isJoystickConnected(port);
@@ -15,7 +19,7 @@ public class DriverStationFunctions {
     return DriverStation.getStickButtonCount(port);
   }
 
-  public int getStickPOVCount(int port) {
+  public int getStickPovCount(int port) {
     return DriverStation.getStickPOVCount(port);
   }
 

@@ -11,17 +11,24 @@ import frc.robot.Constants;
 import frc.robot.simulation.DriveSimulation;
 import java.util.Map;
 
+/**
+ * Subclass of TankDriveSystem that is used for simulation. Note that this code isn't run if
+ * the robot is not running in simulation mode.
+ */
 public class TankDriveSystemSim extends TankDriveSystem {
   private DriveSimulation m_driveSimulation = null;
 
-  public static TankDriveSystem CreateTankDriveSystemInstance(int leftMotorBackChannel,
+  /**
+   * Factory method to create a TankDriveSystemSim or TankDriveSystem object.
+   */
+  public static TankDriveSystem createTankDriveSystemInstance(int leftMotorBackChannel,
       int leftMotorForwardChannel,
       int rightMotorBackChannel,
       int rightMotorForwardChannel,
       XboxController controller,
       boolean squareInputs,
       double maxOutput,
-      double Deadband,
+      double deadband,
       double gearBoxRatio,
       double wheelDiameterMeters,
       double slewLimit,
@@ -59,7 +66,9 @@ public class TankDriveSystemSim extends TankDriveSystem {
     return result;
   }
 
-  // Constructor
+  /**
+   * Constructor.
+   */
   public TankDriveSystemSim(int leftMotorBackChannel,
       int leftMotorForwardChannel,
       int rightMotorBackChannel,
@@ -67,14 +76,14 @@ public class TankDriveSystemSim extends TankDriveSystem {
       XboxController controller,
       boolean squareInputs,
       double maxOutput,
-      double Deadband,
+      double deadband,
       double gearBoxRatio,
       double wheelDiameterMeters,
       double slewLimit,
       double turboSlew) {
     // FIRST, we call superclass
     super(leftMotorBackChannel, leftMotorForwardChannel, rightMotorBackChannel,
-        rightMotorForwardChannel, controller, squareInputs, maxOutput, Deadband, gearBoxRatio,
+        rightMotorForwardChannel, controller, squareInputs, maxOutput, deadband, gearBoxRatio,
         wheelDiameterMeters, slewLimit, turboSlew);
 
     // This entire class should only be instantiated when we're under simulation.
@@ -85,22 +94,28 @@ public class TankDriveSystemSim extends TankDriveSystem {
       resetSimulationRobotPosition();
     }
 
-    AddShuffleboardWidgets();
+    addShuffleboardWidgets();
   }
 
-  private void AddShuffleboardWidgets() {
+  /**
+   * Add widgets to Shuffleboard.
+   */
+  private void addShuffleboardWidgets() {
     Shuffleboard.getTab("Simulation")
-        .add(Constants.SimWidgets.kFieldWidget.name, m_driveSimulation.getField())
+        .add(Constants.SimWidgets.kFieldWidget.m_name, m_driveSimulation.getField())
         .withWidget(BuiltInWidgets.kField)
-        .withPosition(Constants.SimWidgets.kFieldWidget.x, Constants.SimWidgets.kFieldWidget.y)
-        .withSize(Constants.SimWidgets.kFieldWidget.width,
-            Constants.SimWidgets.kFieldWidget.height);
+        .withPosition(Constants.SimWidgets.kFieldWidget.m_xpos,
+            Constants.SimWidgets.kFieldWidget.m_ypos)
+        .withSize(Constants.SimWidgets.kFieldWidget.m_width,
+            Constants.SimWidgets.kFieldWidget.m_height);
 
     Shuffleboard.getTab("Simulation")
-        .add(Constants.SimWidgets.kGyroWidget.name, m_driveSimulation.getGyro())
+        .add(Constants.SimWidgets.kGyroWidget.m_name, m_driveSimulation.getGyro())
         .withWidget(BuiltInWidgets.kGyro)
-        .withPosition(Constants.SimWidgets.kGyroWidget.x, Constants.SimWidgets.kGyroWidget.y)
-        .withSize(Constants.SimWidgets.kGyroWidget.width, Constants.SimWidgets.kGyroWidget.height)
+        .withPosition(Constants.SimWidgets.kGyroWidget.m_xpos,
+            Constants.SimWidgets.kGyroWidget.m_ypos)
+        .withSize(Constants.SimWidgets.kGyroWidget.m_width,
+            Constants.SimWidgets.kGyroWidget.m_height)
         .withProperties(Map.of("Starting angle", 90));
   }
 
@@ -168,12 +183,12 @@ public class TankDriveSystemSim extends TankDriveSystem {
   }
 
   @Override
-  public void arcadeDrive(double xSpeed, double zRotation, boolean squareInputs) {
-    super.arcadeDrive(xSpeed, zRotation, squareInputs);
+  public void arcadeDrive(double xspeed, double zrotation, boolean squareInputs) {
+    super.arcadeDrive(xspeed, zrotation, squareInputs);
 
     // When Robot is disabled, the entire simulation freezes
     if (isRobotEnabled()) {
-      m_driveSimulation.arcadeDrive(xSpeed, zRotation, squareInputs);
+      m_driveSimulation.arcadeDrive(xspeed, zrotation, squareInputs);
     }
   }
 

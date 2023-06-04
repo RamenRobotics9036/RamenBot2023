@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_verifyJoysticks = new VerifyJoysticks(VerifyJoysticks.GetDefaultJoystickConfigs(),
+    m_verifyJoysticks = new VerifyJoysticks(VerifyJoysticks.getDefaultJoystickConfigs(),
         new DriverStationFunctions(), 1);
 
     m_robotContainer = new RobotContainer();

@@ -13,11 +13,15 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+/**
+ * The class is responsible for managing the arm subsystem
+ * which includes a winch and an extender.
+ */
 public class ArmSystem extends SubsystemBase {
   private XboxController m_controller;
   private double m_deadband;
-  private double maxOutputWinch;
-  protected DigitalInput sensor = new DigitalInput(
+  private double m_maxOutputWinch;
+  protected DigitalInput m_sensor = new DigitalInput(
       Constants.OperatorConstants.kHallEffectExtenderChannel);
 
   protected CANSparkMax m_armWinch;
@@ -28,27 +32,29 @@ public class ArmSystem extends SubsystemBase {
 
   protected DutyCycleEncoder m_winchAbsoluteEncoder;
 
+  /**
+   * Constructor.
+   */
   public ArmSystem(int armWinchChannel,
       int armExtenderChannel,
-      XboxController m_controller,
-      double m_deadband,
+      XboxController controller,
+      double deadband,
       boolean squareInputs,
       double maxOutputWinch) {
     m_armWinch = new CANSparkMax(armWinchChannel, MotorType.kBrushless);
-    m_armWinch.setSmartCurrentLimit(20); // $TODO - For simulation, test that smart limits actually
-                                         // work when I set
-                                         // a value on SparkMax
+
+    // $TODO - For simulation, test that smart limits actually work when values
+    // are set on SmartMax
+    m_armWinch.setSmartCurrentLimit(20);
     m_armExtender = new CANSparkMax(armExtenderChannel, MotorType.kBrushless);
-    m_armExtender.setSmartCurrentLimit(20); // $TODO - For simulation, test that smart limits
-                                            // actually work when I
-                                            // set a value on SparkMax
+    m_armExtender.setSmartCurrentLimit(20);
     m_armExtender.setInverted(false);
     m_winchEncoder = m_armWinch.getEncoder();
     m_extenderEncoder = m_armExtender.getEncoder();
 
-    this.m_controller = m_controller;
-    this.m_deadband = m_deadband;
-    this.maxOutputWinch = maxOutputWinch;
+    this.m_controller = controller;
+    this.m_deadband = deadband;
+    this.m_maxOutputWinch = maxOutputWinch;
 
     m_winchAbsoluteEncoder = new DutyCycleEncoder(
         Constants.OperatorConstants.kAbsoluteEncoderWinchChannel);
@@ -56,16 +62,22 @@ public class ArmSystem extends SubsystemBase {
     setSoftLimit();
   }
 
+  /**
+   * Initialize the values to display on the dashboard.
+   */
   public void initDashBoard() {
     SmartDashboard.putNumber("Winch Encoder", m_winchEncoder.getPosition());
     SmartDashboard.putNumber("Extender Encoder", m_extenderEncoder.getPosition());
-    SmartDashboard.putNumber("Winch Max Output", maxOutputWinch);
+    SmartDashboard.putNumber("Winch Max Output", m_maxOutputWinch);
   }
 
+  /**
+   * Update the values displayed on the dashboard.
+   */
   public void updateDashBoard() {
     SmartDashboard.putNumber("Winch Encoder", m_winchEncoder.getPosition());
     SmartDashboard.putNumber("Extender Encoder", m_extenderEncoder.getPosition());
-    maxOutputWinch = SmartDashboard.getNumber("Winch Max Output", maxOutputWinch);
+    m_maxOutputWinch = SmartDashboard.getNumber("Winch Max Output", m_maxOutputWinch);
   }
 
   public double getWinchAbsoluteEncoder() {
@@ -76,7 +88,10 @@ public class ArmSystem extends SubsystemBase {
     return m_winchAbsoluteEncoder.getAbsolutePosition();
   }
 
-  // $TODO - This should be in init or update DashBoard?
+  /**
+   * Display sensor information on smart dashboard.
+   * $TODO - Should this be in updateDashboard?
+   */
   public void putSensorOutputs() {
     SmartDashboard.putNumber("Winch Absolute Encoder Position",
         m_winchAbsoluteEncoder.getAbsolutePosition());
@@ -91,37 +106,42 @@ public class ArmSystem extends SubsystemBase {
     return getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit;
   }
 
+  /**
+   * Returns the default command for the arm subsystem. Note that default
+   * commands are always run when the arm is idle (no other commands running).
+   */
   public CommandBase getDefaultArmCommand() {
     CommandBase defaultCommand = run(() -> {
       // System.out.println("ARMCOMMAND");
-      ProcessJoystickInputForArm();
+      processJoystickInputForArm();
     });
 
     defaultCommand.setName("Default");
     return defaultCommand;
   }
 
-  private void ProcessJoystickInputForArm() {
+  private void processJoystickInputForArm() {
     double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
     double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
     winchOutput = winchOutput * Math.abs(winchOutput);
     extenderOutput = extenderOutput * Math.abs(extenderOutput);
 
+    double winchUpperLimit = Constants.OperatorConstants.kWinchEncoderUpperLimit;
+    double winchLowerLimit = Constants.OperatorConstants.kWinchEncoderLowerLimit;
+
     if (getWinchAbsoluteEncoderPrivate() != 0.0) {
-      if (getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit
-          && winchOutput > 0) {
+      if (getWinchAbsoluteEncoderPrivate() >= winchUpperLimit && winchOutput > 0) {
         m_armWinch.set(0);
       }
-      else if (getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit
-          && winchOutput < 0) {
+      else if (getWinchAbsoluteEncoderPrivate() <= winchLowerLimit && winchOutput < 0) {
         m_armWinch.set(0);
       }
       else {
-        setWinchSpeed(winchOutput * maxOutputWinch);
+        setWinchSpeed(winchOutput * m_maxOutputWinch);
       }
     }
     else {
-      setWinchSpeed(winchOutput * maxOutputWinch);
+      setWinchSpeed(winchOutput * m_maxOutputWinch);
     }
 
     // $TODO - For simulation, test that smart limits actually work when I set a value on SparkMax
@@ -170,6 +190,9 @@ public class ArmSystem extends SubsystemBase {
     return m_extenderEncoder.getPosition();
   }
 
+  /**
+   * Set the speed of the winch motor.
+   */
   public void setWinchSpeed(double speed) {
     if (speed > 1 || speed < -1) {
       System.out.println("**** setWinchSpeed() called with invalid speed: " + speed);
@@ -178,6 +201,9 @@ public class ArmSystem extends SubsystemBase {
     m_armWinch.set(speed);
   }
 
+  /**
+   * Set the speed of the extender motor.
+   */
   public void setExtenderSpeed(double speed) {
     if (speed > 1 || speed < -1) {
       System.out.println("**** setExtenderSpeed() called with invalid speed: " + speed);
@@ -191,9 +217,12 @@ public class ArmSystem extends SubsystemBase {
   }
 
   public boolean getDigitalSensor() {
-    return sensor.get();
+    return m_sensor.get();
   }
 
+  /**
+   * Set the soft limits for the arm extender.
+   */
   public void setSoftLimit() {
     // $TODO - For simulation, test that smart limits actually work when I set a value on SparkMax
     m_armExtender.enableSoftLimit(SoftLimitDirection.kForward, false);
