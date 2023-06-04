@@ -77,7 +77,9 @@ public class Robot extends TimedRobot {
     m_autonomousCommand.schedule();
   }
 
-  /** This function is called periodically during autonomous. */
+  /**
+   * This function is called periodically during autonomous.
+   */
   @Override
   public void autonomousPeriodic() {
   }
@@ -97,7 +99,9 @@ public class Robot extends TimedRobot {
         m_robotContainer.m_armSystem.getWinchAbsoluteEncoder());
   }
 
-  /** This function is called periodically during operator control. */
+  /**
+   * This function is called periodically during operator control.
+   */
   @Override
   public void teleopPeriodic() {
 
@@ -121,18 +125,24 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
   }
 
-  /** This function is called periodically during test mode. */
+  /**
+   * This function is called periodically during test mode.
+   */
   @Override
   public void testPeriodic() {
   }
 
-  /** This function is called once when the robot is first started up. */
+  /**
+   * This function is called once when the robot is first started up.
+   */
   @Override
   public void simulationInit() {
     CommandScheduler.getInstance().cancelAll();
   }
 
-  /** This function is called periodically whilst in simulation. */
+  /**
+   * This function is called periodically whilst in simulation.
+   */
   @Override
   public void simulationPeriodic() {
   }

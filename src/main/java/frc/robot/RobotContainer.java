@@ -31,6 +31,7 @@ public class RobotContainer {
   public final XboxController m_controller2 = new XboxController(
       Constants.OperatorConstants.kDriverControllerPort2);
 
+  // $TODO - Stop passing around a ton of constants
   public final TankDriveSystem m_driveSystem = TankDriveSystemSim.createTankDriveSystemInstance(
       Constants.OperatorConstants.kLeftMotorBackChannel,
       Constants.OperatorConstants.kLeftMotorForwardChannel,
@@ -45,11 +46,7 @@ public class RobotContainer {
       Constants.OperatorConstants.kSlewLimit,
       Constants.OperatorConstants.kTurboSlew);
 
-  public final ArmSystem m_armSystem = ArmSystemSim.createArmSystemInstance(
-      Constants.OperatorConstants.kArmWinchChannel,
-      Constants.OperatorConstants.kArmExtenderChannel,
-      m_controller2,
-      Constants.OperatorConstants.kDeadband,
+  public final ArmSystem m_armSystem = ArmSystemSim.createArmSystemInstance(m_controller2,
       Constants.OperatorConstants.kSquareInputsArm,
       Constants.OperatorConstants.kMaxOutputWinch);
 

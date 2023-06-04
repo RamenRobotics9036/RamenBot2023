@@ -19,7 +19,6 @@ import frc.robot.Constants;
  */
 public class ArmSystem extends SubsystemBase {
   private XboxController m_controller;
-  private double m_deadband;
   private double m_maxOutputWinch;
   protected DigitalInput m_sensor = new DigitalInput(
       Constants.OperatorConstants.kHallEffectExtenderChannel);
@@ -35,25 +34,22 @@ public class ArmSystem extends SubsystemBase {
   /**
    * Constructor.
    */
-  public ArmSystem(int armWinchChannel,
-      int armExtenderChannel,
-      XboxController controller,
-      double deadband,
-      boolean squareInputs,
-      double maxOutputWinch) {
-    m_armWinch = new CANSparkMax(armWinchChannel, MotorType.kBrushless);
+  public ArmSystem(XboxController controller, boolean squareInputs, double maxOutputWinch) {
+
+    m_armWinch = new CANSparkMax(Constants.OperatorConstants.kArmWinchChannel,
+        MotorType.kBrushless);
 
     // $TODO - For simulation, test that smart limits actually work when values
     // are set on SmartMax
     m_armWinch.setSmartCurrentLimit(20);
-    m_armExtender = new CANSparkMax(armExtenderChannel, MotorType.kBrushless);
+    m_armExtender = new CANSparkMax(Constants.OperatorConstants.kArmExtenderChannel,
+        MotorType.kBrushless);
     m_armExtender.setSmartCurrentLimit(20);
     m_armExtender.setInverted(false);
     m_winchEncoder = m_armWinch.getEncoder();
     m_extenderEncoder = m_armExtender.getEncoder();
 
     this.m_controller = controller;
-    this.m_deadband = deadband;
     this.m_maxOutputWinch = maxOutputWinch;
 
     m_winchAbsoluteEncoder = new DutyCycleEncoder(
@@ -121,8 +117,11 @@ public class ArmSystem extends SubsystemBase {
   }
 
   private void processJoystickInputForArm() {
-    double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(), m_deadband);
-    double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(), m_deadband);
+    double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(),
+        Constants.OperatorConstants.kDeadband);
+    double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(),
+        Constants.OperatorConstants.kDeadband);
+
     winchOutput = winchOutput * Math.abs(winchOutput);
     extenderOutput = extenderOutput * Math.abs(extenderOutput);
 
