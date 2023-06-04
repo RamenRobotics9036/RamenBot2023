@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,17 +21,9 @@ import frc.robot.commands.RetractArmCommand;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private AddressableLED m_ledLight = new AddressableLED(
-      Constants.OperatorConstants.kLEDLightsChannel);
-  private AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(
-      Constants.OperatorConstants.kLEDLightsLength);
   private VerifyJoysticks m_verifyJoysticks;
   private SendableChooser<String> m_chooser;
-  private int m_ledLoop;
-  private int m_ledR;
-  private int m_ledG;
-  private int m_ledB;
-  private int m_ledHue;
+  private LedLights m_ledLights;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -51,12 +41,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Get Cube", true);
 
     m_chooser = Auto.addAutoModeChooser();
-    m_ledLoop = 0;
-    m_ledR = 0;
-    m_ledG = 0;
-    m_ledB = 0;
-    m_ledHue = 0;
-    m_ledLight.setLength(m_ledBuffer.getLength());
+
+    m_ledLights = new LedLights();
   }
 
   /**
@@ -72,7 +58,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     m_verifyJoysticks.verifyJoysticksPeriodically();
-    updateLeds();
+    m_ledLights.updateLeds();
   }
 
   @Override
@@ -84,9 +70,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_ledR = 0;
-    m_ledG = 0;
-    m_ledB = 0;
+    m_ledLights.resetLeds();
 
     CommandScheduler.getInstance().cancelAll();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -100,9 +84,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    m_ledR = 0;
-    m_ledG = 0;
-    m_ledB = 0;
+    m_ledLights.resetLeds();
 
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.configureBindings();
@@ -122,56 +104,18 @@ public class Robot extends TimedRobot {
     if (m_robotContainer.m_controller2.getLeftTriggerAxis() > 0.05) {
       // $TODO - This should be in init or update DashBoard?
       SmartDashboard.putBoolean("Get Cube", true);
-      m_ledR = 255;
-      m_ledG = 255;
-      m_ledB = 0;
+
+      m_ledLights.setLedsYellow();
     }
     else if (m_robotContainer.m_controller2.getRightTriggerAxis() > 0.05) {
       // $TODO - This should be in init or update DashBoard?
       SmartDashboard.putBoolean("Get Cube", false);
 
-      m_ledR = 255;
-      m_ledG = 0;
-      m_ledB = 255;
-    }
-    // updateLeds();
-  }
-
-  // $TODO move LED code into its own class
-  private void updateLeds() {
-    if (0 == m_ledR && 0 == m_ledG && 0 == m_ledB) {
-      for (var i = 0; i < m_ledBuffer.getLength() / 2; i++) {
-        var hue = (m_ledHue + (i * 180 / (m_ledBuffer.getLength() / 2))) % 180;
-        m_ledBuffer.setHSV(i, hue, 255, 128);
-        m_ledBuffer.setHSV(m_ledBuffer.getLength() - i - 1, hue, 255, 128);
-      }
-      m_ledHue += 2;
-      m_ledHue %= 180;
-
-    }
-    else {
-      for (var i = 0; i < m_ledBuffer.getLength() / 2; i++) {
-        if (i == m_ledLoop) {
-          m_ledBuffer.setRGB(i, 0, 0, 0);
-          m_ledBuffer.setRGB(m_ledBuffer.getLength() - i - 1, 0, 0, 0);
-        }
-        else {
-          m_ledBuffer.setRGB(i, m_ledG, m_ledR, m_ledB);
-          m_ledBuffer.setRGB(m_ledBuffer.getLength() - i - 1, m_ledG, m_ledR, m_ledB);
-        }
-      }
-    }
-    m_ledLight.setData(m_ledBuffer);
-    m_ledLight.start();
-
-    m_ledLoop -= 1;
-    if (m_ledLoop < 0) {
-      m_ledLoop = m_ledBuffer.getLength() / 2;
+      m_ledLights.setLedsMagenta();
     }
   }
 
   @Override
-
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
@@ -195,9 +139,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    m_ledR = 0;
-    m_ledG = 0;
-    m_ledB = 0;
+    m_ledLights.resetLeds();
+
     CommandScheduler.getInstance().cancelAll();
     m_robotContainer.m_driveSystem.calibrate();
   }
