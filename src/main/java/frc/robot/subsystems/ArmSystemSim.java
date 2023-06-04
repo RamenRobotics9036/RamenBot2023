@@ -47,24 +47,17 @@ public class ArmSystemSim extends ArmSystem {
   /**
    * Creates an instance of the ArmSystem or ArmSystemSim class.
    */
-  public static ArmSystem createArmSystemInstance(int armWinchChannel,
-      int armExtenderChannel,
-      XboxController controller,
-      double deadband,
-      boolean squareInputs,
-      double maxOutputWinch) {
+  public static ArmSystem createArmSystemInstance(XboxController controller) {
     ArmSystem result;
 
     if (RobotBase.isSimulation()) {
-      result = new ArmSystemSim(armWinchChannel, armExtenderChannel, controller, deadband,
-          squareInputs, maxOutputWinch);
+      result = new ArmSystemSim(controller);
 
       System.out.println("ARMSYSTEM: **** Simulation ****");
 
     }
     else {
-      result = new ArmSystem(armWinchChannel, armExtenderChannel, controller, deadband,
-          squareInputs, maxOutputWinch);
+      result = new ArmSystem(controller);
 
       System.out.println("ARMSYSTEM: Physical Robot version");
     }
@@ -75,14 +68,10 @@ public class ArmSystemSim extends ArmSystem {
   /**
    * Constructor.
    */
-  public ArmSystemSim(int armWinchChannel,
-      int armExtenderChannel,
-      XboxController controller,
-      double deadband,
-      boolean squareInputs,
-      double maxOutputWinch) {
+  public ArmSystemSim(XboxController controller) {
+
     // FIRST, we call superclass
-    super(armWinchChannel, armExtenderChannel, controller, deadband, squareInputs, maxOutputWinch);
+    super(controller);
 
     // This entire class should only be instantiated when we're under simulation.
     // But just in-case someone tries to instantiate it otherwise, we do an extra

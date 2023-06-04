@@ -31,32 +31,13 @@ public class RobotContainer {
   public final XboxController m_controller2 = new XboxController(
       Constants.OperatorConstants.kDriverControllerPort2);
 
-  public final TankDriveSystem m_driveSystem = TankDriveSystemSim.createTankDriveSystemInstance(
-      Constants.OperatorConstants.kLeftMotorBackChannel,
-      Constants.OperatorConstants.kLeftMotorForwardChannel,
-      Constants.OperatorConstants.kRightMotorBackChannel,
-      Constants.OperatorConstants.kRightMotorForwardChannel,
-      m_controller1,
-      Constants.OperatorConstants.kSquareInputsDrive,
-      Constants.OperatorConstants.kMaxOutputDrive,
-      Constants.OperatorConstants.kDeadband,
-      Constants.OperatorConstants.kGearBoxRatioDrive,
-      Constants.OperatorConstants.kWheelDiameterMetersDrive,
-      Constants.OperatorConstants.kSlewLimit,
-      Constants.OperatorConstants.kTurboSlew);
+  public final TankDriveSystem m_driveSystem = TankDriveSystemSim
+      .createTankDriveSystemInstance(m_controller1);
 
-  public final ArmSystem m_armSystem = ArmSystemSim.createArmSystemInstance(
-      Constants.OperatorConstants.kArmWinchChannel,
-      Constants.OperatorConstants.kArmExtenderChannel,
-      m_controller2,
-      Constants.OperatorConstants.kDeadband,
-      Constants.OperatorConstants.kSquareInputsArm,
-      Constants.OperatorConstants.kMaxOutputWinch);
+  public final ArmSystem m_armSystem = ArmSystemSim.createArmSystemInstance(m_controller2);
 
-  public final GrabberSystem m_grabSystem = GrabberSystemSim.createGrabberSystemInstance(
-      Constants.OperatorConstants.kGrabberForwardChannel,
-      Constants.OperatorConstants.kGrabberBackwardChannel,
-      m_controller2);
+  public final GrabberSystem m_grabSystem = GrabberSystemSim
+      .createGrabberSystemInstance(m_controller2);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.

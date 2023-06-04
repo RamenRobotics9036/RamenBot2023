@@ -33,7 +33,6 @@ public final class Constants {
     public static final int kGrabberBackwardChannel = 15;
 
     public static boolean kSquareInputsDrive = true;
-    public static boolean kSquareInputsArm = true;
 
     public static double kMaxOutputDrive = 0.7;
     public static double kMaxOutputWinch = 0.8;

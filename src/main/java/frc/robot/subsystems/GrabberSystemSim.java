@@ -27,19 +27,17 @@ public class GrabberSystemSim extends GrabberSystem {
   /**
    * Factory method to create a GrabberSystemSim or GrabberSystem object.
    */
-  public static GrabberSystem createGrabberSystemInstance(int grabberForwardChannel,
-      int grabberBackwardChannel,
-      XboxController controller) {
+  public static GrabberSystem createGrabberSystemInstance(XboxController controller) {
     GrabberSystem result;
 
     if (RobotBase.isSimulation()) {
-      result = new GrabberSystemSim(grabberForwardChannel, grabberBackwardChannel, controller);
+      result = new GrabberSystemSim(controller);
 
       System.out.println("GRABBERSYSTEM: **** Simulation ****");
 
     }
     else {
-      result = new GrabberSystem(grabberForwardChannel, grabberBackwardChannel, controller);
+      result = new GrabberSystem(controller);
 
       System.out.println("GRABBERSYSTEM: Physical Robot version");
     }
@@ -50,11 +48,9 @@ public class GrabberSystemSim extends GrabberSystem {
   /**
    * Constructor.
    */
-  public GrabberSystemSim(int grabberForwardChannel,
-      int grabberBackwardChannel,
-      XboxController controller) {
+  public GrabberSystemSim(XboxController controller) {
     // FIRST, we call superclass
-    super(grabberForwardChannel, grabberBackwardChannel, controller);
+    super(controller);
 
     // This entire class should only be instantiated when we're under simulation.
     // But just in-case someone tries to instantiate it otherwise, we do an extra
@@ -67,8 +63,9 @@ public class GrabberSystemSim extends GrabberSystem {
     m_penumaticSim = new REVPHSim(m_pneumaticHub);
 
     // Create simulated solenoid
-    m_solenoidSim = new DoubleSolenoidSim(m_penumaticSim, grabberForwardChannel,
-        grabberBackwardChannel);
+    m_solenoidSim = new DoubleSolenoidSim(m_penumaticSim,
+        Constants.OperatorConstants.kGrabberForwardChannel,
+        Constants.OperatorConstants.kGrabberBackwardChannel);
 
     m_solenoidStatus = Value.kOff;
     m_grabberPhysicallyOpened = Constants.SimConstants.kgrabberInitiallyOpened;
