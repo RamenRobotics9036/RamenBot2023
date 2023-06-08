@@ -45,6 +45,7 @@ public class GrabberSystemSim extends GrabberSystem {
     return result;
   }
 
+  // $TODO - Move widgets into GrabberSystemSimWithWidgets
   /**
    * Constructor.
    */
