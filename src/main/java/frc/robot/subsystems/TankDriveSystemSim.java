@@ -55,6 +55,7 @@ public class TankDriveSystemSim extends TankDriveSystem {
       resetSimulationRobotPosition();
     }
 
+    // $TODO - 1) This should be called from initDashboard, 2) move the widget code into TankDriveSystemSimWithWidgets
     addShuffleboardWidgets();
   }
 

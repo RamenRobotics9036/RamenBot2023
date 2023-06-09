@@ -16,16 +16,16 @@ public class TurnDegrees extends CommandBase {
    * Constructor.
    */
   public TurnDegrees(TankDriveSystem drive, double percentOutput, double degrees) {
-    this.m_percentOutput = percentOutput;
-    this.m_degrees = degrees;
-    this.m_drive = drive;
+    m_percentOutput = percentOutput;
+    m_degrees = degrees;
+    m_drive = drive;
 
     addRequirements(drive);
   }
 
   @Override
   public void initialize() {
-    this.m_initialHeading = m_drive.getGyroYaw();
+    m_initialHeading = m_drive.getGyroYaw();
   }
 
   @Override

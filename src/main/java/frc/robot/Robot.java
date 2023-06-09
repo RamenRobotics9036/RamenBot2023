@@ -31,18 +31,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    m_robotContainer = new RobotContainer();
+    m_robotContainer.initDashboard();
+    m_chooser = Auto.addAutoModeChooser();
+    m_ledLights = new LedLights();
+
     m_verifyJoysticks = new VerifyJoysticks(VerifyJoysticks.getDefaultJoystickConfigs(),
         new DriverStationFunctions(), 1);
 
-    m_robotContainer = new RobotContainer();
-    m_robotContainer.initDashboard();
-
     // $TODO - This should be in init or update DashBoard?
     SmartDashboard.putBoolean("Get Cube", true);
-
-    m_chooser = Auto.addAutoModeChooser();
-
-    m_ledLights = new LedLights();
   }
 
   /**
@@ -61,10 +59,6 @@ public class Robot extends TimedRobot {
     m_ledLights.updateLeds();
   }
 
-  @Override
-  public void disabledPeriodic() {
-  }
-
   /**
    * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
    */
@@ -75,13 +69,6 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_autonomousCommand.schedule();
-  }
-
-  /**
-   * This function is called periodically during autonomous.
-   */
-  @Override
-  public void autonomousPeriodic() {
   }
 
   @Override
@@ -126,25 +113,11 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * This function is called periodically during test mode.
-   */
-  @Override
-  public void testPeriodic() {
-  }
-
-  /**
    * This function is called once when the robot is first started up.
    */
   @Override
   public void simulationInit() {
     CommandScheduler.getInstance().cancelAll();
-  }
-
-  /**
-   * This function is called periodically whilst in simulation.
-   */
-  @Override
-  public void simulationPeriodic() {
   }
 
   @Override

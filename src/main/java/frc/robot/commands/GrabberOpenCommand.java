@@ -11,7 +11,7 @@ public class GrabberOpenCommand extends CommandBase {
   GrabberSystem m_grabSystem;
 
   public GrabberOpenCommand(GrabberSystem grabSystem) {
-    this.m_grabSystem = grabSystem;
+    m_grabSystem = grabSystem;
     addRequirements(m_grabSystem);
   }
 

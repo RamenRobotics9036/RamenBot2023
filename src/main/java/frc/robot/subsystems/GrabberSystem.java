@@ -30,7 +30,7 @@ public class GrabberSystem extends SubsystemBase {
         Constants.OperatorConstants.kGrabberForwardChannel,
         Constants.OperatorConstants.kGrabberBackwardChannel);
 
-    this.m_controller = controller;
+    m_controller = controller;
   }
 
   public void initDashBoard() {

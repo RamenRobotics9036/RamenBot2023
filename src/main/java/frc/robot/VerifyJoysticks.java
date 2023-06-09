@@ -21,14 +21,14 @@ public class VerifyJoysticks {
     public JoystickTest(String joystickTestName,
         boolean stopRestOfTestsIfFailed,
         Supplier<String> testLambda) {
-      this.m_joystickTestName = joystickTestName;
-      this.m_testLambda = testLambda;
-      this.m_stopRestOfTestsIfFailed = stopRestOfTestsIfFailed;
-      this.m_lastSuccess = true;
+      m_joystickTestName = joystickTestName;
+      m_testLambda = testLambda;
+      m_stopRestOfTestsIfFailed = stopRestOfTestsIfFailed;
+      m_lastSuccess = true;
     }
 
     public boolean runTest(int port) {
-      String errorMsg = this.m_testLambda.get();
+      String errorMsg = m_testLambda.get();
       boolean newSuccess = errorMsg == null;
 
       // NOTE: We only print errors or successes when there's a change

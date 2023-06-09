@@ -20,22 +20,23 @@ import frc.robot.Constants;
 public class ArmSystem extends SubsystemBase {
   private XboxController m_controller;
   private double m_maxOutputWinch;
-  protected DigitalInput m_sensor = new DigitalInput(
-      Constants.OperatorConstants.kHallEffectExtenderChannel);
 
+  // Devices
   protected CANSparkMax m_armWinch;
   protected CANSparkMax m_armExtender;
-
+  protected DigitalInput m_sensor;
+  protected DutyCycleEncoder m_winchAbsoluteEncoder;
   protected RelativeEncoder m_winchEncoder;
   protected RelativeEncoder m_extenderEncoder;
-
-  protected DutyCycleEncoder m_winchAbsoluteEncoder;
 
   /**
    * Constructor.
    */
   public ArmSystem(XboxController controller) {
+    m_controller = controller;
+    m_maxOutputWinch = Constants.OperatorConstants.kMaxOutputWinch;
 
+    m_sensor = new DigitalInput(Constants.OperatorConstants.kHallEffectExtenderChannel);
     m_armWinch = new CANSparkMax(Constants.OperatorConstants.kArmWinchChannel,
         MotorType.kBrushless);
 
@@ -44,17 +45,13 @@ public class ArmSystem extends SubsystemBase {
     m_armWinch.setSmartCurrentLimit(20);
     m_armExtender = new CANSparkMax(Constants.OperatorConstants.kArmExtenderChannel,
         MotorType.kBrushless);
-    m_armExtender.setSmartCurrentLimit(20);
-    m_armExtender.setInverted(false);
     m_winchEncoder = m_armWinch.getEncoder();
     m_extenderEncoder = m_armExtender.getEncoder();
-
-    this.m_controller = controller;
-    this.m_maxOutputWinch = Constants.OperatorConstants.kMaxOutputWinch;
-
     m_winchAbsoluteEncoder = new DutyCycleEncoder(
         Constants.OperatorConstants.kAbsoluteEncoderWinchChannel);
 
+    m_armExtender.setSmartCurrentLimit(20);
+    m_armExtender.setInverted(false);
     setSoftLimit();
   }
 
@@ -80,10 +77,6 @@ public class ArmSystem extends SubsystemBase {
     return m_winchAbsoluteEncoder.getAbsolutePosition();
   }
 
-  private double getWinchAbsoluteEncoderPrivate() {
-    return m_winchAbsoluteEncoder.getAbsolutePosition();
-  }
-
   /**
    * Display sensor information on smart dashboard.
    * $TODO - Should this be in updateDashboard?
@@ -92,14 +85,6 @@ public class ArmSystem extends SubsystemBase {
     SmartDashboard.putNumber("Winch Absolute Encoder Position",
         m_winchAbsoluteEncoder.getAbsolutePosition());
     SmartDashboard.putBoolean("Hall Effect Sensor Output", getDigitalSensor());
-  }
-
-  public boolean isOffLower() {
-    return getWinchAbsoluteEncoderPrivate() <= Constants.OperatorConstants.kWinchEncoderLowerLimit;
-  }
-
-  public boolean isOffHigher() {
-    return getWinchAbsoluteEncoderPrivate() >= Constants.OperatorConstants.kWinchEncoderUpperLimit;
   }
 
   /**
@@ -116,56 +101,12 @@ public class ArmSystem extends SubsystemBase {
     return defaultCommand;
   }
 
-  private void processJoystickInputForArm() {
-    double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(),
-        Constants.OperatorConstants.kDeadband);
-    double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(),
-        Constants.OperatorConstants.kDeadband);
-
-    winchOutput = winchOutput * Math.abs(winchOutput);
-    extenderOutput = extenderOutput * Math.abs(extenderOutput);
-
-    double winchUpperLimit = Constants.OperatorConstants.kWinchEncoderUpperLimit;
-    double winchLowerLimit = Constants.OperatorConstants.kWinchEncoderLowerLimit;
-
-    if (getWinchAbsoluteEncoderPrivate() != 0.0) {
-      if (getWinchAbsoluteEncoderPrivate() >= winchUpperLimit && winchOutput > 0) {
-        m_armWinch.set(0);
-      }
-      else if (getWinchAbsoluteEncoderPrivate() <= winchLowerLimit && winchOutput < 0) {
-        m_armWinch.set(0);
-      }
-      else {
-        setWinchSpeed(winchOutput * m_maxOutputWinch);
-      }
-    }
-    else {
-      setWinchSpeed(winchOutput * m_maxOutputWinch);
-    }
-
-    // $TODO - For simulation, test that smart limits actually work when I set a value on SparkMax
-    if (getExtenderEncoder() <= Constants.OperatorConstants.kExtenderSoftLimitTurns
-        && extenderOutput < 0) {
-      m_armExtender.set(0);
-    }
-    else if (getExtenderEncoder() > 0 && extenderOutput > 0) {
-      m_armExtender.set(0);
-    }
-    else {
-      setExtenderSpeed(extenderOutput);
-    }
-  }
-
   @Override
   public void periodic() {
-    Double winchAbsoluteEncoder = Double.valueOf(getWinchAbsoluteEncoderPrivate());
+    Double winchAbsoluteEncoder = Double.valueOf(getWinchAbsoluteEncoder());
 
     // $TODO - This should be in init or update DashBoard?
     SmartDashboard.putBoolean("Winch Absolute Encoder", !(winchAbsoluteEncoder == 0.0));
-  }
-
-  @Override
-  public void simulationPeriodic() {
   }
 
   public void resetEncoders() {
@@ -229,11 +170,43 @@ public class ArmSystem extends SubsystemBase {
     resetExtenderEncoder();
   }
 
-  public double getArmCurrent() {
-    return m_armExtender.getOutputCurrent();
-  }
+  private void processJoystickInputForArm() {
+    double winchOutput = MathUtil.applyDeadband(-m_controller.getLeftY(),
+        Constants.OperatorConstants.kDeadband);
+    double extenderOutput = MathUtil.applyDeadband(m_controller.getRightY(),
+        Constants.OperatorConstants.kDeadband);
 
-  public void setArmCurrent(int value) {
-    m_armExtender.setSmartCurrentLimit(value);
+    winchOutput = winchOutput * Math.abs(winchOutput);
+    extenderOutput = extenderOutput * Math.abs(extenderOutput);
+
+    double winchUpperLimit = Constants.OperatorConstants.kWinchEncoderUpperLimit;
+    double winchLowerLimit = Constants.OperatorConstants.kWinchEncoderLowerLimit;
+
+    if (getWinchAbsoluteEncoder() != 0.0) {
+      if (getWinchAbsoluteEncoder() >= winchUpperLimit && winchOutput > 0) {
+        m_armWinch.set(0);
+      }
+      else if (getWinchAbsoluteEncoder() <= winchLowerLimit && winchOutput < 0) {
+        m_armWinch.set(0);
+      }
+      else {
+        setWinchSpeed(winchOutput * m_maxOutputWinch);
+      }
+    }
+    else {
+      setWinchSpeed(winchOutput * m_maxOutputWinch);
+    }
+
+    // $TODO - For simulation, test that smart limits actually work when I set a value on SparkMax
+    if (getExtenderEncoder() <= Constants.OperatorConstants.kExtenderSoftLimitTurns
+        && extenderOutput < 0) {
+      m_armExtender.set(0);
+    }
+    else if (getExtenderEncoder() > 0 && extenderOutput > 0) {
+      m_armExtender.set(0);
+    }
+    else {
+      setExtenderSpeed(extenderOutput);
+    }
   }
 }

@@ -22,8 +22,8 @@ public class AutoBalanceCommand extends CommandBase {
    * @param rate        the rate at which balance corrections should be applied
    */
   public AutoBalanceCommand(TankDriveSystem driveSystem, double rate) {
-    this.m_driveSystem = driveSystem;
-    this.m_rate = rate;
+    m_driveSystem = driveSystem;
+    m_rate = rate;
     addRequirements(driveSystem);
   }
 

@@ -10,7 +10,7 @@ public class RetractArmCommand extends CommandBase {
   ArmSystem m_armSystem;
 
   public RetractArmCommand(ArmSystem armSystem) {
-    this.m_armSystem = armSystem;
+    m_armSystem = armSystem;
     addRequirements(armSystem);
   }
 

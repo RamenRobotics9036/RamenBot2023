@@ -16,11 +16,11 @@ public class SetExtenderToLength extends CommandBase {
    * Constructor.
    */
   public SetExtenderToLength(ArmSystem armSystem, double rotations, double speed) {
-    this.m_armSystem = armSystem;
+    m_armSystem = armSystem;
     addRequirements(armSystem);
 
-    this.m_rotations = rotations;
-    this.m_speed = speed;
+    m_rotations = rotations;
+    m_speed = speed;
   }
 
   @Override

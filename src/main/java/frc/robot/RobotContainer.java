@@ -26,18 +26,12 @@ import java.util.function.BooleanSupplier;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  public final XboxController m_controller1 = new XboxController(
-      Constants.OperatorConstants.kDriverControllerPort1);
-  public final XboxController m_controller2 = new XboxController(
-      Constants.OperatorConstants.kDriverControllerPort2);
+  public final XboxController m_controller1;
+  public final XboxController m_controller2;
 
-  public final TankDriveSystem m_driveSystem = TankDriveSystemSim
-      .createTankDriveSystemInstance(m_controller1);
-
-  public final ArmSystem m_armSystem = ArmSystemSim.createArmSystemInstance(m_controller2);
-
-  public final GrabberSystem m_grabSystem = GrabberSystemSim
-      .createGrabberSystemInstance(m_controller2);
+  public final TankDriveSystem m_driveSystem;
+  public final ArmSystem m_armSystem;
+  public final GrabberSystem m_grabSystem;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -50,19 +44,22 @@ public class RobotContainer {
    * </p>
    */
   public RobotContainer() {
-    m_driveSystem.setDefaultCommand(m_driveSystem.getDefaultDriveCommand());
-    m_armSystem.setDefaultCommand(m_armSystem.getDefaultArmCommand());
+    // Create controllers
+    m_controller1 = new XboxController(Constants.OperatorConstants.kDriverControllerPort1);
+    m_controller2 = new XboxController(Constants.OperatorConstants.kDriverControllerPort2);
 
-    // Stitch together BooleanSupplier from GrabberSystemSim with ArmSystemSim
-    if (m_grabSystem instanceof GrabberSystemSim && m_armSystem instanceof ArmSystemSim) {
+    // Crreate all subsystems
+    m_driveSystem = TankDriveSystemSim.createTankDriveSystemInstance(m_controller1);
+    m_armSystem = ArmSystemSim.createArmSystemInstance(m_controller2);
+    m_grabSystem = GrabberSystemSim.createGrabberSystemInstance(m_controller2);
 
-      BooleanSupplier supplier = ((GrabberSystemSim) m_grabSystem).getGrabberOpenSupplier();
-      ((ArmSystemSim) m_armSystem).setGrabberOpenSupplier(supplier);
-    }
+    setDefaultCommands();
+
+    setupGrabberNotificationsToArm();
   }
 
   /**
-   * Use this method to define your trigger->command mappings.
+   * Binds a button on the joystick to a command to run.
    */
   public void configureBindings() {
     new Trigger(m_controller2::getAButtonReleased).onTrue(
@@ -79,6 +76,10 @@ public class RobotContainer {
         .onTrue(new RetractArmCommand(m_armSystem).andThen(new SetSoftLimitCommand(m_armSystem)));
   }
 
+  /**
+   * When autonomous mode is started, this is the one command we run. It sequences
+   * together lots of smaller commands.
+   */
   public Command getAutonomousCommand() {
     System.out.println("Auto command scheduled container");
     return Auto.getAutoCommand(m_driveSystem, m_armSystem, m_grabSystem);
@@ -101,5 +102,19 @@ public class RobotContainer {
     m_driveSystem.updateDashBoard();
     m_armSystem.updateDashBoard();
     m_grabSystem.updateDashBoard();
+  }
+
+  private void setDefaultCommands() {
+    m_driveSystem.setDefaultCommand(m_driveSystem.getDefaultDriveCommand());
+    m_armSystem.setDefaultCommand(m_armSystem.getDefaultArmCommand());
+  }
+
+  // Stitch together BooleanSupplier from GrabberSystemSim with ArmSystemSim
+  private void setupGrabberNotificationsToArm() {
+    if (m_grabSystem instanceof GrabberSystemSim && m_armSystem instanceof ArmSystemSim) {
+
+      BooleanSupplier supplier = ((GrabberSystemSim) m_grabSystem).getGrabberOpenSupplier();
+      ((ArmSystemSim) m_armSystem).setGrabberOpenSupplier(supplier);
+    }
   }
 }
