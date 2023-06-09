@@ -10,7 +10,7 @@ public class SetSoftLimitCommand extends CommandBase {
   ArmSystem m_armSystem;
 
   public SetSoftLimitCommand(ArmSystem armSystem) {
-    this.m_armSystem = armSystem;
+    m_armSystem = armSystem;
     addRequirements(armSystem);
   }
 

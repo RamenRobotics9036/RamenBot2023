@@ -135,11 +135,11 @@ public final class Constants {
        * Constructor.
        */
       public WidgetPosition(String name, int x, int y, int width, int height) {
-        this.m_name = name;
-        this.m_xpos = x;
-        this.m_ypos = y;
-        this.m_width = width;
-        this.m_height = height;
+        m_name = name;
+        m_xpos = x;
+        m_ypos = y;
+        m_width = width;
+        m_height = height;
       }
     }
 

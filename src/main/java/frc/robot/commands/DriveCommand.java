@@ -22,12 +22,13 @@ public class DriveCommand extends CommandBase {
       double gearBoxRatio,
       double percentOutput,
       double wheelCircumference) {
-    this.m_distance = distance;
-    this.m_gearBoxRatio = gearBoxRatio;
-    this.m_percentOutput = -percentOutput;
-    this.m_wheelCircumference = wheelCircumference;
 
-    this.m_drive = drive;
+    m_distance = distance;
+    m_gearBoxRatio = gearBoxRatio;
+    m_percentOutput = -percentOutput;
+    m_wheelCircumference = wheelCircumference;
+
+    m_drive = drive;
     addRequirements(drive);
   }
 

@@ -18,11 +18,11 @@ public class SetWinchToAngle extends CommandBase {
    * Constructor.
    */
   public SetWinchToAngle(ArmSystem armSystem, double angle, double speed) {
-    this.m_armSystem = armSystem;
+    m_armSystem = armSystem;
     addRequirements(armSystem);
 
-    this.m_angle = angle;
-    this.m_speed = speed;
+    m_angle = angle;
+    m_speed = speed;
   }
 
   @Override

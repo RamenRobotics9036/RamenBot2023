@@ -33,8 +33,8 @@ public class ArmSystem extends SubsystemBase {
    * Constructor.
    */
   public ArmSystem(XboxController controller) {
-    this.m_controller = controller;
-    this.m_maxOutputWinch = Constants.OperatorConstants.kMaxOutputWinch;
+    m_controller = controller;
+    m_maxOutputWinch = Constants.OperatorConstants.kMaxOutputWinch;
 
     m_sensor = new DigitalInput(Constants.OperatorConstants.kHallEffectExtenderChannel);
     m_armWinch = new CANSparkMax(Constants.OperatorConstants.kArmWinchChannel,

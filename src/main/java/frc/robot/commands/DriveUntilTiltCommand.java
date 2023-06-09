@@ -16,9 +16,9 @@ public class DriveUntilTiltCommand extends CommandBase {
    * Constructor.
    */
   public DriveUntilTiltCommand(TankDriveSystem driveSystem, double percentOutput) {
-    this.m_percentOutput = percentOutput;
+    m_percentOutput = percentOutput;
+    m_driveSystem = driveSystem;
 
-    this.m_driveSystem = driveSystem;
     addRequirements(driveSystem);
   }
 

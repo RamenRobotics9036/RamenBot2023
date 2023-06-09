@@ -11,7 +11,8 @@ public class CloseGrabberCommand extends CommandBase {
   private GrabberSystem m_grabber;
 
   public CloseGrabberCommand(GrabberSystem grabber) {
-    this.m_grabber = grabber;
+    m_grabber = grabber;
+
     addRequirements(m_grabber);
   }
 

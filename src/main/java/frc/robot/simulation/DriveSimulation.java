@@ -152,7 +152,7 @@ public class DriveSimulation {
     double xforward = (leftSpeed + rightSpeed) / 2;
     double zrotation = (leftSpeed - rightSpeed) / 2;
 
-    this.arcadeDrive(xforward, zrotation, squareInputs);
+    arcadeDrive(xforward, zrotation, squareInputs);
   }
 
   /**

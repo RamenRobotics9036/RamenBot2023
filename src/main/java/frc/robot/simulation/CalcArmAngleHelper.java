@@ -28,8 +28,8 @@ public class CalcArmAngleHelper {
     public final double m_value;
 
     public Result(boolean isValid, double value) {
-      this.m_isValid = isValid;
-      this.m_value = value;
+      m_isValid = isValid;
+      m_value = value;
     }
   }
 

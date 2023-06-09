@@ -77,13 +77,13 @@ public class TankDriveSystem extends SubsystemBase {
     m_leftEncoder = m_leftMotor1.getEncoder();
     m_rightEncoder = m_rightMotor1.getEncoder();
 
-    this.m_controller = controller;
+    m_controller = controller;
 
-    this.m_squareInputs = Constants.OperatorConstants.kSquareInputsDrive;
-    this.m_maxOutput = Constants.OperatorConstants.kMaxOutputDrive;
+    m_squareInputs = Constants.OperatorConstants.kSquareInputsDrive;
+    m_maxOutput = Constants.OperatorConstants.kMaxOutputDrive;
 
-    this.m_slewLimit = Constants.OperatorConstants.kSlewLimit;
-    if (this.m_slewLimit > 0) {
+    m_slewLimit = Constants.OperatorConstants.kSlewLimit;
+    if (m_slewLimit > 0) {
       m_slewLimiter1 = new SlewRateLimiter(Constants.OperatorConstants.kSlewLimit);
       m_slewLimiter2 = new SlewRateLimiter(Constants.OperatorConstants.kSlewLimit);
     }
