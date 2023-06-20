@@ -19,20 +19,27 @@ import java.util.function.DoubleSupplier;
  */
 public class ArmSystemSimWithWidgets extends ArmSystemSim {
   private static class SendableArmPosition implements Sendable {
+    private DoubleSupplier m_percentRaisedSupplier;
+    private DoubleSupplier m_percentExtendedSupplier;
     private BooleanSupplier m_clawOpenSupplier;
 
     /**
      * Constructor.
      */
-    public SendableArmPosition(BooleanSupplier clawOpenSupplier) {
+    public SendableArmPosition(DoubleSupplier percentRaisedSupplier,
+        DoubleSupplier percentExtendedSupplier,
+        BooleanSupplier clawOpenSupplier) {
+
+      m_percentRaisedSupplier = percentRaisedSupplier;
+      m_percentExtendedSupplier = percentExtendedSupplier;
       m_clawOpenSupplier = clawOpenSupplier;
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
       builder.setSmartDashboardType("AlertsIdo");
-      builder.addDoubleProperty("percentRaised", () -> 0.5, null);
-      builder.addDoubleProperty("percentExtended", () -> 0.2, null);
+      builder.addDoubleProperty("percentRaised", m_percentRaisedSupplier, null);
+      builder.addDoubleProperty("percentExtended", m_percentExtendedSupplier, null);
       builder.addBooleanProperty("isClawOpen", m_clawOpenSupplier, null);
     }
   }
@@ -211,7 +218,9 @@ public class ArmSystemSimWithWidgets extends ArmSystemSim {
     // Add Robot Arm widget
     // $TODO Don't hardcode name of the widget and location
     Shuffleboard.getTab("Simulation")
-        .add("Happy", new SendableArmPosition(() -> m_armSimulation.getGrabberOpen()))
+        .add("Happy",
+            new SendableArmPosition(() -> 4.0, () -> m_extenderSimulation.getExtendedPercent(),
+                () -> m_armSimulation.getGrabberOpen()))
         .withWidget("AlertsIdo").withPosition(7, 0).withSize(3, 3);
   }
 
