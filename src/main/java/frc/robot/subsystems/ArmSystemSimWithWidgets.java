@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -9,11 +11,32 @@ import frc.robot.commands.ArmToGround;
 import frc.robot.commands.ArmToMiddleNodeCone;
 import frc.robot.commands.RetractArmCommand;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 /**
  * This adds shuffleboard widgets to the ArmSystemSim class.
  */
 public class ArmSystemSimWithWidgets extends ArmSystemSim {
+  private static class SendableArmPosition implements Sendable {
+    private BooleanSupplier m_clawOpenSupplier;
+
+    /**
+     * Constructor.
+     */
+    public SendableArmPosition(BooleanSupplier clawOpenSupplier) {
+      m_clawOpenSupplier = clawOpenSupplier;
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+      builder.setSmartDashboardType("AlertsIdo");
+      builder.addDoubleProperty("percentRaised", () -> 0.5, null);
+      builder.addDoubleProperty("percentExtended", () -> 0.2, null);
+      builder.addBooleanProperty("isClawOpen", m_clawOpenSupplier, null);
+    }
+  }
+
   /**
    * Constructor.
    */
@@ -184,6 +207,12 @@ public class ArmSystemSimWithWidgets extends ArmSystemSim {
     addShuffleboardWinchList();
     addShuffleboardExtenderList();
     addShuffleboardArmList();
+
+    // Add Robot Arm widget
+    // $TODO Don't hardcode name of the widget and location
+    Shuffleboard.getTab("Simulation")
+        .add("Happy", new SendableArmPosition(() -> m_armSimulation.getGrabberOpen()))
+        .withWidget("AlertsIdo").withPosition(7, 0).withSize(3, 3);
   }
 
   @Override
