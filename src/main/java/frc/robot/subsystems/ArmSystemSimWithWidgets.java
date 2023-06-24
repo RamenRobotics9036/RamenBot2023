@@ -210,6 +210,14 @@ public class ArmSystemSimWithWidgets extends ArmSystemSim {
             Constants.SimWidgets.kWinchStringLocation.m_height);
   }
 
+  private double getArmPercentRaised() {
+    double lowerLimit = Constants.OperatorConstants.kWinchEncoderLowerLimit;
+    double upperLimit = Constants.OperatorConstants.kWinchEncoderUpperLimit;
+    double currentPosition = m_winchAbsoluteEncoder.getAbsolutePosition();
+
+    return (currentPosition - lowerLimit) / (upperLimit - lowerLimit);
+  }
+
   private void addShuffleboardWidgets() {
     addShuffleboardWinchList();
     addShuffleboardExtenderList();
@@ -219,7 +227,8 @@ public class ArmSystemSimWithWidgets extends ArmSystemSim {
     // $TODO Don't hardcode name of the widget and location
     Shuffleboard.getTab("Simulation")
         .add("Happy",
-            new SendableArmPosition(() -> 4.0, () -> m_extenderSimulation.getExtendedPercent(),
+            new SendableArmPosition(() -> getArmPercentRaised(),
+                () -> m_extenderSimulation.getExtendedPercent(),
                 () -> m_armSimulation.getGrabberOpen()))
         .withWidget("AlertsIdo").withPosition(7, 0).withSize(3, 3);
   }
