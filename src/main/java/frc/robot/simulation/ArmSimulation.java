@@ -127,10 +127,7 @@ public class ArmSimulation {
       return;
     }
 
-    boolean isGrabberOpen = false;
-    if (m_grabberOpenSupplier != null) {
-      isGrabberOpen = m_grabberOpenSupplier.getAsBoolean();
-    }
+    boolean isGrabberOpen = getGrabberOpen();
 
     double newStringLen = m_winchSimulation.getStringUnspooledLen();
     CalcArmAngleHelper.Result resultPair = m_calcArmAngleHelper
@@ -196,6 +193,20 @@ public class ArmSimulation {
 
   public void setGrabberOpenSupplier(BooleanSupplier grabberOpenSupplier) {
     m_grabberOpenSupplier = grabberOpenSupplier;
+  }
+
+  /**
+   * Returns true if grabber is open.
+   * Uses the booleanSupplier passed to armSimulation from grabber system.
+   */
+  public boolean getGrabberOpen() {
+    boolean result = false;
+
+    if (m_grabberOpenSupplier != null) {
+      result = m_grabberOpenSupplier.getAsBoolean();
+    }
+
+    return result;
   }
 
   public void simulationPeriodic() {

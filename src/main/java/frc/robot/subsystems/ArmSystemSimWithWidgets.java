@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -9,11 +11,39 @@ import frc.robot.commands.ArmToGround;
 import frc.robot.commands.ArmToMiddleNodeCone;
 import frc.robot.commands.RetractArmCommand;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 /**
  * This adds shuffleboard widgets to the ArmSystemSim class.
  */
 public class ArmSystemSimWithWidgets extends ArmSystemSim {
+  private static class SendableArmPosition implements Sendable {
+    private DoubleSupplier m_percentRaisedSupplier;
+    private DoubleSupplier m_percentExtendedSupplier;
+    private BooleanSupplier m_clawOpenSupplier;
+
+    /**
+     * Constructor.
+     */
+    public SendableArmPosition(DoubleSupplier percentRaisedSupplier,
+        DoubleSupplier percentExtendedSupplier,
+        BooleanSupplier clawOpenSupplier) {
+
+      m_percentRaisedSupplier = percentRaisedSupplier;
+      m_percentExtendedSupplier = percentExtendedSupplier;
+      m_clawOpenSupplier = clawOpenSupplier;
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+      builder.setSmartDashboardType("AlertsIdo");
+      builder.addDoubleProperty("percentRaised", m_percentRaisedSupplier, null);
+      builder.addDoubleProperty("percentExtended", m_percentExtendedSupplier, null);
+      builder.addBooleanProperty("isClawOpen", m_clawOpenSupplier, null);
+    }
+  }
+
   /**
    * Constructor.
    */
@@ -180,10 +210,27 @@ public class ArmSystemSimWithWidgets extends ArmSystemSim {
             Constants.SimWidgets.kWinchStringLocation.m_height);
   }
 
+  private double getArmPercentRaised() {
+    double lowerLimit = Constants.OperatorConstants.kWinchEncoderLowerLimit;
+    double upperLimit = Constants.OperatorConstants.kWinchEncoderUpperLimit;
+    double currentPosition = m_winchAbsoluteEncoder.getAbsolutePosition();
+
+    return (currentPosition - lowerLimit) / (upperLimit - lowerLimit);
+  }
+
   private void addShuffleboardWidgets() {
     addShuffleboardWinchList();
     addShuffleboardExtenderList();
     addShuffleboardArmList();
+
+    // Add Robot Arm widget
+    // $TODO Don't hardcode name of the widget and location
+    Shuffleboard.getTab("Simulation")
+        .add("Happy",
+            new SendableArmPosition(() -> getArmPercentRaised(),
+                () -> m_extenderSimulation.getExtendedPercent(),
+                () -> m_armSimulation.getGrabberOpen()))
+        .withWidget("AlertsIdo").withPosition(7, 0).withSize(3, 3);
   }
 
   @Override
