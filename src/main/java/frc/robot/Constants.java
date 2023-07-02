@@ -188,5 +188,8 @@ public final class Constants {
     public static WidgetPosition kGrabber = new WidgetPosition("Grabber", 6, 4, 2, 1);
     public static WidgetPosition kGrabberSystemCommands = new WidgetPosition(
         "Grabber System Commands", 6, 5, 2, 1);
+
+    // Name of the widget to load
+    public static final String kAnimatedArmWidget = "AnimatedArm";
   }
 }
