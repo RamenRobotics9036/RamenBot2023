@@ -37,7 +37,7 @@ public class ArmSystemSimWithWidgets extends ArmSystemSim {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-      builder.setSmartDashboardType("AlertsIdo");
+      builder.setSmartDashboardType(Constants.SimWidgets.kAnimatedArmWidget);
       builder.addDoubleProperty("percentRaised", m_percentRaisedSupplier, null);
       builder.addDoubleProperty("percentExtended", m_percentExtendedSupplier, null);
       builder.addBooleanProperty("isClawOpen", m_clawOpenSupplier, null);
@@ -230,7 +230,7 @@ public class ArmSystemSimWithWidgets extends ArmSystemSim {
             new SendableArmPosition(() -> getArmPercentRaised(),
                 () -> m_extenderSimulation.getExtendedPercent(),
                 () -> m_armSimulation.getGrabberOpen()))
-        .withWidget("AlertsIdo").withPosition(7, 0).withSize(3, 3);
+        .withWidget(Constants.SimWidgets.kAnimatedArmWidget).withPosition(7, 0).withSize(3, 3);
   }
 
   @Override
