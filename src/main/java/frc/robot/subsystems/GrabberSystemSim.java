@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.simulation.DoubleSolenoidSim;
 import edu.wpi.first.wpilibj.simulation.REVPHSim;
 import frc.robot.Constants;
+import frc.robot.DefaultLayout;
+import frc.robot.DefaultLayout.Widget;
 import frc.robot.commands.CloseGrabberCommand;
 import frc.robot.commands.GrabberOpenCommand;
 import java.util.Map;
@@ -23,6 +25,7 @@ public class GrabberSystemSim extends GrabberSystem {
   private boolean m_grabberPhysicallyOpened;
   private REVPHSim m_penumaticSim;
   private DoubleSolenoidSim m_solenoidSim;
+  private DefaultLayout m_defaultLayout = new DefaultLayout();
 
   /**
    * Factory method to create a GrabberSystemSim or GrabberSystem object.
@@ -73,30 +76,22 @@ public class GrabberSystemSim extends GrabberSystem {
   }
 
   private void addCommandButtons() {
+    Widget pos = m_defaultLayout.getWidgetPosition("Open Grabber");
     // Open grabber
-    Shuffleboard.getTab("Simulation")
-        .add(Constants.SimWidgets.kOpenGrabber.m_name, new GrabberOpenCommand(this))
-        .withWidget(BuiltInWidgets.kCommand)
-        .withPosition(Constants.SimWidgets.kOpenGrabber.m_xpos,
-            Constants.SimWidgets.kOpenGrabber.m_ypos)
-        .withSize(Constants.SimWidgets.kOpenGrabber.m_width,
-            Constants.SimWidgets.kOpenGrabber.m_height);
+    Shuffleboard.getTab("Simulation").add("Open Grabber", new GrabberOpenCommand(this))
+        .withWidget(BuiltInWidgets.kCommand).withPosition(pos.x, pos.y)
+        .withSize(pos.width, pos.height);
 
     // Close grabber
-    Shuffleboard.getTab("Simulation")
-        .add(Constants.SimWidgets.kCloseGrabber.m_name, new CloseGrabberCommand(this))
-        .withWidget(BuiltInWidgets.kCommand)
-        .withPosition(Constants.SimWidgets.kCloseGrabber.m_xpos,
-            Constants.SimWidgets.kCloseGrabber.m_ypos)
-        .withSize(Constants.SimWidgets.kCloseGrabber.m_width,
-            Constants.SimWidgets.kCloseGrabber.m_height);
+    pos = m_defaultLayout.getWidgetPosition("Close Grabber");
+    Shuffleboard.getTab("Simulation").add("Close Grabber", new CloseGrabberCommand(this))
+        .withWidget(BuiltInWidgets.kCommand).withPosition(pos.x, pos.y)
+        .withSize(pos.width, pos.height);
 
     // Grabber commands
-    Shuffleboard.getTab("Simulation").add(Constants.SimWidgets.kGrabberSystemCommands.m_name, this)
-        .withPosition(Constants.SimWidgets.kGrabberSystemCommands.m_xpos,
-            Constants.SimWidgets.kGrabberSystemCommands.m_ypos)
-        .withSize(Constants.SimWidgets.kGrabberSystemCommands.m_width,
-            Constants.SimWidgets.kGrabberSystemCommands.m_height);
+    pos = m_defaultLayout.getWidgetPosition("Grabber System Commands");
+    Shuffleboard.getTab("Simulation").add("Grabber System Commands", this)
+        .withPosition(pos.x, pos.y).withSize(pos.width, pos.height);
   }
 
   public BooleanSupplier getGrabberOpenSupplier() {
@@ -129,21 +124,17 @@ public class GrabberSystemSim extends GrabberSystem {
 
   private void addShuffleboardWidgets() {
     // Grabber functional
-    Shuffleboard.getTab("Simulation")
-        .addBoolean(Constants.SimWidgets.kGrabberFunctional.m_name, () -> true)
+    Widget pos = m_defaultLayout.getWidgetPosition("Grabber Functional");
+    Shuffleboard.getTab("Simulation").addBoolean("Grabber Functional", () -> true)
         .withWidget(BuiltInWidgets.kBooleanBox)
         .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"))
-        .withPosition(Constants.SimWidgets.kGrabberFunctional.m_xpos,
-            Constants.SimWidgets.kGrabberFunctional.m_ypos)
-        .withSize(Constants.SimWidgets.kGrabberFunctional.m_width,
-            Constants.SimWidgets.kGrabberFunctional.m_height);
+        .withPosition(pos.x, pos.y).withSize(pos.width, pos.height);
 
     // Grabber open/closed
-    Shuffleboard.getTab("Simulation")
-        .addString(Constants.SimWidgets.kGrabber.m_name, () -> getGrabberStatusText())
-        .withWidget(BuiltInWidgets.kTextView)
-        .withPosition(Constants.SimWidgets.kGrabber.m_xpos, Constants.SimWidgets.kGrabber.m_ypos)
-        .withSize(Constants.SimWidgets.kGrabber.m_width, Constants.SimWidgets.kGrabber.m_height);
+    pos = m_defaultLayout.getWidgetPosition("Grabber");
+    Shuffleboard.getTab("Simulation").addString("Grabber", () -> getGrabberStatusText())
+        .withWidget(BuiltInWidgets.kTextView).withPosition(pos.x, pos.y)
+        .withSize(pos.width, pos.height);
   }
 
   private boolean isRobotEnabled() {

@@ -115,81 +115,8 @@ public final class Constants {
 
     // Grabber
     public static boolean kgrabberInitiallyOpened = false;
-  }
 
-  /**
-   * Class to hold widgetPosition classes for each object on shuffleboard.
-   */
-  public static class SimWidgets {
-    /**
-     * Describes position of a single widget.
-     */
-    public static class WidgetPosition {
-      public String m_name;
-      public int m_xpos;
-      public int m_ypos;
-      public int m_width;
-      public int m_height;
-
-      /**
-       * Constructor.
-       */
-      public WidgetPosition(String name, int x, int y, int width, int height) {
-        m_name = name;
-        m_xpos = x;
-        m_ypos = y;
-        m_width = width;
-        m_height = height;
-      }
-    }
-
-    public static WidgetPosition kFieldWidget = new WidgetPosition("Field", 2, 0, 5, 3);
-    public static WidgetPosition kGyroWidget = new WidgetPosition("Heading", 0, 0, 2, 2);
-
-    // Buttons
-    public static WidgetPosition kButtonMiddleNodeCone = new WidgetPosition("Arm Middle node", 10,
-        0, 2, 1);
-    public static WidgetPosition kButtonArmToGround = new WidgetPosition("Arm to ground", 10, 1, 2,
-        1);
-    public static WidgetPosition kArmExtendFully = new WidgetPosition("Extend", 10, 2, 2, 1);
-    public static WidgetPosition kArmRetract = new WidgetPosition("Retract extender", 10, 3, 2, 1);
-    public static WidgetPosition kOpenGrabber = new WidgetPosition("Open Grabber", 10, 4, 2, 1);
-    public static WidgetPosition kCloseGrabber = new WidgetPosition("Close Grabber", 10, 5, 2, 1);
-
-    // Arm list
-    public static WidgetPosition kArmFunctional = new WidgetPosition("Arm Functional", 0, 3, 2, 1);
-    public static WidgetPosition kArmPosition = new WidgetPosition("Arm position", 0, 4, 2, 1);
-    public static WidgetPosition kArmSystemCommands = new WidgetPosition("Arm System Commands", 0,
-        5, 2, 1);
-
-    // Winch list
-    public static WidgetPosition kWinchFunctional = new WidgetPosition("Winch Functional", 2, 3, 2,
-        1);
-    public static WidgetPosition kWinchMotorPower = new WidgetPosition("Winch Motor Power", 2, 4, 2,
-        1);
-    public static WidgetPosition kWinchStringPercentExtended = new WidgetPosition(
-        "Winch String % Extended", 2, 5, 2, 1);
-    public static WidgetPosition kWinchStringLocation = new WidgetPosition("Winch string location",
-        2, 6, 2, 1);
-
-    // Extender list
-    public static WidgetPosition kExtenderFunctional = new WidgetPosition("Extender Functional", 4,
-        3, 2, 1);
-    public static WidgetPosition kExtenderMotorPower = new WidgetPosition("Extender Motor Power", 4,
-        4, 2, 1);
-    public static WidgetPosition kExtenderExtendedPercent = new WidgetPosition(
-        "Extender % Extended", 4, 5, 2, 1);
-    public static WidgetPosition kExtenderSensor = new WidgetPosition("Extender Sensor", 4, 6, 2,
-        1);
-
-    // Grabber
-    public static WidgetPosition kGrabberFunctional = new WidgetPosition("Grabber Functional", 6, 3,
-        2, 1);
-    public static WidgetPosition kGrabber = new WidgetPosition("Grabber", 6, 4, 2, 1);
-    public static WidgetPosition kGrabberSystemCommands = new WidgetPosition(
-        "Grabber System Commands", 6, 5, 2, 1);
-
-    // Name of the widget to load
+    // Arm widget for shuffleboard to load
     public static final String kAnimatedArmWidget = "AnimatedArm";
   }
 }

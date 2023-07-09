@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Constants;
+import frc.robot.DefaultLayout;
+import frc.robot.DefaultLayout.Widget;
 import frc.robot.simulation.DriveSimulation;
 import java.util.Map;
 
@@ -17,6 +19,7 @@ import java.util.Map;
  */
 public class TankDriveSystemSim extends TankDriveSystem {
   private DriveSimulation m_driveSimulation = null;
+  private DefaultLayout m_defaultLayout = new DefaultLayout();
 
   /**
    * Factory method to create a TankDriveSystemSim or TankDriveSystem object.
@@ -55,7 +58,8 @@ public class TankDriveSystemSim extends TankDriveSystem {
       resetSimulationRobotPosition();
     }
 
-    // $TODO - 1) This should be called from initDashboard, 2) move the widget code into TankDriveSystemSimWithWidgets
+    // $TODO - 1) This should be called from initDashboard, 2) move the widget code into
+    // TankDriveSystemSimWithWidgets
     addShuffleboardWidgets();
   }
 
@@ -63,21 +67,14 @@ public class TankDriveSystemSim extends TankDriveSystem {
    * Add widgets to Shuffleboard.
    */
   private void addShuffleboardWidgets() {
-    Shuffleboard.getTab("Simulation")
-        .add(Constants.SimWidgets.kFieldWidget.m_name, m_driveSimulation.getField())
-        .withWidget(BuiltInWidgets.kField)
-        .withPosition(Constants.SimWidgets.kFieldWidget.m_xpos,
-            Constants.SimWidgets.kFieldWidget.m_ypos)
-        .withSize(Constants.SimWidgets.kFieldWidget.m_width,
-            Constants.SimWidgets.kFieldWidget.m_height);
+    Widget pos = m_defaultLayout.getWidgetPosition("Field");
+    Shuffleboard.getTab("Simulation").add("Field", m_driveSimulation.getField())
+        .withWidget(BuiltInWidgets.kField).withPosition(pos.x, pos.y)
+        .withSize(pos.width, pos.height);
 
-    Shuffleboard.getTab("Simulation")
-        .add(Constants.SimWidgets.kGyroWidget.m_name, m_driveSimulation.getGyro())
-        .withWidget(BuiltInWidgets.kGyro)
-        .withPosition(Constants.SimWidgets.kGyroWidget.m_xpos,
-            Constants.SimWidgets.kGyroWidget.m_ypos)
-        .withSize(Constants.SimWidgets.kGyroWidget.m_width,
-            Constants.SimWidgets.kGyroWidget.m_height)
+    pos = m_defaultLayout.getWidgetPosition("Heading");
+    Shuffleboard.getTab("Simulation").add("Heading", m_driveSimulation.getGyro())
+        .withWidget(BuiltInWidgets.kGyro).withPosition(pos.x, pos.y).withSize(pos.width, pos.height)
         .withProperties(Map.of("Starting angle", 90));
   }
 
