@@ -164,6 +164,9 @@ public class DriveSimulation {
   public void arcadeDrive(double xspeed, double rot, boolean squareInputs) {
     // System.out.println("ARCADE: xSpeed = " + xSpeed);
 
+    // $TODO - If the robot is stopped too quickly, or direction is changed instantly,
+    // this robot simulation doesnt handle it well.  Consider adding slew within this
+    // simulation to avoid that.
     xspeed = MathUtil.clamp(xspeed, -1.0, 1.0);
     rot = MathUtil.clamp(rot, -1.0, 1.0);
 
