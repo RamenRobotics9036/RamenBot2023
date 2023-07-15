@@ -12,6 +12,10 @@ import frc.robot.simulation.ArmSimulation;
 import frc.robot.simulation.ExtenderSimulation;
 import frc.robot.simulation.WinchSimulation;
 import frc.robot.simulation.WinchSimulation.WindingOrientation;
+import frc.robot.simulation.framework.SimManagerInterface;
+import frc.robot.simulation.motor.MotorSimInput;
+import frc.robot.simulation.motor.MotorSimManager;
+import frc.robot.simulation.motor.MotorSimOutput;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -27,10 +31,8 @@ public class ArmSystemSim extends ArmSystem {
   protected double m_winchMotorOutputPercentage = 0;
   protected WinchSimulation m_winchSimulation;
 
-  private DCMotor m_extenderMotorModel;
-  private DCMotorSim m_extenderMotorSim;
   private RelativeEncoderSim m_extenderEncoderSim;
-  protected double m_extenderMotorOutputPercentage = 0;
+  private SimManagerInterface<Double, Double> m_extenderMotorSimManager;
   protected ExtenderSimulation m_extenderSimulation;
 
   protected DIOSim m_sensorSim;
@@ -111,17 +113,13 @@ public class ArmSystemSim extends ArmSystem {
   }
 
   private void createExtenderSimParts() {
-    // Model a NEO motor (or any other motor)
-    m_extenderMotorModel = DCMotor.getNEO(1); // 1 motor in the gearbox
-
-    // Create the motor simulation with motor model, gear ratio, and moment of
-    // inertia
-    double motorMomentInertia = 0.0005;
-    m_extenderMotorSim = new DCMotorSim(m_extenderMotorModel,
-        Constants.SimConstants.kextenderSimGearRatio, motorMomentInertia);
-
     // Create extender simulated encoder
     m_extenderEncoderSim = new RelativeEncoderSim(m_extenderEncoder);
+
+    // Create the motor simulation for the extender
+    m_extenderMotorSimManager = new MotorSimManager();
+    m_extenderMotorSimManager.setInputHandler(new MotorSimInput(m_armExtender));
+    m_extenderMotorSimManager.setOutputHandler(new MotorSimOutput(m_extenderEncoderSim));
 
     m_extenderSimulation = new ExtenderSimulation(m_extenderEncoderSim,
         Constants.SimConstants.kcylinderDiameterMeters,
@@ -143,6 +141,7 @@ public class ArmSystemSim extends ArmSystem {
     super.periodic();
 
     // When Robot is disabled, the entire simulation freezes
+    // $TODO Why are these simulations done here, and not in simulationPeriodic()?
     if (isRobotEnabled()) {
       m_winchSimulation.periodic();
       m_extenderSimulation.periodic();
@@ -178,12 +177,7 @@ public class ArmSystemSim extends ArmSystem {
 
       updateSimMotorPosition(m_winchMotorOutputPercentage, m_winchMotorSim, m_winchEncoderSim);
 
-      // Get the EXTENDER motor controller output percentage
-      m_extenderMotorOutputPercentage = m_armExtender.get();
-
-      updateSimMotorPosition(m_extenderMotorOutputPercentage,
-          m_extenderMotorSim,
-          m_extenderEncoderSim);
+      m_extenderMotorSimManager.simulationPeriodic();
 
       m_winchSimulation.simulationPeriodic();
       m_extenderSimulation.simulationPeriodic();

@@ -95,7 +95,7 @@ public class ArmSystemSimWithWidgets extends ArmSystemSim {
     // Extender motor power
     pos = m_defaultLayout.getWidgetPosition("Extender Motor Power");
     Shuffleboard.getTab("Simulation")
-        .addDouble("Extender Motor Power", () -> m_extenderMotorOutputPercentage)
+        .addDouble("Extender Motor Power", () -> m_armExtender.get())
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of("min", -1.0, "max", 1.0, "show text", false))
         .withPosition(pos.x, pos.y).withSize(pos.width, pos.height);
