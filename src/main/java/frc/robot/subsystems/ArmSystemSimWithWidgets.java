@@ -150,7 +150,7 @@ public class ArmSystemSimWithWidgets extends ArmSystemSim {
     // Winch motor power
     pos = m_defaultLayout.getWidgetPosition("Winch Motor Power");
     Shuffleboard.getTab("Simulation")
-        .addDouble("Winch Motor Power", () -> m_winchMotorOutputPercentage)
+        .addDouble("Winch Motor Power", () -> m_armWinch.get())
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of("min", -1.0, "max", 1.0, "show text", false))
         .withPosition(pos.x, pos.y).withSize(pos.width, pos.height);

@@ -1,10 +1,8 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import frc.robot.Constants;
@@ -13,9 +11,9 @@ import frc.robot.simulation.ExtenderSimulation;
 import frc.robot.simulation.WinchSimulation;
 import frc.robot.simulation.WinchSimulation.WindingOrientation;
 import frc.robot.simulation.framework.SimManagerInterface;
-import frc.robot.simulation.motor.MotorSimInput;
 import frc.robot.simulation.motor.MotorSimManager;
 import frc.robot.simulation.motor.MotorSimOutput;
+import frc.robot.simulation.motor.MotorSparkMaxSimInput;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -25,10 +23,8 @@ import java.util.function.BooleanSupplier;
 public class ArmSystemSim extends ArmSystem {
   private DutyCycleEncoderSim m_winchAbsoluteEncoderSim;
 
-  private DCMotor m_winchMotorModel;
-  private DCMotorSim m_winchMotorSim;
   private RelativeEncoderSim m_winchEncoderSim;
-  protected double m_winchMotorOutputPercentage = 0;
+  private SimManagerInterface<Double, Double> m_winchMotorSimManager;
   protected WinchSimulation m_winchSimulation;
 
   private RelativeEncoderSim m_extenderEncoderSim;
@@ -95,17 +91,13 @@ public class ArmSystemSim extends ArmSystem {
   }
 
   private void createWinchSimParts() {
-    // Model a NEO motor (or any other motor)
-    m_winchMotorModel = DCMotor.getNEO(1); // 1 motor in the gearbox
-
-    // Create the motor simulation with motor model, gear ratio, and moment of
-    // inertia
-    double motorMomentInertia = 0.0005;
-    m_winchMotorSim = new DCMotorSim(m_winchMotorModel, Constants.SimConstants.kwinchSimGearRatio,
-        motorMomentInertia);
-
     // Create winch simulated encoder
     m_winchEncoderSim = new RelativeEncoderSim(m_winchEncoder);
+
+    // Create the motor simulation for the winch motor
+    m_winchMotorSimManager = new MotorSimManager(Constants.SimConstants.kwinchSimGearRatio);
+    m_winchMotorSimManager.setInputHandler(new MotorSparkMaxSimInput(m_armWinch));
+    m_winchMotorSimManager.setOutputHandler(new MotorSimOutput(m_winchEncoderSim));
 
     m_winchSimulation = new WinchSimulation(m_winchEncoderSim, 0.0254, // Spool diameter (1 inch)
         Constants.SimConstants.kTotalStringLenMeters, Constants.SimConstants.kCurrentLenSpooled,
@@ -116,9 +108,9 @@ public class ArmSystemSim extends ArmSystem {
     // Create extender simulated encoder
     m_extenderEncoderSim = new RelativeEncoderSim(m_extenderEncoder);
 
-    // Create the motor simulation for the extender
-    m_extenderMotorSimManager = new MotorSimManager();
-    m_extenderMotorSimManager.setInputHandler(new MotorSimInput(m_armExtender));
+    // Create the motor simulation for the extender motor
+    m_extenderMotorSimManager = new MotorSimManager(Constants.SimConstants.kextenderSimGearRatio);
+    m_extenderMotorSimManager.setInputHandler(new MotorSparkMaxSimInput(m_armExtender));
     m_extenderMotorSimManager.setOutputHandler(new MotorSimOutput(m_extenderEncoderSim));
 
     m_extenderSimulation = new ExtenderSimulation(m_extenderEncoderSim,
@@ -149,22 +141,6 @@ public class ArmSystemSim extends ArmSystem {
     }
   }
 
-  private static void updateSimMotorPosition(double motorOutputPercentage,
-      DCMotorSim motorSim,
-      RelativeEncoderSim encoderSim) {
-    // Calculate the input voltage for the motor
-    double inputVoltageVolts = motorOutputPercentage * 12.0;
-
-    // Update the motor simulation
-    motorSim.setInput(inputVoltageVolts);
-    motorSim.update(0.02);
-
-    // Update the Encoder based on the simulation - the units are "number of
-    // rotations"
-    double motorRotations = motorSim.getAngularPositionRotations();
-    encoderSim.setPosition(motorRotations);
-  }
-
   @Override
   public void simulationPeriodic() {
     super.simulationPeriodic();
@@ -172,11 +148,7 @@ public class ArmSystemSim extends ArmSystem {
     // When Robot is disabled, the entire simulation freezes
     if (isRobotEnabled()) {
 
-      // Get the WINCH motor controller output percentage
-      m_winchMotorOutputPercentage = m_armWinch.get();
-
-      updateSimMotorPosition(m_winchMotorOutputPercentage, m_winchMotorSim, m_winchEncoderSim);
-
+      m_winchMotorSimManager.simulationPeriodic();
       m_extenderMotorSimManager.simulationPeriodic();
 
       m_winchSimulation.simulationPeriodic();

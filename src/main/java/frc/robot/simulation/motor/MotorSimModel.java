@@ -2,27 +2,28 @@ package frc.robot.simulation.motor;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.Constants;
 
 /**
  * Does the real-world simulation for the motor.
  */
 public class MotorSimModel {
-  private final DCMotor m_extenderMotorModel;
-  private final DCMotorSim m_extenderMotorSim;
+  private final DCMotor m_realMotorModel;
+  private final DCMotorSim m_realMotorSim;
+  private final double m_gearRatio;
 
   /**
    * Constructor.
    */
-  public MotorSimModel() {
+  public MotorSimModel(double gearRatio) {
+    m_gearRatio = gearRatio;
+
     // Model a NEO motor (or any other motor)
-    m_extenderMotorModel = DCMotor.getNEO(1); // 1 motor in the gearbox
+    m_realMotorModel = DCMotor.getNEO(1); // 1 motor in the gearbox
 
     // Create the motor simulation with motor model, gear ratio, and moment of
     // inertia
     double motorMomentInertia = 0.0005;
-    m_extenderMotorSim = new DCMotorSim(m_extenderMotorModel,
-        Constants.SimConstants.kextenderSimGearRatio, motorMomentInertia);
+    m_realMotorSim = new DCMotorSim(m_realMotorModel, m_gearRatio, motorMomentInertia);
   }
 
   /**
@@ -33,11 +34,11 @@ public class MotorSimModel {
     double inputVoltageVolts = motorPowerPercentage * 12.0;
 
     // Update the motor simulation
-    m_extenderMotorSim.setInput(inputVoltageVolts);
-    m_extenderMotorSim.update(0.02);
+    m_realMotorSim.setInput(inputVoltageVolts);
+    m_realMotorSim.update(0.02);
 
     // Update the Encoder based on the simulation - the units are "number of
     // rotations"
-    return m_extenderMotorSim.getAngularPositionRotations();
+    return m_realMotorSim.getAngularPositionRotations();
   }
 }
