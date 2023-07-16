@@ -98,9 +98,6 @@ public class ArmSimulation {
     return m_isBroken;
   }
 
-  public void periodic() {
-  }
-
   // $TODO This is ugly - probably don't need a method
   public static double offsetArmRotationPosition(double position, double offset) {
     double positionWithOffset = position + offset;

@@ -146,12 +146,6 @@ public class WinchSimulation {
   }
 
   /**
-   * Called every 20ms by the simulation engine.
-   */
-  public void periodic() {
-  }
-
-  /**
    * Updates the current length of string spooled. This method is called periodically
    * during simulation to update the state of the winch.
    */

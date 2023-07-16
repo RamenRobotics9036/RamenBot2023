@@ -131,14 +131,6 @@ public class ArmSystemSim extends ArmSystem {
   @Override
   public void periodic() {
     super.periodic();
-
-    // When Robot is disabled, the entire simulation freezes
-    // $TODO Why are these simulations done here, and not in simulationPeriodic()?
-    if (isRobotEnabled()) {
-      m_winchSimulation.periodic();
-      m_extenderSimulation.periodic();
-      m_armSimulation.periodic();
-    }
   }
 
   @Override
