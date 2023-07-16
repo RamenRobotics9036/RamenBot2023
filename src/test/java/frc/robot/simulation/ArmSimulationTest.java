@@ -8,7 +8,8 @@ import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import frc.robot.Constants;
-import frc.robot.simulation.WinchSimulation.WindingOrientation;
+import frc.robot.simulation.winch.WinchSimModel;
+import frc.robot.simulation.winch.WinchSimModel.WindingOrientation;
 import frc.robot.subsystems.DutyCycleEncoderSim2;
 import frc.robot.subsystems.RelativeEncoderSim;
 import java.util.function.BooleanSupplier;
@@ -34,7 +35,7 @@ public class ArmSimulationTest {
   private final double m_armLengthFromEdgeToPivotMin = 0.1;
   private final double m_encoderPositionOffsetRotations = 0;
 
-  private WinchSimulation m_winchSimulation;
+  private WinchSimModel m_winchSimulation;
   private RelativeEncoderSim m_winchRelEncoderSim;
   private DutyCycleEncoder m_winchAbsoluteEncoder = null;
   private DutyCycleEncoderSim m_winchAbsoluteEncoderSim = null;
@@ -48,7 +49,7 @@ public class ArmSimulationTest {
 
     m_winchRelEncoderSim = new RelativeEncoderSim(null, true); // test-mode
 
-    m_winchSimulation = new WinchSimulation(m_winchRelEncoderSim, m_winchSpoolDiameterMeters,
+    m_winchSimulation = new WinchSimModel(m_winchRelEncoderSim, m_winchSpoolDiameterMeters,
         m_winchTotalStringLenMeters, m_winchInitialLenSpooled, m_winchInitialStringOrientation,
         m_winchinvertMotor);
 
@@ -95,7 +96,7 @@ public class ArmSimulationTest {
     double lengthStringExtended = m_armHeightFromWinchToPivotPoint - 0.5;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    WinchSimulation tempwinchSimulation = new WinchSimulation(m_winchRelEncoderSim,
+    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchRelEncoderSim,
         m_winchSpoolDiameterMeters, m_winchTotalStringLenMeters, winchInitialLenSpooled,
         m_winchInitialStringOrientation, m_winchinvertMotor);
 
@@ -121,7 +122,7 @@ public class ArmSimulationTest {
     double lengthStringExtended = m_armHeightFromWinchToPivotPoint + 0.5;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    WinchSimulation tempwinchSimulation = new WinchSimulation(m_winchRelEncoderSim,
+    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchRelEncoderSim,
         m_winchSpoolDiameterMeters, m_winchTotalStringLenMeters, winchInitialLenSpooled,
         m_winchInitialStringOrientation, m_winchinvertMotor);
 
@@ -156,7 +157,7 @@ public class ArmSimulationTest {
     double lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    WinchSimulation tempwinchSimulation = new WinchSimulation(m_winchRelEncoderSim,
+    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchRelEncoderSim,
         m_winchSpoolDiameterMeters, m_winchTotalStringLenMeters, winchInitialLenSpooled,
         m_winchInitialStringOrientation, m_winchinvertMotor);
 
@@ -221,7 +222,7 @@ public class ArmSimulationTest {
     double lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    WinchSimulation tempwinchSimulation = new WinchSimulation(m_winchRelEncoderSim,
+    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchRelEncoderSim,
         m_winchSpoolDiameterMeters, m_winchTotalStringLenMeters, winchInitialLenSpooled,
         m_winchInitialStringOrientation, m_winchinvertMotor);
 
@@ -286,7 +287,7 @@ public class ArmSimulationTest {
     double lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    WinchSimulation tempwinchSimulation = new WinchSimulation(m_winchRelEncoderSim,
+    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchRelEncoderSim,
         m_winchSpoolDiameterMeters, m_winchTotalStringLenMeters, winchInitialLenSpooled,
         m_winchInitialStringOrientation, m_winchinvertMotor);
 
@@ -351,7 +352,7 @@ public class ArmSimulationTest {
     double lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    WinchSimulation tempwinchSimulation = new WinchSimulation(m_winchRelEncoderSim,
+    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchRelEncoderSim,
         m_winchSpoolDiameterMeters, m_winchTotalStringLenMeters, winchInitialLenSpooled,
         m_winchInitialStringOrientation, m_winchinvertMotor);
 
@@ -412,7 +413,7 @@ public class ArmSimulationTest {
     double lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    WinchSimulation tempwinchSimulation = new WinchSimulation(m_winchRelEncoderSim,
+    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchRelEncoderSim,
         m_winchSpoolDiameterMeters, m_winchTotalStringLenMeters, winchInitialLenSpooled,
         m_winchInitialStringOrientation, m_winchinvertMotor);
 
@@ -501,7 +502,7 @@ public class ArmSimulationTest {
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
     double offsetRotations = 0.25;
 
-    WinchSimulation tempwinchSimulation = new WinchSimulation(m_winchRelEncoderSim,
+    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchRelEncoderSim,
         m_winchSpoolDiameterMeters, m_winchTotalStringLenMeters, winchInitialLenSpooled,
         m_winchInitialStringOrientation, m_winchinvertMotor);
 

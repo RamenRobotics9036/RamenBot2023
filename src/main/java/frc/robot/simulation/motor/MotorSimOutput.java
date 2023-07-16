@@ -20,17 +20,11 @@ public class MotorSimOutput implements SimOutputInterface<Double> {
     }
 
     m_encoderRealWrapper = encoderRealWrapper;
-    /*
-     * $TODO
-     * // Create a "sim" wrapper of the Robots real encoder. The sim wrapper
-     * // is later used to write to the real encoder
-     * m_encoderRealWrapper = new RelativeEncoderSim(encoderReal);
-     */
   }
 
   @Override
-  public void setOutput(Double output) {
+  public void setOutput(Double outputRotations) {
     // Sets the encoder position in rotations.
-    m_encoderRealWrapper.setPosition(output);
+    m_encoderRealWrapper.setPosition(outputRotations);
   }
 }

@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import frc.robot.Constants;
 import frc.robot.simulation.ArmSimulation;
 import frc.robot.simulation.ExtenderSimulation;
-import frc.robot.simulation.WinchSimulation;
-import frc.robot.simulation.WinchSimulation.WindingOrientation;
 import frc.robot.simulation.framework.SimManagerInterface;
 import frc.robot.simulation.motor.MotorSimManager;
 import frc.robot.simulation.motor.MotorSimOutput;
 import frc.robot.simulation.motor.MotorSparkMaxSimInput;
+import frc.robot.simulation.winch.WinchSimModel;
+import frc.robot.simulation.winch.WinchSimModel.WindingOrientation;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -25,7 +25,7 @@ public class ArmSystemSim extends ArmSystem {
 
   private RelativeEncoderSim m_winchEncoderSim;
   private SimManagerInterface<Double, Double> m_winchMotorSimManager;
-  protected WinchSimulation m_winchSimulation;
+  protected WinchSimModel m_winchSimulation;
 
   private RelativeEncoderSim m_extenderEncoderSim;
   private SimManagerInterface<Double, Double> m_extenderMotorSimManager;
@@ -99,7 +99,7 @@ public class ArmSystemSim extends ArmSystem {
     m_winchMotorSimManager.setInputHandler(new MotorSparkMaxSimInput(m_armWinch));
     m_winchMotorSimManager.setOutputHandler(new MotorSimOutput(m_winchEncoderSim));
 
-    m_winchSimulation = new WinchSimulation(m_winchEncoderSim, 0.0254, // Spool diameter (1 inch)
+    m_winchSimulation = new WinchSimModel(m_winchEncoderSim, 0.0254, // Spool diameter (1 inch)
         Constants.SimConstants.kTotalStringLenMeters, Constants.SimConstants.kCurrentLenSpooled,
         WindingOrientation.BackOfRobot, true); // invert motor for winch
   }

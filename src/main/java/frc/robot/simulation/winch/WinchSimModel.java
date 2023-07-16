@@ -1,4 +1,4 @@
-package frc.robot.simulation;
+package frc.robot.simulation.winch;
 
 import frc.robot.subsystems.RelativeEncoderSim;
 
@@ -19,7 +19,7 @@ import frc.robot.subsystems.RelativeEncoderSim;
  * Winding orientation - Whether string is coming off the top of the spool or the bottom
  * </p>
  */
-public class WinchSimulation {
+public class WinchSimModel {
   /**
    * The WindingOrientation enum represents the orientation of the string.
    * If the string is towards the back of the robot, then we represent as BackOfRobot.
@@ -49,7 +49,7 @@ public class WinchSimulation {
    * @param invertMotor               whether to invert the motor (true for inverted, false for not)
    * @throws IllegalArgumentException if any of the parameters are invalid
    */
-  public WinchSimulation(RelativeEncoderSim motorEncoderSim,
+  public WinchSimModel(RelativeEncoderSim motorEncoderSim,
       double spoolDiameterMeters,
       double totalStringLenMeters,
       double initialLenSpooled,
@@ -103,6 +103,7 @@ public class WinchSimulation {
    *
    * @return the length of string that is currently unspooled, in meters
    */
+  // $TODO All these getters can go away
   public double getStringUnspooledLen() {
     return m_totalStringLenMeters - Math.abs(m_currentLenSpooled);
   }
@@ -149,7 +150,7 @@ public class WinchSimulation {
    * Updates the current length of string spooled. This method is called periodically
    * during simulation to update the state of the winch.
    */
-  private void updateNewLenSpooled() {
+  public void updateNewLenSpooled() {
     double currentRotations;
     double deltaRotations;
 
@@ -179,6 +180,7 @@ public class WinchSimulation {
     m_currentLenSpooled = newCurrentLenSpooled;
   }
 
+  // $TODO This should be removed now!
   public void simulationPeriodic() {
     updateNewLenSpooled();
   }

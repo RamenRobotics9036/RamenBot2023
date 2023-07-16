@@ -1,6 +1,8 @@
 package frc.robot.simulation;
 
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
+import frc.robot.simulation.winch.WinchSimModel;
+
 import java.util.function.BooleanSupplier;
 
 /**
@@ -8,7 +10,7 @@ import java.util.function.BooleanSupplier;
  * is extended too far, it will break.
  */
 public class ArmSimulation {
-  private WinchSimulation m_winchSimulation;
+  private WinchSimModel m_winchSimulation;
   private DutyCycleEncoderSim m_winchAbsoluteEncoderSim;
   private double m_currentSignedDegrees;
   private boolean m_isCurrentSignedDegreesSet = false;
@@ -23,7 +25,7 @@ public class ArmSimulation {
   /**
    * Constructor.
    */
-  public ArmSimulation(WinchSimulation winchSimulation,
+  public ArmSimulation(WinchSimModel winchSimulation,
       DutyCycleEncoderSim winchAbsoluteEncoderSim,
       double topRotationsLimit,
       double bottomRotationsLimit,
