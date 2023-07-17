@@ -20,6 +20,9 @@ public class WinchState {
     }
 
     m_totalStringLenMeters = totalStringLenMeters;
+    m_stringUnspooledLen = 0;
+    m_windingOrientation = WindingOrientation.BackOfRobot;
+    m_isBroken = false;
   }
 
   // Implement getters and setters for all 4 fields

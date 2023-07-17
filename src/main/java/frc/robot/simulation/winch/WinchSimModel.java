@@ -1,7 +1,5 @@
 package frc.robot.simulation.winch;
 
-import frc.robot.subsystems.RelativeEncoderSim;
-
 /**
  * Simulates a winch with a spool and a string. The string can be extended and retracted,
  * and it can be positioned either at the front or the back of a robot.
@@ -29,19 +27,18 @@ public class WinchSimModel {
     BackOfRobot, FrontOfRobot
   }
 
-  private RelativeEncoderSim m_motorEncoderSim;
   private double m_spoolDiameterMeters;
   private double m_totalStringLenMeters;
   private double m_currentLenSpooled;
   private boolean m_isBroken;
   private double m_initialMotorRotations;
+  private boolean m_isInitialMotorRotationsSet;
   private double m_initialLenSpooled;
   private double m_motorPolarity;
 
   /**
    * Constructs a new WinchSimulation.
    *
-   * @param motorEncoderSim           the motor encoder simulator
    * @param spoolDiameterMeters       the diameter of the spool, in meters
    * @param totalStringLenMeters      the total length of the string, in meters
    * @param initialLenSpooled         the initial length of string spooled, in meters
@@ -49,35 +46,26 @@ public class WinchSimModel {
    * @param invertMotor               whether to invert the motor (true for inverted, false for not)
    * @throws IllegalArgumentException if any of the parameters are invalid
    */
-  public WinchSimModel(RelativeEncoderSim motorEncoderSim,
-      double spoolDiameterMeters,
+  // $TODO1 - motorEncoderSim should not be passed to the model
+  public WinchSimModel(double spoolDiameterMeters,
       double totalStringLenMeters,
       double initialLenSpooled,
       WindingOrientation initialWindingOrientation,
       boolean invertMotor) {
 
     // Sanity checks
-    if (motorEncoderSim == null) {
-      throw new IllegalArgumentException("motorEncoderSim is null");
-    }
-
     if (spoolDiameterMeters <= 0) {
       throw new IllegalArgumentException("SpoolDiameterMeters must be >0");
     }
-
     if (totalStringLenMeters <= 0) {
       throw new IllegalArgumentException("TotalStringLenMeters must be >0");
     }
-
-    if (initialLenSpooled < 0) {
-      throw new IllegalArgumentException("InitialLenSpooled must be >=0");
+    if (initialLenSpooled < 0 || initialLenSpooled > totalStringLenMeters) {
+      throw new IllegalArgumentException(
+          "InitialLenSpooled must be between 0 and TotalStringLenMeters");
     }
 
-    if (initialLenSpooled > totalStringLenMeters) {
-      throw new IllegalArgumentException("InitialLenSpooled must be <= TotalStringLenMeters");
-    }
-
-    m_motorEncoderSim = motorEncoderSim;
+    // Initialize fields
     m_spoolDiameterMeters = spoolDiameterMeters;
     m_totalStringLenMeters = totalStringLenMeters;
     m_motorPolarity = invertMotor ? -1 : 1;
@@ -88,14 +76,14 @@ public class WinchSimModel {
     m_initialLenSpooled = (initialWindingOrientation == WindingOrientation.BackOfRobot)
         ? -1 * initialLenSpooled
         : initialLenSpooled;
-
+    m_currentLenSpooled = m_initialLenSpooled;
     m_isBroken = false;
+    m_initialMotorRotations = 0;
+    m_isInitialMotorRotationsSet = false;
+  }
 
-    // Take a snapshot of current DCMotor position
-    m_initialMotorRotations = m_motorEncoderSim.getPosition();
-
-    // Call this to initialize m_currentLenSpooled
-    updateNewLenSpooled();
+  public double getTotalStringLenMeters() {
+    return m_totalStringLenMeters;
   }
 
   /**
@@ -146,12 +134,21 @@ public class WinchSimModel {
     return m_isBroken;
   }
 
+  private double getDeltaRotations(double currentRotationsWithPolarity) {
+    if (!m_isInitialMotorRotationsSet) {
+      m_initialMotorRotations = currentRotationsWithPolarity;
+      m_isInitialMotorRotationsSet = true;
+    }
+
+    return currentRotationsWithPolarity - m_initialMotorRotations;
+  }
+
   /**
    * Updates the current length of string spooled. This method is called periodically
    * during simulation to update the state of the winch.
    */
-  public void updateNewLenSpooled() {
-    double currentRotations;
+  public void updateNewLenSpooled(double currentRotations) {
+    double currentRotationsWithPolarity = currentRotations * m_motorPolarity;
     double deltaRotations;
 
     // If the winch is broken, there's nothing to update
@@ -160,8 +157,7 @@ public class WinchSimModel {
     }
 
     // How much has the motor turned since winch initialized?
-    currentRotations = m_motorEncoderSim.getPosition() * m_motorPolarity;
-    deltaRotations = currentRotations - m_initialMotorRotations;
+    deltaRotations = getDeltaRotations(currentRotationsWithPolarity);
 
     // How much sting-length (in meters) has been spooled or unspooled?
     double deltaStringLenMeters = deltaRotations * (Math.PI * m_spoolDiameterMeters);
@@ -178,10 +174,5 @@ public class WinchSimModel {
     }
 
     m_currentLenSpooled = newCurrentLenSpooled;
-  }
-
-  // $TODO This should be removed now!
-  public void simulationPeriodic() {
-    updateNewLenSpooled();
   }
 }

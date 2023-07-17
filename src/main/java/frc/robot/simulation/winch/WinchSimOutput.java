@@ -23,6 +23,8 @@ public class WinchSimOutput implements SimOutputInterface<WinchState> {
   @Override
   public void setOutput(WinchState newWinchState) {
     // Copy from output to target.
+    // WinchState has a bunch of information, such as the length of string that is unpooled out,
+    // and whether the winch is broken.
     m_targWinchState.copyFrom(newWinchState);
   }
 }

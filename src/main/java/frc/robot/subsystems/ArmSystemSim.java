@@ -12,9 +12,13 @@ import frc.robot.simulation.framework.SimManagerInterface;
 import frc.robot.simulation.motor.MotorSimManager;
 import frc.robot.simulation.motor.MotorSimOutput;
 import frc.robot.simulation.motor.MotorSparkMaxSimInput;
-import frc.robot.simulation.winch.WinchSimModel;
+import frc.robot.simulation.winch.WinchSimInput;
+import frc.robot.simulation.winch.WinchSimManager;
 import frc.robot.simulation.winch.WinchSimModel.WindingOrientation;
+import frc.robot.simulation.winch.WinchSimOutput;
+import frc.robot.simulation.winch.WinchState;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 /**
  * Subclass of ArmSystem that is used for simulation. Note that this code isn't run if
@@ -25,7 +29,8 @@ public class ArmSystemSim extends ArmSystem {
 
   private RelativeEncoderSim m_winchEncoderSim;
   private SimManagerInterface<Double, Double> m_winchMotorSimManager;
-  protected WinchSimModel m_winchSimulation;
+  private SimManagerInterface<Double, WinchState> m_winchSimManager;
+  protected WinchState m_winchState;
 
   private RelativeEncoderSim m_extenderEncoderSim;
   private SimManagerInterface<Double, Double> m_extenderMotorSimManager;
@@ -79,7 +84,12 @@ public class ArmSystemSim extends ArmSystem {
     // Create simulated absolute encoder
     m_winchAbsoluteEncoderSim = new DutyCycleEncoderSim2(m_winchAbsoluteEncoder);
 
-    m_armSimulation = new ArmSimulation(m_winchSimulation, m_winchAbsoluteEncoderSim,
+    // Create a DoubleSupplier that gets the value m_winchState.getStringUnspooledLen()
+    DoubleSupplier stringUnspooledLenSupplier = () -> {
+      return m_winchState.getStringUnspooledLen();
+    };
+
+    m_armSimulation = new ArmSimulation(stringUnspooledLenSupplier, m_winchAbsoluteEncoderSim,
         Constants.OperatorConstants.kWinchEncoderUpperLimit,
         Constants.OperatorConstants.kWinchEncoderLowerLimit,
         Constants.SimConstants.kdeltaRotationsBeforeBroken,
@@ -94,14 +104,26 @@ public class ArmSystemSim extends ArmSystem {
     // Create winch simulated encoder
     m_winchEncoderSim = new RelativeEncoderSim(m_winchEncoder);
 
+    m_winchState = new WinchState(Constants.SimConstants.kTotalStringLenMeters);
+
+    // $TODO1 - This should absolutely not be needed... HACK!
+    // Instead, somehow the initial m_winchState should magically be filled
+    // with the right values. But I don't know how to do that yet.
+    m_winchState.setStringUnspooledLen(
+        Constants.SimConstants.kTotalStringLenMeters - Constants.SimConstants.kCurrentLenSpooled);
+    m_winchState.setWindingOrientation(WindingOrientation.BackOfRobot);
+    m_winchState.setIsBroken(false);
+
     // Create the motor simulation for the winch motor
     m_winchMotorSimManager = new MotorSimManager(Constants.SimConstants.kwinchSimGearRatio);
     m_winchMotorSimManager.setInputHandler(new MotorSparkMaxSimInput(m_armWinch));
     m_winchMotorSimManager.setOutputHandler(new MotorSimOutput(m_winchEncoderSim));
 
-    m_winchSimulation = new WinchSimModel(m_winchEncoderSim, 0.0254, // Spool diameter (1 inch)
-        Constants.SimConstants.kTotalStringLenMeters, Constants.SimConstants.kCurrentLenSpooled,
-        WindingOrientation.BackOfRobot, true); // invert motor for winch
+    // Create the winch simulation
+    m_winchSimManager = new WinchSimManager(0.0254, Constants.SimConstants.kTotalStringLenMeters,
+        Constants.SimConstants.kCurrentLenSpooled, WindingOrientation.BackOfRobot, true);
+    m_winchSimManager.setInputHandler(new WinchSimInput(m_winchEncoderSim));
+    m_winchSimManager.setOutputHandler(new WinchSimOutput(m_winchState));
   }
 
   private void createExtenderSimParts() {
@@ -142,8 +164,8 @@ public class ArmSystemSim extends ArmSystem {
 
       m_winchMotorSimManager.simulationPeriodic();
       m_extenderMotorSimManager.simulationPeriodic();
+      m_winchSimManager.simulationPeriodic();
 
-      m_winchSimulation.simulationPeriodic();
       m_extenderSimulation.simulationPeriodic();
       m_armSimulation.simulationPeriodic();
 
