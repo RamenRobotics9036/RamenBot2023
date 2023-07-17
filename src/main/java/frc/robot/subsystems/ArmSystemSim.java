@@ -106,14 +106,6 @@ public class ArmSystemSim extends ArmSystem {
 
     m_winchState = new WinchState(Constants.SimConstants.kTotalStringLenMeters);
 
-    // $TODO1 - This should absolutely not be needed... HACK!
-    // Instead, somehow the initial m_winchState should magically be filled
-    // with the right values. But I don't know how to do that yet.
-    m_winchState.setStringUnspooledLen(
-        Constants.SimConstants.kTotalStringLenMeters - Constants.SimConstants.kCurrentLenSpooled);
-    m_winchState.setWindingOrientation(WindingOrientation.BackOfRobot);
-    m_winchState.setIsBroken(false);
-
     // Create the motor simulation for the winch motor
     m_winchMotorSimManager = new MotorSimManager(Constants.SimConstants.kwinchSimGearRatio);
     m_winchMotorSimManager.setInputHandler(new MotorSparkMaxSimInput(m_armWinch));
