@@ -152,11 +152,6 @@ public class GrabberSystemSim extends GrabberSystem {
   @Override
   public void periodic() {
     super.periodic();
-
-    // When Robot is disabled, the entire simulation freezes
-    if (isRobotEnabled()) {
-      // Do nothing
-    }
   }
 
   @Override

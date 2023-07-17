@@ -6,13 +6,13 @@ import frc.robot.simulation.framework.SimInputInterface;
 /**
  * Helper class to implement SimInputDoubleInterface.
  */
-public class MotorSimInput implements SimInputInterface<Double> {
+public class MotorSparkMaxSimInput implements SimInputInterface<Double> {
   private CANSparkMax m_motorReal;
 
   /**
    * Constructor.
    */
-  public MotorSimInput(CANSparkMax motorReal) {
+  public MotorSparkMaxSimInput(CANSparkMax motorReal) {
     if (motorReal == null) {
       throw new IllegalArgumentException("motorReal cannot be null");
     }

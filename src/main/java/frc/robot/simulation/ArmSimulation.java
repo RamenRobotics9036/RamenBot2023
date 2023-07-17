@@ -2,13 +2,14 @@ package frc.robot.simulation;
 
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 /**
  * Simulates the arm as-if it were a real-world object. E.g. if the arm
  * is extended too far, it will break.
  */
 public class ArmSimulation {
-  private WinchSimulation m_winchSimulation;
+  private DoubleSupplier m_stringUnspooledLenSupplier;
   private DutyCycleEncoderSim m_winchAbsoluteEncoderSim;
   private double m_currentSignedDegrees;
   private boolean m_isCurrentSignedDegreesSet = false;
@@ -23,7 +24,7 @@ public class ArmSimulation {
   /**
    * Constructor.
    */
-  public ArmSimulation(WinchSimulation winchSimulation,
+  public ArmSimulation(DoubleSupplier stringUnspooledLenSupplier,
       DutyCycleEncoderSim winchAbsoluteEncoderSim,
       double topRotationsLimit,
       double bottomRotationsLimit,
@@ -34,8 +35,8 @@ public class ArmSimulation {
       double armLengthFromEdgeToPivotMin,
       double encoderRotationsOffset) {
 
-    if (winchSimulation == null) {
-      throw new IllegalArgumentException("winchSimulation");
+    if (stringUnspooledLenSupplier == null) {
+      throw new IllegalArgumentException("stringUnspooledLenSupplier");
     }
 
     if (armLengthFromEdgeToPivot < armLengthFromEdgeToPivotMin) {
@@ -82,7 +83,7 @@ public class ArmSimulation {
               + "m_topSignedDegreesLimit and m_bottomSignedDegreesLimit");
     }
 
-    m_winchSimulation = winchSimulation;
+    m_stringUnspooledLenSupplier = stringUnspooledLenSupplier;
     m_winchAbsoluteEncoderSim = winchAbsoluteEncoderSim;
     m_encoderRotationsOffset = encoderRotationsOffset;
     m_isBroken = false;
@@ -96,9 +97,6 @@ public class ArmSimulation {
 
   public boolean getIsBroken() {
     return m_isBroken;
-  }
-
-  public void periodic() {
   }
 
   // $TODO This is ugly - probably don't need a method
@@ -129,7 +127,7 @@ public class ArmSimulation {
 
     boolean isGrabberOpen = getGrabberOpen();
 
-    double newStringLen = m_winchSimulation.getStringUnspooledLen();
+    double newStringLen = m_stringUnspooledLenSupplier.getAsDouble();
     CalcArmAngleHelper.Result resultPair = m_calcArmAngleHelper
         .calcSignedDegreesForStringLength(newStringLen);
 

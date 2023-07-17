@@ -85,9 +85,6 @@ public class ExtenderSimulation {
     return m_isBroken;
   }
 
-  public void periodic() {
-  }
-
   private void updateNewExtendedLen() {
     // If the extender is broken, there's nothing to update
     if (m_isBroken) {

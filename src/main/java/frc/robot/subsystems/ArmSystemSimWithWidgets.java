@@ -94,8 +94,7 @@ public class ArmSystemSimWithWidgets extends ArmSystemSim {
 
     // Extender motor power
     pos = m_defaultLayout.getWidgetPosition("Extender Motor Power");
-    Shuffleboard.getTab("Simulation")
-        .addDouble("Extender Motor Power", () -> m_armExtender.get())
+    Shuffleboard.getTab("Simulation").addDouble("Extender Motor Power", () -> m_armExtender.get())
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of("min", -1.0, "max", 1.0, "show text", false))
         .withPosition(pos.x, pos.y).withSize(pos.width, pos.height);
@@ -142,15 +141,14 @@ public class ArmSystemSimWithWidgets extends ArmSystemSim {
     // Winch functional display
     Widget pos = m_defaultLayout.getWidgetPosition("Winch Functional");
     Shuffleboard.getTab("Simulation")
-        .addBoolean("Winch Functional", () -> !m_winchSimulation.getIsBroken())
+        .addBoolean("Winch Functional", () -> !m_winchState.getIsBroken())
         .withWidget(BuiltInWidgets.kBooleanBox)
         .withProperties(Map.of("colorWhenTrue", "#C0FBC0", "colorWhenFalse", "#8B0000"))
         .withPosition(pos.x, pos.y).withSize(pos.width, pos.height);
 
     // Winch motor power
     pos = m_defaultLayout.getWidgetPosition("Winch Motor Power");
-    Shuffleboard.getTab("Simulation")
-        .addDouble("Winch Motor Power", () -> m_winchMotorOutputPercentage)
+    Shuffleboard.getTab("Simulation").addDouble("Winch Motor Power", () -> m_armWinch.get())
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of("min", -1.0, "max", 1.0, "show text", false))
         .withPosition(pos.x, pos.y).withSize(pos.width, pos.height);
@@ -158,7 +156,7 @@ public class ArmSystemSimWithWidgets extends ArmSystemSim {
     // Winch String % extended
     pos = m_defaultLayout.getWidgetPosition("Winch String % Extended");
     Shuffleboard.getTab("Simulation")
-        .addDouble("Winch String % Extended", () -> m_winchSimulation.getStringUnspooledPercent())
+        .addDouble("Winch String % Extended", () -> m_winchState.getStringUnspooledPercent())
         .withWidget(BuiltInWidgets.kNumberBar)
         .withProperties(Map.of("min", 0.0, "max", 1.0, "show text", false))
         .withPosition(pos.x, pos.y).withSize(pos.width, pos.height);
@@ -166,7 +164,7 @@ public class ArmSystemSimWithWidgets extends ArmSystemSim {
     // Winch string location
     pos = m_defaultLayout.getWidgetPosition("Winch string location");
     Shuffleboard.getTab("Simulation")
-        .addString("Winch string location", () -> m_winchSimulation.getWindingOrientationName())
+        .addString("Winch string location", () -> m_winchState.getWindingOrientationName())
         .withWidget(BuiltInWidgets.kTextView).withPosition(pos.x, pos.y)
         .withSize(pos.width, pos.height);
   }
