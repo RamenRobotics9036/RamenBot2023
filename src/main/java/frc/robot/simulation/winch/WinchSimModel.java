@@ -46,7 +46,6 @@ public class WinchSimModel {
    * @param invertMotor               whether to invert the motor (true for inverted, false for not)
    * @throws IllegalArgumentException if any of the parameters are invalid
    */
-  // $TODO1 - motorEncoderSim should not be passed to the model
   public WinchSimModel(double spoolDiameterMeters,
       double totalStringLenMeters,
       double initialLenSpooled,
