@@ -121,4 +121,29 @@ public class CalcArmAngleHelper {
   private double calcAngleOnRightTriangle(double lenHypotenuse, double height) {
     return Math.toDegrees(Math.asin(height / lenHypotenuse));
   }
+
+  public Result calcStringLengthForSignedDegrees(double signedDegrees) {
+    double maxStringLen = m_lengthFromWinchToPivotPoint + m_lengthFromPivotPointToArmBackEnd;
+    double minStringLen = m_lengthFromWinchToPivotPoint - m_lengthFromPivotPointToArmBackEnd;
+
+    // If signedDegrees is > 90, it means arm is pointing straight up.
+    if (signedDegrees > 90) {
+      return new Result(false, minStringLen);
+    }
+
+    // if signedDegrees is < -90, it means arm is pointing straight down.
+    if (signedDegrees < -90) {
+      return new Result(false, maxStringLen);
+    }
+
+    double heightArmBackendAbovePivot = -1
+        * calcHeightOnRightTriangle(m_lengthFromPivotPointToArmBackEnd, signedDegrees);
+    double stringLen = m_lengthFromWinchToPivotPoint + heightArmBackendAbovePivot;
+    return new Result(true, stringLen);
+  }
+
+  private double calcHeightOnRightTriangle(double lenHypotenuse, double signedAngle) {
+    double angleRadians = Math.toRadians(signedAngle);
+    return lenHypotenuse * Math.sin(angleRadians);
+  }
 }
