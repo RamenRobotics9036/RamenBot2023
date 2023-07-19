@@ -122,6 +122,10 @@ public class CalcArmAngleHelper {
     return Math.toDegrees(Math.asin(height / lenHypotenuse));
   }
 
+  /**
+   * Given a signed angle at which the Robot arm is pointed, calculates the string length
+   * from the winch to the arm's back end.
+   */
   public Result calcStringLengthForSignedDegrees(double signedDegrees) {
     double maxStringLen = m_lengthFromWinchToPivotPoint + m_lengthFromPivotPointToArmBackEnd;
     double minStringLen = m_lengthFromWinchToPivotPoint - m_lengthFromPivotPointToArmBackEnd;

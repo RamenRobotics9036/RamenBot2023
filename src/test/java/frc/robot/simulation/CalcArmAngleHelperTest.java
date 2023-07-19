@@ -122,4 +122,48 @@ public class CalcArmAngleHelperTest {
     assertEquals(result.m_value, expectedResult, UnitConversions.kDoubleTolerance);
     assertTrue(result.m_isValid);
   }
+
+  @Test
+  public void calcStringLenFor45Degrees() {
+    double degrees = 45;
+    double expectedResult = 0.823223;
+
+    Result result = m_calcArmAngleHelper.calcStringLengthForSignedDegrees(degrees);
+
+    assertEquals(result.m_value, expectedResult, UnitConversions.kAngleTolerance);
+    assertTrue(result.m_isValid);
+  }
+
+  @Test
+  public void calcStringLenForNegative45Degrees() {
+    double degrees = -45;
+    double expectedResult = 1.17677669;
+
+    Result result = m_calcArmAngleHelper.calcStringLengthForSignedDegrees(degrees);
+
+    assertEquals(result.m_value, expectedResult, UnitConversions.kAngleTolerance);
+    assertTrue(result.m_isValid);
+  }
+
+  @Test
+  public void calcStringLenFor91Degrees() {
+    double degrees = 91;
+    double expectedResult = m_armHeightFromWinchToPivotPoint - m_armLengthFromEdgeToPivot;
+
+    Result result = m_calcArmAngleHelper.calcStringLengthForSignedDegrees(degrees);
+
+    assertEquals(result.m_value, expectedResult, UnitConversions.kDoubleTolerance);
+    assertTrue(!result.m_isValid);
+  }
+
+  @Test
+  public void calcStringLenForNegative91Degrees() {
+    double degrees = -91;
+    double expectedResult = m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot;
+
+    Result result = m_calcArmAngleHelper.calcStringLengthForSignedDegrees(degrees);
+
+    assertEquals(result.m_value, expectedResult, UnitConversions.kDoubleTolerance);
+    assertTrue(!result.m_isValid);
+  }
 }
