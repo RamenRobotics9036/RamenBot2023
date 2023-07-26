@@ -21,23 +21,23 @@ import org.junit.jupiter.api.Test;
  * Tests the ArmSimulation class.
  */
 public class ArmSimulationTest {
-  private final double m_armTopRotationsLimit = 0.25;
-  private final double m_armBottomRotationsLimit = 0.75;
-  private final double m_armDeltaRotationsBeforeBroken = 0;
-  private final double m_grabberBreaksIfOpenBelowThisLimit = 0.80;
+  private final ArmSimulationParams m_defaultArmParams;
   private final double m_winchSpoolDiameterMeters = 0.01; // (1 centimeter)
   private final double m_winchTotalStringLenMeters = 5;
   private final double m_winchInitialLenSpooled = 4;
   private final WindingOrientation m_winchInitialStringOrientation = WindingOrientation.BackOfRobot;
   private final boolean m_winchinvertMotor = false;
-  private final double m_armHeightFromWinchToPivotPoint = 1;
-  private final double m_armLengthFromEdgeToPivot = 0.5; // The pivot is halfway down the arm
-  private final double m_armLengthFromEdgeToPivotMin = 0.1;
-  private final double m_encoderPositionOffsetRotations = 0;
 
   private WinchSimModel m_winchSimulation;
   private DutyCycleEncoder m_winchAbsoluteEncoder = null;
   private DutyCycleEncoderSim m_winchAbsoluteEncoderSim = null;
+
+  /**
+   * Constructor.
+   */
+  public ArmSimulationTest() {
+    m_defaultArmParams = new ArmSimulationParams(0.25, 0.75, 0, 0.80, 1, 0.5, 0.1, 0);
+  }
 
   /**
    * Runs before every test.
@@ -70,11 +70,9 @@ public class ArmSimulationTest {
       return m_winchSimulation.getStringUnspooledLen();
     };
 
+    // Copy parameters from the Default Arm Parameters
     ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_armTopRotationsLimit, m_armBottomRotationsLimit,
-        m_armDeltaRotationsBeforeBroken, m_grabberBreaksIfOpenBelowThisLimit,
-        m_armHeightFromWinchToPivotPoint, m_armLengthFromEdgeToPivot, m_armLengthFromEdgeToPivotMin,
-        m_encoderPositionOffsetRotations);
+        m_winchAbsoluteEncoderSim, m_defaultArmParams);
 
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempArmSimulation.getIsBroken() && !m_winchSimulation.getIsBroken());
@@ -84,17 +82,14 @@ public class ArmSimulationTest {
   public void nullWinchSimShouldThrowException() {
     assertThrows(IllegalArgumentException.class, () -> {
       ArmSimulation tempArmSimulation = new ArmSimulation(null, m_winchAbsoluteEncoderSim,
-          m_armTopRotationsLimit, m_armBottomRotationsLimit, m_armDeltaRotationsBeforeBroken,
-          m_grabberBreaksIfOpenBelowThisLimit, m_armHeightFromWinchToPivotPoint,
-          m_armLengthFromEdgeToPivot, m_armLengthFromEdgeToPivotMin,
-          m_encoderPositionOffsetRotations);
+          m_defaultArmParams);
       assertTrue(tempArmSimulation != null);
     });
   }
 
   @Test
   public void armUpWithGrabberInitiallyOpenShouldSucceed() {
-    double lengthStringExtended = m_armHeightFromWinchToPivotPoint - 0.5;
+    double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint - 0.5;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
     WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
@@ -107,10 +102,7 @@ public class ArmSimulationTest {
     };
 
     ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_armTopRotationsLimit, m_armBottomRotationsLimit,
-        m_armDeltaRotationsBeforeBroken, m_grabberBreaksIfOpenBelowThisLimit,
-        m_armHeightFromWinchToPivotPoint, m_armLengthFromEdgeToPivot, m_armLengthFromEdgeToPivotMin,
-        m_encoderPositionOffsetRotations);
+        m_winchAbsoluteEncoderSim, m_defaultArmParams);
 
     // Set grabber open
     BooleanSupplier isGrabberOpen = () -> true;
@@ -125,7 +117,7 @@ public class ArmSimulationTest {
 
   @Test
   public void armDownWithGrabberInitiallyOpenShouldFail() {
-    double lengthStringExtended = m_armHeightFromWinchToPivotPoint + 0.5;
+    double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint + 0.5;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
     WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
@@ -138,10 +130,7 @@ public class ArmSimulationTest {
     };
 
     ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_armTopRotationsLimit, m_armBottomRotationsLimit,
-        m_armDeltaRotationsBeforeBroken, m_grabberBreaksIfOpenBelowThisLimit,
-        m_armHeightFromWinchToPivotPoint, m_armLengthFromEdgeToPivot, m_armLengthFromEdgeToPivotMin,
-        m_encoderPositionOffsetRotations);
+        m_winchAbsoluteEncoderSim, m_defaultArmParams);
 
     // Set grabber open
     BooleanSupplier isGrabberOpen = () -> true;
@@ -160,12 +149,14 @@ public class ArmSimulationTest {
 
   @Test
   public void movingArmDownwardPastBreakLimitWithGrabberOpenShouldNotMoveArm() {
-    double breakLimitSignedDegrees = (m_grabberBreaksIfOpenBelowThisLimit * 360) - 360;
+    double breakLimitSignedDegrees = (m_defaultArmParams.m_grabberBreaksIfOpenBelowThisLimit * 360)
+        - 360;
     double initialPosSignedDegrees = breakLimitSignedDegrees + 4;
 
-    double backArmAbovePivot = -1
-        * (m_armLengthFromEdgeToPivot * Math.sin(initialPosSignedDegrees * Math.PI / 180));
-    double lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
+    double backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
+        * Math.sin(initialPosSignedDegrees * Math.PI / 180));
+    double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint
+        + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
     WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
@@ -178,10 +169,7 @@ public class ArmSimulationTest {
     };
 
     ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_armTopRotationsLimit, m_armBottomRotationsLimit,
-        m_armDeltaRotationsBeforeBroken, m_grabberBreaksIfOpenBelowThisLimit,
-        m_armHeightFromWinchToPivotPoint, m_armLengthFromEdgeToPivot, m_armLengthFromEdgeToPivotMin,
-        m_encoderPositionOffsetRotations);
+        m_winchAbsoluteEncoderSim, m_defaultArmParams);
 
     // Initialize the number of rotations
     tempwinchSimulation.updateNewLenSpooled(0);
@@ -205,9 +193,9 @@ public class ArmSimulationTest {
     double targetPosSignedDegrees = breakLimitSignedDegrees - 4;
 
     // Now calculate how much to turn the winch motor to get it to the target position
-    backArmAbovePivot = -1
-        * (m_armLengthFromEdgeToPivot * Math.sin(targetPosSignedDegrees * Math.PI / 180));
-    lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
+    backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
+        * Math.sin(targetPosSignedDegrees * Math.PI / 180));
+    lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint + backArmAbovePivot;
     double winchTargetLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
     double spoolCircumferenceMeters = Math.PI * m_winchSpoolDiameterMeters;
@@ -230,12 +218,14 @@ public class ArmSimulationTest {
 
   @Test
   public void movingArmWithGrabberOpenShouldSucceedIfArmIsTowardsTop() {
-    double breakLimitSignedDegrees = (m_grabberBreaksIfOpenBelowThisLimit * 360) - 360;
+    double breakLimitSignedDegrees = (m_defaultArmParams.m_grabberBreaksIfOpenBelowThisLimit * 360)
+        - 360;
     double initialPosSignedDegrees = breakLimitSignedDegrees + 4;
 
-    double backArmAbovePivot = -1
-        * (m_armLengthFromEdgeToPivot * Math.sin(initialPosSignedDegrees * Math.PI / 180));
-    double lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
+    double backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
+        * Math.sin(initialPosSignedDegrees * Math.PI / 180));
+    double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint
+        + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
     WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
@@ -248,10 +238,7 @@ public class ArmSimulationTest {
     };
 
     ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_armTopRotationsLimit, m_armBottomRotationsLimit,
-        m_armDeltaRotationsBeforeBroken, m_grabberBreaksIfOpenBelowThisLimit,
-        m_armHeightFromWinchToPivotPoint, m_armLengthFromEdgeToPivot, m_armLengthFromEdgeToPivotMin,
-        m_encoderPositionOffsetRotations);
+        m_winchAbsoluteEncoderSim, m_defaultArmParams);
 
     // Initialize the number of rotations
     tempwinchSimulation.updateNewLenSpooled(0);
@@ -275,9 +262,9 @@ public class ArmSimulationTest {
     double targetPosSignedDegrees = breakLimitSignedDegrees + 8;
 
     // Now calculate how much to turn the winch motor to get it to the target position
-    backArmAbovePivot = -1
-        * (m_armLengthFromEdgeToPivot * Math.sin(targetPosSignedDegrees * Math.PI / 180));
-    lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
+    backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
+        * Math.sin(targetPosSignedDegrees * Math.PI / 180));
+    lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint + backArmAbovePivot;
     double winchTargetLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
     double spoolCircumferenceMeters = Math.PI * m_winchSpoolDiameterMeters;
@@ -300,12 +287,14 @@ public class ArmSimulationTest {
 
   @Test
   public void movingArmUpwardFromBreakLimitWithGrabberOpenShouldSucceed() {
-    double breakLimitSignedDegrees = (m_grabberBreaksIfOpenBelowThisLimit * 360) - 360;
+    double breakLimitSignedDegrees = (m_defaultArmParams.m_grabberBreaksIfOpenBelowThisLimit * 360)
+        - 360;
     double initialPosSignedDegrees = breakLimitSignedDegrees;
 
-    double backArmAbovePivot = -1
-        * (m_armLengthFromEdgeToPivot * Math.sin(initialPosSignedDegrees * Math.PI / 180));
-    double lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
+    double backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
+        * Math.sin(initialPosSignedDegrees * Math.PI / 180));
+    double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint
+        + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
     WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
@@ -318,10 +307,7 @@ public class ArmSimulationTest {
     };
 
     ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_armTopRotationsLimit, m_armBottomRotationsLimit,
-        m_armDeltaRotationsBeforeBroken, m_grabberBreaksIfOpenBelowThisLimit,
-        m_armHeightFromWinchToPivotPoint, m_armLengthFromEdgeToPivot, m_armLengthFromEdgeToPivotMin,
-        m_encoderPositionOffsetRotations);
+        m_winchAbsoluteEncoderSim, m_defaultArmParams);
 
     // Initialize the number of rotations
     tempwinchSimulation.updateNewLenSpooled(0);
@@ -345,9 +331,9 @@ public class ArmSimulationTest {
     double targetPosSignedDegrees = breakLimitSignedDegrees + 8;
 
     // Now calculate how much to turn the winch motor to get it to the target position
-    backArmAbovePivot = -1
-        * (m_armLengthFromEdgeToPivot * Math.sin(targetPosSignedDegrees * Math.PI / 180));
-    lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
+    backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
+        * Math.sin(targetPosSignedDegrees * Math.PI / 180));
+    lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint + backArmAbovePivot;
     double winchTargetLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
     double spoolCircumferenceMeters = Math.PI * m_winchSpoolDiameterMeters;
@@ -370,12 +356,14 @@ public class ArmSimulationTest {
 
   @Test
   public void movingAlreadyBrokenArmShouldNotMoveArm() {
-    double breakLimitSignedDegrees = (m_grabberBreaksIfOpenBelowThisLimit * 360) - 360;
+    double breakLimitSignedDegrees = (m_defaultArmParams.m_grabberBreaksIfOpenBelowThisLimit * 360)
+        - 360;
     double initialPosSignedDegrees = breakLimitSignedDegrees - 4;
 
-    double backArmAbovePivot = -1
-        * (m_armLengthFromEdgeToPivot * Math.sin(initialPosSignedDegrees * Math.PI / 180));
-    double lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
+    double backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
+        * Math.sin(initialPosSignedDegrees * Math.PI / 180));
+    double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint
+        + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
     WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
@@ -388,10 +376,7 @@ public class ArmSimulationTest {
     };
 
     ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_armTopRotationsLimit, m_armBottomRotationsLimit,
-        m_armDeltaRotationsBeforeBroken, m_grabberBreaksIfOpenBelowThisLimit,
-        m_armHeightFromWinchToPivotPoint, m_armLengthFromEdgeToPivot, m_armLengthFromEdgeToPivotMin,
-        m_encoderPositionOffsetRotations);
+        m_winchAbsoluteEncoderSim, m_defaultArmParams);
 
     // Set grabber open
     BooleanSupplier isGrabberOpen = () -> true;
@@ -412,9 +397,9 @@ public class ArmSimulationTest {
     double targetPosSignedDegrees = breakLimitSignedDegrees + 8;
 
     // Now calculate how much to turn the winch motor to get it to the target position
-    backArmAbovePivot = -1
-        * (m_armLengthFromEdgeToPivot * Math.sin(targetPosSignedDegrees * Math.PI / 180));
-    lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
+    backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
+        * Math.sin(targetPosSignedDegrees * Math.PI / 180));
+    lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint + backArmAbovePivot;
     double winchTargetLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
     double spoolCircumferenceMeters = Math.PI * m_winchSpoolDiameterMeters;
@@ -438,7 +423,8 @@ public class ArmSimulationTest {
   private void createWithDegreeArmHelper(double backArmAbovePivot,
       double expectedDegrees,
       boolean expectArmBroken) {
-    double lengthStringExtended = m_armHeightFromWinchToPivotPoint + backArmAbovePivot;
+    double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint
+        + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
     WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
@@ -451,10 +437,7 @@ public class ArmSimulationTest {
     };
 
     ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_armTopRotationsLimit, m_armBottomRotationsLimit,
-        m_armDeltaRotationsBeforeBroken, m_grabberBreaksIfOpenBelowThisLimit,
-        m_armHeightFromWinchToPivotPoint, m_armLengthFromEdgeToPivot, m_armLengthFromEdgeToPivotMin,
-        m_encoderPositionOffsetRotations);
+        m_winchAbsoluteEncoderSim, m_defaultArmParams);
 
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempwinchSimulation.getIsBroken());
@@ -531,7 +514,7 @@ public class ArmSimulationTest {
   // Sometimes, the absolute encoder is offset, and 0 isn't level
   @Test
   public void createWithOffsetShouldSucceed() {
-    double lengthStringExtended = m_armHeightFromWinchToPivotPoint - 0.35355;
+    double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint - 0.35355;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
     double offsetRotations = 0.25;
 
@@ -544,11 +527,18 @@ public class ArmSimulationTest {
       return tempwinchSimulation.getStringUnspooledLen();
     };
 
+    ArmSimulationParamsBuilder tempArmParamsBuilder = new ArmSimulationParamsBuilder(
+        m_defaultArmParams);
+
+    tempArmParamsBuilder
+        .setTopRotationsLimit(m_defaultArmParams.m_topRotationsLimit + offsetRotations)
+        .setBottomRotationsLimit(m_defaultArmParams.m_bottomRotationsLimit + offsetRotations)
+        .setGrabberBreaksIfOpenBelowThisLimit(
+            m_defaultArmParams.m_grabberBreaksIfOpenBelowThisLimit + offsetRotations)
+        .setEncoderRotationsOffset(offsetRotations);
+
     ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_armTopRotationsLimit + offsetRotations,
-        m_armBottomRotationsLimit + offsetRotations, m_armDeltaRotationsBeforeBroken,
-        m_grabberBreaksIfOpenBelowThisLimit + offsetRotations, m_armHeightFromWinchToPivotPoint,
-        m_armLengthFromEdgeToPivot, m_armLengthFromEdgeToPivotMin, offsetRotations);
+        m_winchAbsoluteEncoderSim, tempArmParamsBuilder.build());
 
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempwinchSimulation.getIsBroken());

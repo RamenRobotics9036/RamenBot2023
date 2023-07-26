@@ -26,37 +26,32 @@ public class ArmSimulation {
    */
   public ArmSimulation(DoubleSupplier stringUnspooledLenSupplier,
       DutyCycleEncoderSim winchAbsoluteEncoderSim,
-      double topRotationsLimit,
-      double bottomRotationsLimit,
-      double deltaRotationsBeforeBroken, // $TODO Just make caller pass in degrees
-      double grabberBreaksIfOpenBelowThisLimit,
-      double heightFromWinchToPivotPoint,
-      double armLengthFromEdgeToPivot,
-      double armLengthFromEdgeToPivotMin,
-      double encoderRotationsOffset) {
+      ArmSimulationParams armParams) {
 
     if (stringUnspooledLenSupplier == null) {
       throw new IllegalArgumentException("stringUnspooledLenSupplier");
     }
 
-    if (armLengthFromEdgeToPivot < armLengthFromEdgeToPivotMin) {
+    // $TODO - Just store armParams as an instance variable, rather than copying all the
+    // values out of it
+    if (armParams.m_armLengthFromEdgeToPivot < armParams.m_armLengthFromEdgeToPivotMin) {
       throw new IllegalArgumentException("armLengthFromEdgeToPivot needs to be at least "
-          + armLengthFromEdgeToPivotMin + " meters, otherwise the arm cant be pivoted");
+          + armParams.m_armLengthFromEdgeToPivotMin + " meters, otherwise the arm cant be pivoted");
     }
 
-    if (encoderRotationsOffset < 0 || encoderRotationsOffset >= 1) {
+    if (armParams.m_encoderRotationsOffset < 0 || armParams.m_encoderRotationsOffset >= 1) {
       throw new IllegalArgumentException("encoderRotationsOffset must be between 0 and 1");
     }
 
     m_topSignedDegreesLimit = toNonOffsetSignedDegrees(
-        topRotationsLimit + deltaRotationsBeforeBroken,
-        encoderRotationsOffset);
+        armParams.m_topRotationsLimit + armParams.m_deltaRotationsBeforeBroken,
+        armParams.m_encoderRotationsOffset);
     m_bottomSignedDegreesLimit = toNonOffsetSignedDegrees(
-        bottomRotationsLimit - deltaRotationsBeforeBroken,
-        encoderRotationsOffset);
+        armParams.m_bottomRotationsLimit - armParams.m_deltaRotationsBeforeBroken,
+        armParams.m_encoderRotationsOffset);
     m_grabberBreaksIfOpenBelowSignedDegreesLimit = toNonOffsetSignedDegrees(
-        grabberBreaksIfOpenBelowThisLimit,
-        encoderRotationsOffset);
+        armParams.m_grabberBreaksIfOpenBelowThisLimit,
+        armParams.m_encoderRotationsOffset);
 
     if (!UnitConversions.isInRightHalfPlane(m_topSignedDegreesLimit)) {
       throw new IllegalArgumentException("m_topSignedDegreesLimit must be between -90 and 90");
@@ -85,11 +80,11 @@ public class ArmSimulation {
 
     m_stringUnspooledLenSupplier = stringUnspooledLenSupplier;
     m_winchAbsoluteEncoderSim = winchAbsoluteEncoderSim;
-    m_encoderRotationsOffset = encoderRotationsOffset;
+    m_encoderRotationsOffset = armParams.m_encoderRotationsOffset;
     m_isBroken = false;
 
-    m_calcArmAngleHelper = new CalcArmAngleHelper(heightFromWinchToPivotPoint,
-        armLengthFromEdgeToPivot);
+    m_calcArmAngleHelper = new CalcArmAngleHelper(armParams.m_heightFromWinchToPivotPoint,
+        armParams.m_armLengthFromEdgeToPivot);
 
     // Forces the absolute encoder to show the correct position
     updateAbsoluteEncoderPosition();
