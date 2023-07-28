@@ -36,7 +36,14 @@ public class ArmSimulationTest {
    * Constructor.
    */
   public ArmSimulationTest() {
-    m_defaultArmParams = new ArmSimulationParams(0.25, 0.75, 0, 0.80, 1, 0.5, 0.1, 0);
+    m_defaultArmParams = new ArmSimulationParams(0.25, // topRotationsLimit
+        0.75, // bottomRotationsLimit
+        0, // deltaRotationsBeforeBroken
+        0.80, // grabberBreaksIfOpenBelowThisLimit
+        1, // heightFromWinchToPivotPoint
+        0.5, // armLengthFromEdgeToPivot
+        0.1, // armLengthFromEdgeToPivotMin
+        0); // encoderRotationsOffset
   }
 
   /**
@@ -63,16 +70,46 @@ public class ArmSimulationTest {
     }
   }
 
-  @Test
-  public void createArmSimulationShouldSucceed() {
+  private ArmSimulation createDefaultArmHelper(WinchSimModel winchSimulation,
+      boolean initialIsGrabberOpen) {
     // Create a DoubleSupplier that gets the value getStringUnspooledLen()
     DoubleSupplier stringUnspooledLenSupplier = () -> {
-      return m_winchSimulation.getStringUnspooledLen();
+      return winchSimulation.getStringUnspooledLen();
     };
 
     // Copy parameters from the Default Arm Parameters
-    ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
+    ArmSimulation armSimulation = new ArmSimulation(stringUnspooledLenSupplier,
         m_winchAbsoluteEncoderSim, m_defaultArmParams);
+
+    // Set grabber
+    BooleanSupplier isGrabberOpen = () -> initialIsGrabberOpen;
+    armSimulation.setGrabberOpenSupplier(isGrabberOpen);
+
+    assertTrue(armSimulation != null);
+    assertTrue(!winchSimulation.getIsBroken());
+    assertTrue(!armSimulation.getIsBroken());
+
+    return armSimulation;
+  }
+
+  private ArmSimulation createDefaultArm() {
+    return createDefaultArmHelper(m_winchSimulation, false);
+  }
+
+  private WinchSimModel createWinchSimulation(double winchInitialLenSpooled) {
+    WinchSimModel winchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
+        m_winchTotalStringLenMeters, winchInitialLenSpooled, m_winchInitialStringOrientation,
+        m_winchinvertMotor);
+
+    assertTrue(winchSimulation != null);
+    assertTrue(!winchSimulation.getIsBroken());
+
+    return winchSimulation;
+  }
+
+  @Test
+  public void createArmSimulationShouldSucceed() {
+    ArmSimulation tempArmSimulation = createDefaultArm();
 
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempArmSimulation.getIsBroken() && !m_winchSimulation.getIsBroken());
@@ -92,25 +129,11 @@ public class ArmSimulationTest {
     double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint - 0.5;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
-        m_winchTotalStringLenMeters, winchInitialLenSpooled, m_winchInitialStringOrientation,
-        m_winchinvertMotor);
-
-    // Create a DoubleSupplier that gets the value getStringUnspooledLen()
-    DoubleSupplier stringUnspooledLenSupplier = () -> {
-      return tempwinchSimulation.getStringUnspooledLen();
-    };
-
-    ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_defaultArmParams);
-
-    // Set grabber open
-    BooleanSupplier isGrabberOpen = () -> true;
-    tempArmSimulation.setGrabberOpenSupplier(isGrabberOpen);
+    WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
+    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true);
 
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempwinchSimulation.getIsBroken());
-
     assertTrue(!tempArmSimulation.getIsBroken());
     assertEquals(m_winchAbsoluteEncoder.get() * 360, 90, UnitConversions.kAngleTolerance);
   }
@@ -120,25 +143,8 @@ public class ArmSimulationTest {
     double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint + 0.5;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
-        m_winchTotalStringLenMeters, winchInitialLenSpooled, m_winchInitialStringOrientation,
-        m_winchinvertMotor);
-
-    // Create a DoubleSupplier that gets the value getStringUnspooledLen()
-    DoubleSupplier stringUnspooledLenSupplier = () -> {
-      return tempwinchSimulation.getStringUnspooledLen();
-    };
-
-    ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_defaultArmParams);
-
-    // Set grabber open
-    BooleanSupplier isGrabberOpen = () -> true;
-    tempArmSimulation.setGrabberOpenSupplier(isGrabberOpen);
-
-    assertTrue(tempArmSimulation != null);
-    assertTrue(!tempwinchSimulation.getIsBroken());
-    assertTrue(!tempArmSimulation.getIsBroken());
+    WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
+    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true);
 
     // Now that grabber is set open, need to simulate one cycle
     tempArmSimulation.simulationPeriodic();
@@ -159,28 +165,11 @@ public class ArmSimulationTest {
         + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
-        m_winchTotalStringLenMeters, winchInitialLenSpooled, m_winchInitialStringOrientation,
-        m_winchinvertMotor);
-
-    // Create a DoubleSupplier that gets the value getStringUnspooledLen()
-    DoubleSupplier stringUnspooledLenSupplier = () -> {
-      return tempwinchSimulation.getStringUnspooledLen();
-    };
-
-    ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_defaultArmParams);
+    WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
+    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true);
 
     // Initialize the number of rotations
     tempwinchSimulation.updateNewLenSpooled(0);
-
-    // Set grabber open
-    BooleanSupplier isGrabberOpen = () -> true;
-    tempArmSimulation.setGrabberOpenSupplier(isGrabberOpen);
-
-    assertTrue(tempArmSimulation != null);
-    assertTrue(!tempwinchSimulation.getIsBroken());
-    assertTrue(!tempArmSimulation.getIsBroken());
 
     // Now that grabber is set open, need to simulate one cycle
     tempArmSimulation.simulationPeriodic();
@@ -228,28 +217,11 @@ public class ArmSimulationTest {
         + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
-        m_winchTotalStringLenMeters, winchInitialLenSpooled, m_winchInitialStringOrientation,
-        m_winchinvertMotor);
-
-    // Create a DoubleSupplier that gets the value getStringUnspooledLen()
-    DoubleSupplier stringUnspooledLenSupplier = () -> {
-      return tempwinchSimulation.getStringUnspooledLen();
-    };
-
-    ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_defaultArmParams);
+    WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
+    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true);
 
     // Initialize the number of rotations
     tempwinchSimulation.updateNewLenSpooled(0);
-
-    // Set grabber open
-    BooleanSupplier isGrabberOpen = () -> true;
-    tempArmSimulation.setGrabberOpenSupplier(isGrabberOpen);
-
-    assertTrue(tempArmSimulation != null);
-    assertTrue(!tempwinchSimulation.getIsBroken());
-    assertTrue(!tempArmSimulation.getIsBroken());
 
     // Now that grabber is set open, need to simulate one cycle
     tempArmSimulation.simulationPeriodic();
@@ -297,28 +269,11 @@ public class ArmSimulationTest {
         + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
-        m_winchTotalStringLenMeters, winchInitialLenSpooled, m_winchInitialStringOrientation,
-        m_winchinvertMotor);
-
-    // Create a DoubleSupplier that gets the value getStringUnspooledLen()
-    DoubleSupplier stringUnspooledLenSupplier = () -> {
-      return tempwinchSimulation.getStringUnspooledLen();
-    };
-
-    ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_defaultArmParams);
+    WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
+    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true);
 
     // Initialize the number of rotations
     tempwinchSimulation.updateNewLenSpooled(0);
-
-    // Set grabber open
-    BooleanSupplier isGrabberOpen = () -> true;
-    tempArmSimulation.setGrabberOpenSupplier(isGrabberOpen);
-
-    assertTrue(tempArmSimulation != null);
-    assertTrue(!tempwinchSimulation.getIsBroken());
-    assertTrue(!tempArmSimulation.getIsBroken());
 
     // Now that grabber is set open, need to simulate one cycle
     tempArmSimulation.simulationPeriodic();
@@ -366,25 +321,8 @@ public class ArmSimulationTest {
         + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
-        m_winchTotalStringLenMeters, winchInitialLenSpooled, m_winchInitialStringOrientation,
-        m_winchinvertMotor);
-
-    // Create a DoubleSupplier that gets the value getStringUnspooledLen()
-    DoubleSupplier stringUnspooledLenSupplier = () -> {
-      return tempwinchSimulation.getStringUnspooledLen();
-    };
-
-    ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_defaultArmParams);
-
-    // Set grabber open
-    BooleanSupplier isGrabberOpen = () -> true;
-    tempArmSimulation.setGrabberOpenSupplier(isGrabberOpen);
-
-    assertTrue(tempArmSimulation != null);
-    assertTrue(!tempwinchSimulation.getIsBroken());
-    assertTrue(!tempArmSimulation.getIsBroken());
+    WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
+    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true);
 
     // Now that grabber is set open, need to simulate one cycle
     tempArmSimulation.simulationPeriodic();
@@ -427,9 +365,8 @@ public class ArmSimulationTest {
         + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
-        m_winchTotalStringLenMeters, winchInitialLenSpooled, m_winchInitialStringOrientation,
-        m_winchinvertMotor);
+    // $TODO - Can I call createDefaultArmHelper here?
+    WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
 
     // Create a DoubleSupplier that gets the value getStringUnspooledLen()
     DoubleSupplier stringUnspooledLenSupplier = () -> {
@@ -518,9 +455,7 @@ public class ArmSimulationTest {
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
     double offsetRotations = 0.25;
 
-    WinchSimModel tempwinchSimulation = new WinchSimModel(m_winchSpoolDiameterMeters,
-        m_winchTotalStringLenMeters, winchInitialLenSpooled, m_winchInitialStringOrientation,
-        m_winchinvertMotor);
+    WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
 
     // Create a DoubleSupplier that gets the value getStringUnspooledLen()
     DoubleSupplier stringUnspooledLenSupplier = () -> {
