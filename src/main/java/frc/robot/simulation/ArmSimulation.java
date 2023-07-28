@@ -174,7 +174,7 @@ public class ArmSimulation {
 
     // $TODO cleanup
     double newAbsoluteEncoderNonSignedDegrees = UnitConversions
-        .toUnsignedDegrees(newAbsoluteEncoderSignedDegrees);
+        .toUnsignedDegreesFromSignedDegrees(newAbsoluteEncoderSignedDegrees);
     double newAbsoluteEncoderPosition = newAbsoluteEncoderNonSignedDegrees / 360.0;
 
     double newOffsetAbsoluteEncoderPosition = offsetArmRotationPosition(newAbsoluteEncoderPosition,

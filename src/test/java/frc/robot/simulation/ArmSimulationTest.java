@@ -135,7 +135,9 @@ public class ArmSimulationTest {
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempwinchSimulation.getIsBroken());
     assertTrue(!tempArmSimulation.getIsBroken());
-    assertEquals(m_winchAbsoluteEncoder.get() * 360, 90, UnitConversions.kAngleTolerance);
+    assertEquals(UnitConversions.rotationToSignedDegrees(m_winchAbsoluteEncoder.get()),
+        90,
+        UnitConversions.kAngleTolerance);
   }
 
   @Test
@@ -150,7 +152,9 @@ public class ArmSimulationTest {
     tempArmSimulation.simulationPeriodic();
 
     assertTrue(tempArmSimulation.getIsBroken());
-    assertEquals(m_winchAbsoluteEncoder.get() * 360, 360 - 90, UnitConversions.kAngleTolerance);
+    assertEquals(UnitConversions.rotationToSignedDegrees(m_winchAbsoluteEncoder.get()),
+        -90,
+        UnitConversions.kAngleTolerance);
   }
 
   @Test
@@ -177,7 +181,7 @@ public class ArmSimulationTest {
 
     assertTrue(!tempArmSimulation.getIsBroken());
     double expect = initialPosSignedDegrees + 360;
-    double actual = m_winchAbsoluteEncoder.get() * 360;
+    double actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
     assertEquals(expect, actual, UnitConversions.kAngleTolerance);
 
     double targetPosSignedDegrees = breakLimitSignedDegrees - 4;
@@ -202,7 +206,7 @@ public class ArmSimulationTest {
     // We expect that the arm gets stuck at the break limit, instead of going all the way to the
     // target degrees
     expect = breakLimitSignedDegrees + 360;
-    actual = m_winchAbsoluteEncoder.get() * 360;
+    actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
     assertEquals(expect, actual, UnitConversions.kAngleTolerance);
   }
 
@@ -229,7 +233,7 @@ public class ArmSimulationTest {
 
     assertTrue(!tempArmSimulation.getIsBroken());
     double expect = initialPosSignedDegrees + 360;
-    double actual = m_winchAbsoluteEncoder.get() * 360;
+    double actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
     assertEquals(expect, actual, UnitConversions.kAngleTolerance);
 
     double targetPosSignedDegrees = breakLimitSignedDegrees + 8;
@@ -254,7 +258,7 @@ public class ArmSimulationTest {
     // We expect that the arm gets stuck at the break limit, instead of going all the way to the
     // target degrees
     expect = targetPosSignedDegrees + 360;
-    actual = m_winchAbsoluteEncoder.get() * 360;
+    actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
     assertEquals(expect, actual, UnitConversions.kAngleTolerance);
   }
 
@@ -281,7 +285,7 @@ public class ArmSimulationTest {
 
     assertTrue(!tempArmSimulation.getIsBroken());
     double expect = initialPosSignedDegrees + 360;
-    double actual = m_winchAbsoluteEncoder.get() * 360;
+    double actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
     assertEquals(expect, actual, UnitConversions.kAngleTolerance);
 
     double targetPosSignedDegrees = breakLimitSignedDegrees + 8;
@@ -306,7 +310,7 @@ public class ArmSimulationTest {
     // We expect that the arm gets stuck at the break limit, instead of going all the way to the
     // target degrees
     expect = targetPosSignedDegrees + 360;
-    actual = m_winchAbsoluteEncoder.get() * 360;
+    actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
     assertEquals(expect, actual, UnitConversions.kAngleTolerance);
   }
 
@@ -330,7 +334,7 @@ public class ArmSimulationTest {
 
     assertTrue(tempArmSimulation.getIsBroken());
     double expect = initialPosSignedDegrees + 360;
-    double actual = m_winchAbsoluteEncoder.get() * 360;
+    double actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
     assertEquals(expect, actual, UnitConversions.kAngleTolerance);
 
     double targetPosSignedDegrees = breakLimitSignedDegrees + 8;
@@ -355,7 +359,7 @@ public class ArmSimulationTest {
     // We expect that the arm gets stuck at the break limit, instead of going all the way to the
     // target degrees
     expect = initialPosSignedDegrees + 360;
-    actual = m_winchAbsoluteEncoder.get() * 360;
+    actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
     assertEquals(expect, actual, UnitConversions.kAngleTolerance);
   }
 
@@ -481,7 +485,7 @@ public class ArmSimulationTest {
     assertTrue(!tempArmSimulation.getIsBroken());
 
     double expectedDegrees = 45 + 90;
-    assertEquals(m_winchAbsoluteEncoder.get() * 360,
+    assertEquals(UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get()),
         expectedDegrees,
         UnitConversions.kAngleTolerance);
   }
