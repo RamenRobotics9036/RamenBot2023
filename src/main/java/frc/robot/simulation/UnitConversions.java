@@ -112,6 +112,22 @@ public class UnitConversions {
   }
 
   /**
+   * Converts from Rotation [0, 1] to signed degrees in the range [-180, 180].
+   */
+  public static double rotationToSignedDegrees(double rotation) {
+    double unsignedDegrees = rotation * 360;
+    return UnitConversions.toSignedDegrees(unsignedDegrees);
+  }
+
+  /**
+   * Converts from signed degrees in the range [-180, 180] to Rotation [0, 1].
+   */
+  public static double signedDegreesToRotation(double signedDegrees) {
+    double unsignedDegrees = toUnsignedDegrees(signedDegrees);
+    return unsignedDegrees / 360.0;
+  }
+
+  /**
    * Returns true if the signed angle is between [-180, 180], known as the
    * right half plane.
    *

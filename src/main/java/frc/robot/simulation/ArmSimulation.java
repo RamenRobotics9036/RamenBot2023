@@ -105,8 +105,7 @@ public class ArmSimulation {
    */
   public static double toNonOffsetSignedDegrees(double position, double offset) {
     double positionWithoutOffset = offsetArmRotationPosition(position, -1 * offset);
-    double degreesWithoutOffset = positionWithoutOffset * 360;
-    return UnitConversions.toSignedDegrees(degreesWithoutOffset);
+    return UnitConversions.rotationToSignedDegrees(positionWithoutOffset);
   }
 
   private boolean isInGrabberBreakRange(double positionSignedDegrees) {

@@ -72,12 +72,12 @@ public class ArmSimulationTest {
 
   private ArmSimulation createDefaultArmHelper(WinchSimModel winchSimulation,
       boolean initialIsGrabberOpen) {
+
     // Create a DoubleSupplier that gets the value getStringUnspooledLen()
     DoubleSupplier stringUnspooledLenSupplier = () -> {
       return winchSimulation.getStringUnspooledLen();
     };
 
-    // Copy parameters from the Default Arm Parameters
     ArmSimulation armSimulation = new ArmSimulation(stringUnspooledLenSupplier,
         m_winchAbsoluteEncoderSim, m_defaultArmParams);
 
@@ -155,6 +155,7 @@ public class ArmSimulationTest {
 
   @Test
   public void movingArmDownwardPastBreakLimitWithGrabberOpenShouldNotMoveArm() {
+    // $TODO - I have helper utilities for this?
     double breakLimitSignedDegrees = (m_defaultArmParams.m_grabberBreaksIfOpenBelowThisLimit * 360)
         - 360;
     double initialPosSignedDegrees = breakLimitSignedDegrees + 4;

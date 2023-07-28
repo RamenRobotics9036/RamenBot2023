@@ -89,4 +89,102 @@ public class UnitConversionsTest {
     double expectedUnsignedDegrees = 0;
     assertEquals(expectedUnsignedDegrees, UnitConversions.toUnsignedDegrees(signedDegrees), 0.001);
   }
+
+  @Test
+  void rotationToSignedDegreesTestZeroRotation() {
+    double rotation = 0;
+    double expectedSignedDegrees = 0;
+    assertEquals(expectedSignedDegrees, UnitConversions.rotationToSignedDegrees(rotation), 0.001);
+  }
+
+  @Test
+  void rotationToSignedDegreesTestPositiveRotation() {
+    double rotation = 0.25;
+    double expectedSignedDegrees = 90;
+    assertEquals(expectedSignedDegrees, UnitConversions.rotationToSignedDegrees(rotation), 0.001);
+  }
+
+  @Test
+  void rotationToSignedDegreesTestNegativeRotation() {
+    double rotation = -0.25;
+    double expectedSignedDegrees = -90;
+    assertEquals(expectedSignedDegrees, UnitConversions.rotationToSignedDegrees(rotation), 0.001);
+  }
+
+  @Test
+  void rotationToSignedDegreesTestGreaterThanOneRotation() {
+    double rotation = 1.25;
+    double expectedSignedDegrees = 90;
+    assertEquals(expectedSignedDegrees, UnitConversions.rotationToSignedDegrees(rotation), 0.001);
+  }
+
+  @Test
+  void rotationToSignedDegreesTestLessThanNegativeOneRotation() {
+    double rotation = -1.25;
+    double expectedSignedDegrees = -90;
+    assertEquals(expectedSignedDegrees, UnitConversions.rotationToSignedDegrees(rotation), 0.001);
+  }
+
+  @Test
+  void rotationToSignedDegreesTestMultipleOfOneRotation() {
+    double rotation = 2;
+    double expectedSignedDegrees = 0;
+    assertEquals(expectedSignedDegrees, UnitConversions.rotationToSignedDegrees(rotation), 0.001);
+  }
+
+  @Test
+  void rotationToSignedDegreesTestMultipleOfNegativeOneRotation() {
+    double rotation = -2;
+    double expectedSignedDegrees = 0;
+    assertEquals(expectedSignedDegrees, UnitConversions.rotationToSignedDegrees(rotation), 0.001);
+  }
+
+  @Test
+  void signedDegreesToRotationTestZeroDegrees() {
+    double signedDegrees = 0;
+    double expectedRotation = 0;
+    assertEquals(expectedRotation, UnitConversions.signedDegreesToRotation(signedDegrees), 0.001);
+  }
+
+  @Test
+  void signedDegreesToRotationTestPositiveDegrees() {
+    double signedDegrees = 90;
+    double expectedRotation = 0.25;
+    assertEquals(expectedRotation, UnitConversions.signedDegreesToRotation(signedDegrees), 0.001);
+  }
+
+  @Test
+  void signedDegreesToRotationTestNegativeDegrees() {
+    double signedDegrees = -90;
+    double expectedRotation = 0.75;
+    assertEquals(expectedRotation, UnitConversions.signedDegreesToRotation(signedDegrees), 0.001);
+  }
+
+  @Test
+  void signedDegreesToRotationTestGreaterThan360Degrees() {
+    double signedDegrees = 450;
+    double expectedRotation = 0.25;
+    assertEquals(expectedRotation, UnitConversions.signedDegreesToRotation(signedDegrees), 0.001);
+  }
+
+  @Test
+  void signedDegreesToRotationTestLessThanNegative360Degrees() {
+    double signedDegrees = -450;
+    double expectedRotation = 0.75;
+    assertEquals(expectedRotation, UnitConversions.signedDegreesToRotation(signedDegrees), 0.001);
+  }
+
+  @Test
+  void signedDegreesToRotationTestMultipleOf360Degrees() {
+    double signedDegrees = 720;
+    double expectedRotation = 0;
+    assertEquals(expectedRotation, UnitConversions.signedDegreesToRotation(signedDegrees), 0.001);
+  }
+
+  @Test
+  void signedDegreesToRotationTestMultipleOfNegative360Degrees() {
+    double signedDegrees = -720;
+    double expectedRotation = 0;
+    assertEquals(expectedRotation, UnitConversions.signedDegreesToRotation(signedDegrees), 0.001);
+  }
 }
