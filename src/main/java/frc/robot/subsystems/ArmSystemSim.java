@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import frc.robot.Constants;
 import frc.robot.simulation.ArmSimulation;
+import frc.robot.simulation.ArmSimulationParams;
 import frc.robot.simulation.ExtenderSimulation;
 import frc.robot.simulation.framework.SimManagerInterface;
 import frc.robot.simulation.motor.MotorSimManager;
@@ -89,7 +90,7 @@ public class ArmSystemSim extends ArmSystem {
       return m_winchState.getStringUnspooledLen();
     };
 
-    m_armSimulation = new ArmSimulation(stringUnspooledLenSupplier, m_winchAbsoluteEncoderSim,
+    ArmSimulationParams armParams = new ArmSimulationParams(
         Constants.OperatorConstants.kWinchEncoderUpperLimit,
         Constants.OperatorConstants.kWinchEncoderLowerLimit,
         Constants.SimConstants.kdeltaRotationsBeforeBroken,
@@ -98,6 +99,9 @@ public class ArmSystemSim extends ArmSystem {
         Constants.SimConstants.karmLengthFromEdgeToPivot,
         Constants.SimConstants.klengthFromPivotPointToArmBackEnd_Min,
         Constants.SimConstants.karmEncoderRotationsOffset);
+
+    m_armSimulation = new ArmSimulation(stringUnspooledLenSupplier, m_winchAbsoluteEncoderSim,
+        armParams);
   }
 
   private void createWinchSimParts() {
@@ -105,14 +109,6 @@ public class ArmSystemSim extends ArmSystem {
     m_winchEncoderSim = new RelativeEncoderSim(m_winchEncoder);
 
     m_winchState = new WinchState(Constants.SimConstants.kTotalStringLenMeters);
-
-    // $TODO1 - This should absolutely not be needed... HACK!
-    // Instead, somehow the initial m_winchState should magically be filled
-    // with the right values. But I don't know how to do that yet.
-    m_winchState.setStringUnspooledLen(
-        Constants.SimConstants.kTotalStringLenMeters - Constants.SimConstants.kCurrentLenSpooled);
-    m_winchState.setWindingOrientation(WindingOrientation.BackOfRobot);
-    m_winchState.setIsBroken(false);
 
     // Create the motor simulation for the winch motor
     m_winchMotorSimManager = new MotorSimManager(Constants.SimConstants.kwinchSimGearRatio);

@@ -85,16 +85,8 @@ public class UnitConversions {
    * @param degrees The angle in degrees to be converted.
    * @return The converted angle in signed degrees.
    */
-  public static double toSignedDegrees(double degrees) {
-    double signedDegrees = degrees % 360;
-
-    if (signedDegrees > 180) {
-      signedDegrees -= 360;
-    }
-    else if (signedDegrees < -180) {
-      signedDegrees += 360;
-    }
-    return signedDegrees;
+  public static double toSignedDegreesFromUnsignedDegrees(double degrees) {
+    return clampSignedDegrees(degrees);
   }
 
   /**
@@ -102,13 +94,68 @@ public class UnitConversions {
    *
    * @param signedDegrees The angle in signed degrees to be converted.
    */
-  public static double toUnsignedDegrees(double signedDegrees) {
+  public static double toUnsignedDegreesFromSignedDegrees(double signedDegrees) {
     double unsignedDegrees = signedDegrees % 360;
 
     if (unsignedDegrees < 0) {
       unsignedDegrees += 360;
     }
     return unsignedDegrees;
+  }
+
+  /**
+   * Converts from Rotation [0, 1] to signed degrees in the range [-180, 180].
+   */
+  public static double rotationToSignedDegrees(double rotation) {
+    double unsignedDegrees = rotation * 360;
+    return UnitConversions.toSignedDegreesFromUnsignedDegrees(unsignedDegrees);
+  }
+
+  /**
+   * Converts from signed degrees in the range [-180, 180] to Rotation [0, 1].
+   */
+  public static double signedDegreesToRotation(double signedDegrees) {
+    double unsignedDegrees = toUnsignedDegreesFromSignedDegrees(signedDegrees);
+    return unsignedDegrees / 360.0;
+  }
+
+  public static double rotationToUnsignedDegrees(double rotation) {
+    double signedDegrees = rotationToSignedDegrees(rotation);
+    return toUnsignedDegreesFromSignedDegrees(signedDegrees);
+  }
+
+  public static double unsignedDegreesToRotation(double unsignedDegrees) {
+    double signedDegrees = toSignedDegreesFromUnsignedDegrees(unsignedDegrees);
+    return signedDegreesToRotation(signedDegrees);
+  }
+
+  /**
+   * Ensures that the given angle is in the range [-180, 180].
+   */
+  public static double clampSignedDegrees(double signedDegrees) {
+    double result = signedDegrees % 360;
+
+    if (result > 180) {
+      result -= 360;
+    }
+    else if (result < -180) {
+      result += 360;
+    }
+
+    return result;
+  }
+
+  /**
+   * Ensure that the rotation is in the range [0, 1].
+   */
+  public static double clampRotation(double rotation) {
+    double result = rotation % 1;
+
+    if (result < 0) {
+      result += 1;
+    }
+
+    return result;
   }
 
   /**

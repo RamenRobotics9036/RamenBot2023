@@ -1,8 +1,8 @@
 package frc.robot.simulation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import frc.robot.simulation.CalcArmAngleHelper.Result;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,71 +20,86 @@ public class CalcArmAngleHelperTest {
         m_armLengthFromEdgeToPivot);
   }
 
+  private void calcDegreesHelper(double stringLen, double expectedDegrees, boolean expectIsValid) {
+    Result result = m_calcArmAngleHelper.calcSignedDegreesForStringLength(stringLen);
+
+    assertEquals(result.m_value, expectedDegrees, UnitConversions.kAngleTolerance);
+    assertEquals(result.m_isValid, expectIsValid);
+  }
+
   @Test
-  public void armBeyondFullyUpShouldReturnError() {
+  public void calcDegreesArmBeyondFullyUpShouldReturnError() {
     double amountBeyondLimit = 0.0001;
-
-    double stringLen = (m_armHeightFromWinchToPivotPoint - m_armLengthFromEdgeToPivot
-        - amountBeyondLimit);
-    double expectedResult = 90;
-
-    CalcArmAngleHelper.Result resultPair = m_calcArmAngleHelper
-        .calcSignedDegreesForStringLength(stringLen);
-    assertTrue(!resultPair.m_isValid);
-    assertTrue(resultPair.m_value == expectedResult);
+    calcDegreesHelper(m_armHeightFromWinchToPivotPoint - m_armLengthFromEdgeToPivot
+        - amountBeyondLimit, 90, false);
   }
 
   @Test
-  public void armBeyondFullyDownShouldReturnSuccessSinceStringDangling() {
+  public void calcDegreesArmBeyondFullyDownShouldReturnSuccessSinceStringDangling() {
     double amountBeyondLimit = 0.0001;
-
-    double stringLen = (m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot
-        + amountBeyondLimit);
-    double expectedResult = -90;
-
-    CalcArmAngleHelper.Result resultPair = m_calcArmAngleHelper
-        .calcSignedDegreesForStringLength(stringLen);
-    assertTrue(resultPair.m_isValid);
-    assertTrue(resultPair.m_value == expectedResult);
+    calcDegreesHelper(m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot
+        + amountBeyondLimit, -90, true);
   }
 
   @Test
-  public void armAtFullyUpShouldReturn90Degrees() {
-    double stringLen = (m_armHeightFromWinchToPivotPoint - m_armLengthFromEdgeToPivot);
-    double expectedResult = 90;
-
-    assertEquals(m_calcArmAngleHelper.calcSignedDegreesForStringLength(stringLen).m_value,
-        expectedResult,
-        UnitConversions.kAngleTolerance);
+  public void calcDegreesArmAtFullyUpShouldReturn90Degrees() {
+    calcDegreesHelper(m_armHeightFromWinchToPivotPoint - m_armLengthFromEdgeToPivot, 90, true);
   }
 
   @Test
-  public void armAtFullyDownShouldReturnNegative90Degrees() {
-    double stringLen = m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot;
-    double expectedResult = -90;
-
-    assertEquals(m_calcArmAngleHelper.calcSignedDegreesForStringLength(stringLen).m_value,
-        expectedResult,
-        UnitConversions.kAngleTolerance);
+  public void calcDegreesArmAtFullyDownShouldReturnNegative90Degrees() {
+    calcDegreesHelper(m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot, -90, true);
   }
 
   @Test
-  public void levelArmShouldReturn0Degrees() {
-    double stringLen = m_armHeightFromWinchToPivotPoint;
-    double expectedResult = 0;
-
-    assertEquals(m_calcArmAngleHelper.calcSignedDegreesForStringLength(stringLen).m_value,
-        expectedResult,
-        UnitConversions.kAngleTolerance);
+  public void calcDegreesLevelArmShouldReturn0Degrees() {
+    calcDegreesHelper(m_armHeightFromWinchToPivotPoint, 0, true);
   }
 
   @Test
-  public void armAt45DegreesShouldSucceed() {
-    double stringLen = (m_armHeightFromWinchToPivotPoint - 0.17678);
-    double expectedResult = 45;
+  public void calcDegreesArmAt45DegreesShouldSucceed() {
+    calcDegreesHelper(m_armHeightFromWinchToPivotPoint - 0.17678, 45, true);
+  }
 
-    assertEquals(m_calcArmAngleHelper.calcSignedDegreesForStringLength(stringLen).m_value,
-        expectedResult,
-        UnitConversions.kAngleTolerance);
+  private void calcStringLenHelper(double degrees, double expectedResult, boolean expectIsValid) {
+    Result result = m_calcArmAngleHelper.calcStringLengthForSignedDegrees(degrees);
+
+    assertEquals(result.m_value, expectedResult, UnitConversions.kDoubleTolerance);
+    assertEquals(result.m_isValid, expectIsValid);
+  }
+
+  @Test
+  public void calcStringLenFor0Degrees() {
+    calcStringLenHelper(0, m_armHeightFromWinchToPivotPoint, true);
+  }
+
+  @Test
+  public void calcStringLenFor90Degrees() {
+    calcStringLenHelper(90, m_armHeightFromWinchToPivotPoint - m_armLengthFromEdgeToPivot, true);
+  }
+
+  @Test
+  public void calcStringLenForNegative90Degrees() {
+    calcStringLenHelper(-90, m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot, true);
+  }
+
+  @Test
+  public void calcStringLenFor45Degrees() {
+    calcStringLenHelper(45, 0.8232233047033631, true);
+  }
+
+  @Test
+  public void calcStringLenForNegative45Degrees() {
+    calcStringLenHelper(-45, 1.1767766952966369, true);
+  }
+
+  @Test
+  public void calcStringLenFor91Degrees() {
+    calcStringLenHelper(91, m_armHeightFromWinchToPivotPoint - m_armLengthFromEdgeToPivot, false);
+  }
+
+  @Test
+  public void calcStringLenForNegative91Degrees() {
+    calcStringLenHelper(-91, m_armHeightFromWinchToPivotPoint + m_armLengthFromEdgeToPivot, false);
   }
 }
