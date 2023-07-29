@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
  */
 public class ArmSimulationTest {
   private final ArmSimulationParams m_defaultArmParams;
+  private CalcArmAngleHelper m_calcArmAngleHelper;
   private final double m_winchSpoolDiameterMeters = 0.01; // (1 centimeter)
   private final double m_winchTotalStringLenMeters = 5;
   private final double m_winchInitialLenSpooled = 4;
@@ -44,6 +45,9 @@ public class ArmSimulationTest {
         0.5, // armLengthFromEdgeToPivot
         0.1, // armLengthFromEdgeToPivotMin
         0); // encoderRotationsOffset
+
+    m_calcArmAngleHelper = new CalcArmAngleHelper(m_defaultArmParams.m_heightFromWinchToPivotPoint,
+        m_defaultArmParams.m_armLengthFromEdgeToPivot);
   }
 
   /**
@@ -159,16 +163,13 @@ public class ArmSimulationTest {
 
   @Test
   public void movingArmDownwardPastBreakLimitWithGrabberOpenShouldNotMoveArm() {
-    // $TODO - I have helper utilities for this?
-    double breakLimitSignedDegrees = (m_defaultArmParams.m_grabberBreaksIfOpenBelowThisLimit * 360)
-        - 360;
+    double breakLimitSignedDegrees = UnitConversions
+        .rotationToSignedDegrees(m_defaultArmParams.m_grabberBreaksIfOpenBelowThisLimit);
+
     double initialPosSignedDegrees = breakLimitSignedDegrees + 4;
 
-    double backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
-        * Math.sin(initialPosSignedDegrees * Math.PI / 180));
-    double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint
-        + backArmAbovePivot;
-    double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
+    double winchInitialLenSpooled = m_winchTotalStringLenMeters
+        - m_calcArmAngleHelper.calcAndValidateStringLengthForSignedDegrees(initialPosSignedDegrees);
 
     WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
     ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true);
@@ -187,10 +188,8 @@ public class ArmSimulationTest {
     double targetPosSignedDegrees = breakLimitSignedDegrees - 4;
 
     // Now calculate how much to turn the winch motor to get it to the target position
-    backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
-        * Math.sin(targetPosSignedDegrees * Math.PI / 180));
-    lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint + backArmAbovePivot;
-    double winchTargetLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
+    double winchTargetLenSpooled = m_winchTotalStringLenMeters
+        - m_calcArmAngleHelper.calcAndValidateStringLengthForSignedDegrees(targetPosSignedDegrees);
 
     double spoolCircumferenceMeters = Math.PI * m_winchSpoolDiameterMeters;
     double deltaWinchRotations = (winchInitialLenSpooled - winchTargetLenSpooled)
