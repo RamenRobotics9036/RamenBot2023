@@ -86,10 +86,6 @@ public class RobotContainer {
 
     new Trigger(m_controller2::getYButtonReleased)
         .onTrue(new RetractArmCommand(m_armSystem).andThen(new SetSoftLimitCommand(m_armSystem)));
-
-    new Trigger(m_driveSystem::getCondition).whileTrue(m_driveSystem.driveCommand());
-    new Trigger(m_armSystem::getCondition).whileTrue(m_armSystem.armCommand());
-    new Trigger(m_grabSystem::getCondition).whileTrue(m_grabSystem.grabCommand());
   }
 
   /**
