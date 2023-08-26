@@ -62,18 +62,21 @@ public class RobotContainer {
    * Binds a button on the joystick to a command to run.
    */
   public void configureBindings() {
-    new Trigger(m_controller2::getAButtonReleased).onTrue(
-        new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCone, 1));
+    new Trigger(m_controller2::getAButtonPressed)
+      .whileTrue(new TurnActiveIntake(m_activeIntakeMotor1, m_activeIntakeMotor2, 0.25));
+
+    new Trigger(m_controller2::getBButtonPressed)
+      .whileTrue(new TurnActiveIntake(m_activeIntakeMotor1, m_activeIntakeMotor2, -0.25));
 
     new Trigger(m_controller2::getXButtonReleased).onTrue(
         new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchMiddleNodeCube, 1));
 
-    new Trigger(m_controller2::getBButtonReleased)
-        .onTrue(new RetractArmCommand(m_armSystem).andThen(
-            new SetWinchToAngle(m_armSystem, Constants.OperatorConstants.kWinchGroundAngle, 1)));
-
     new Trigger(m_controller2::getYButtonReleased)
         .onTrue(new RetractArmCommand(m_armSystem).andThen(new SetSoftLimitCommand(m_armSystem)));
+
+        new Trigger(m_driveSystem::getCondition).whileTrue(m_driveSystem.driveCommand());
+        new Trigger(m_armSystem::getCondition).whileTrue(m_armSystem.armCommand());
+        new Trigger(m_grabSystem::getCondition).whileTrue(m_grabSystem.grabCommand());
   }
 
   /**
