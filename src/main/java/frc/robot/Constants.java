@@ -84,6 +84,9 @@ public final class Constants {
 
     public static int kLEDLightsChannel = 9;
     public static int kLEDLightsLength = 40;
+
+    public static Integer kActiveIntakeMotorChannel1 = 21;
+    public static Integer kActiveIntakeMotorChannel2 = 22;
   }
 
   /**
