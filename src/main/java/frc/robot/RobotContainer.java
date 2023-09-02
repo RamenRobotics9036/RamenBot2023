@@ -21,8 +21,8 @@ import frc.robot.subsystems.TankDriveSystem;
 import frc.robot.subsystems.TankDriveSystemSim;
 import java.util.function.BooleanSupplier;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMax; // $TODO1 - Move into subsystem
+import com.revrobotics.CANSparkMaxLowLevel.MotorType; // $TODO1 - Move into subsystem
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -38,8 +38,8 @@ public class RobotContainer {
   public final ArmSystem m_armSystem;
   public final GrabberSystem m_grabSystem;
 
-  private final MotorController m_activeIntakeMotor1;
-  private final MotorController m_activeIntakeMotor2;
+  private final MotorController m_activeIntakeMotor1; // $TODO1 - Move into subsystem
+  private final MotorController m_activeIntakeMotor2; // $TODO1 - Move into subsystem
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -61,6 +61,7 @@ public class RobotContainer {
     m_armSystem = ArmSystemSim.createArmSystemInstance(m_controller2);
     m_grabSystem = GrabberSystemSim.createGrabberSystemInstance(m_controller2);
 
+    // $TODO1 - Move into subsystem
     // Create intake motors
     m_activeIntakeMotor2 = new CANSparkMax(Constants.OperatorConstants.kActiveIntakeMotorChannel1, MotorType.kBrushless);
     if (Constants.OperatorConstants.kActiveIntakeMotorChannel1 != null) {
