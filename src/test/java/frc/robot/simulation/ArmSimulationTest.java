@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
  */
 public class ArmSimulationTest {
   private final ArmSimulationParams m_defaultArmParams;
+  private CalcArmAngleHelper m_calcArmAngleHelper;
   private final double m_winchSpoolDiameterMeters = 0.01; // (1 centimeter)
   private final double m_winchTotalStringLenMeters = 5;
   private final double m_winchInitialLenSpooled = 4;
@@ -44,6 +45,9 @@ public class ArmSimulationTest {
         0.5, // armLengthFromEdgeToPivot
         0.1, // armLengthFromEdgeToPivotMin
         0); // encoderRotationsOffset
+
+    m_calcArmAngleHelper = new CalcArmAngleHelper(m_defaultArmParams.m_heightFromWinchToPivotPoint,
+        m_defaultArmParams.m_armLengthFromEdgeToPivot);
   }
 
   /**
@@ -71,7 +75,8 @@ public class ArmSimulationTest {
   }
 
   private ArmSimulation createDefaultArmHelper(WinchSimModel winchSimulation,
-      boolean initialIsGrabberOpen) {
+      boolean initialIsGrabberOpen,
+      boolean expectArmBroken) {
 
     // Create a DoubleSupplier that gets the value getStringUnspooledLen()
     DoubleSupplier stringUnspooledLenSupplier = () -> {
@@ -87,13 +92,13 @@ public class ArmSimulationTest {
 
     assertTrue(armSimulation != null);
     assertTrue(!winchSimulation.getIsBroken());
-    assertTrue(!armSimulation.getIsBroken());
+    assertTrue(armSimulation.getIsBroken() == expectArmBroken);
 
     return armSimulation;
   }
 
   private ArmSimulation createDefaultArm() {
-    return createDefaultArmHelper(m_winchSimulation, false);
+    return createDefaultArmHelper(m_winchSimulation, false, false);
   }
 
   private WinchSimModel createWinchSimulation(double winchInitialLenSpooled) {
@@ -130,7 +135,7 @@ public class ArmSimulationTest {
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
     WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
-    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true);
+    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true, false);
 
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempwinchSimulation.getIsBroken());
@@ -146,7 +151,7 @@ public class ArmSimulationTest {
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
     WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
-    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true);
+    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true, false);
 
     // Now that grabber is set open, need to simulate one cycle
     tempArmSimulation.simulationPeriodic();
@@ -157,21 +162,26 @@ public class ArmSimulationTest {
         UnitConversions.kAngleTolerance);
   }
 
-  @Test
-  public void movingArmDownwardPastBreakLimitWithGrabberOpenShouldNotMoveArm() {
-    // $TODO - I have helper utilities for this?
-    double breakLimitSignedDegrees = (m_defaultArmParams.m_grabberBreaksIfOpenBelowThisLimit * 360)
-        - 360;
-    double initialPosSignedDegrees = breakLimitSignedDegrees + 4;
+  private void moveArmWithGrabberOpenHelper(double initialDegreesAboveBreakPoint,
+      double targetDegreesAboveBreakPoint,
+      double expectedFinalDegreesAboveBreakPoint,
+      boolean expectedArmInitiallyBroken,
+      boolean expectedWinchIsBroken,
+      boolean expectedIsArmBroken) {
 
-    double backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
-        * Math.sin(initialPosSignedDegrees * Math.PI / 180));
-    double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint
-        + backArmAbovePivot;
-    double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
+    boolean initialIsGrabberOpen = true;
+
+    double breakLimitSignedDegrees = UnitConversions
+        .rotationToSignedDegrees(m_defaultArmParams.m_grabberBreaksIfOpenBelowThisLimit);
+
+    double initialPosSignedDegrees = breakLimitSignedDegrees + initialDegreesAboveBreakPoint;
+    double winchInitialLenSpooled = m_winchTotalStringLenMeters
+        - m_calcArmAngleHelper.calcAndValidateStringLengthForSignedDegrees(initialPosSignedDegrees);
 
     WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
-    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true);
+    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation,
+        initialIsGrabberOpen,
+        false);
 
     // Initialize the number of rotations
     tempwinchSimulation.updateNewLenSpooled(0);
@@ -179,19 +189,16 @@ public class ArmSimulationTest {
     // Now that grabber is set open, need to simulate one cycle
     tempArmSimulation.simulationPeriodic();
 
-    assertTrue(!tempArmSimulation.getIsBroken());
-    double expect = initialPosSignedDegrees + 360;
-    double actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
+    assertTrue(tempArmSimulation.getIsBroken() == expectedArmInitiallyBroken);
+    double expect = initialPosSignedDegrees;
+    double actual = UnitConversions.rotationToSignedDegrees(m_winchAbsoluteEncoder.get());
     assertEquals(expect, actual, UnitConversions.kAngleTolerance);
 
-    double targetPosSignedDegrees = breakLimitSignedDegrees - 4;
+    double targetPosSignedDegrees = breakLimitSignedDegrees + targetDegreesAboveBreakPoint;
+    double winchTargetLenSpooled = m_winchTotalStringLenMeters
+        - m_calcArmAngleHelper.calcAndValidateStringLengthForSignedDegrees(targetPosSignedDegrees);
 
     // Now calculate how much to turn the winch motor to get it to the target position
-    backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
-        * Math.sin(targetPosSignedDegrees * Math.PI / 180));
-    lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint + backArmAbovePivot;
-    double winchTargetLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
-
     double spoolCircumferenceMeters = Math.PI * m_winchSpoolDiameterMeters;
     double deltaWinchRotations = (winchInitialLenSpooled - winchTargetLenSpooled)
         / spoolCircumferenceMeters;
@@ -200,167 +207,82 @@ public class ArmSimulationTest {
     tempwinchSimulation.updateNewLenSpooled(deltaWinchRotations);
     tempArmSimulation.simulationPeriodic();
 
-    assertTrue(!tempwinchSimulation.getIsBroken());
-    assertTrue(!tempArmSimulation.getIsBroken());
+    assertTrue(tempwinchSimulation.getIsBroken() == expectedWinchIsBroken);
+    assertTrue(tempArmSimulation.getIsBroken() == expectedIsArmBroken);
 
+    expect = breakLimitSignedDegrees + expectedFinalDegreesAboveBreakPoint;
+    actual = UnitConversions.rotationToSignedDegrees(m_winchAbsoluteEncoder.get());
+    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
+  }
+
+  @Test
+  public void movingArmDownwardPastBreakLimitWithGrabberOpenShouldNotMoveArm() {
     // We expect that the arm gets stuck at the break limit, instead of going all the way to the
     // target degrees
-    expect = breakLimitSignedDegrees + 360;
-    actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
-    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
+    double initialDegreesAboveBreakPoint = 4;
+    double targetDegreesAboveBreakPoint = -4;
+    double expectedFinalDegreesAboveBreakPoint = 0;
+    boolean expectedArmInitiallyBroken = false;
+    boolean expectedWinchIsBroken = false;
+    boolean expectedIsArmBroken = false;
+
+    moveArmWithGrabberOpenHelper(initialDegreesAboveBreakPoint,
+        targetDegreesAboveBreakPoint,
+        expectedFinalDegreesAboveBreakPoint,
+        expectedArmInitiallyBroken,
+        expectedWinchIsBroken,
+        expectedIsArmBroken);
   }
 
   @Test
   public void movingArmWithGrabberOpenShouldSucceedIfArmIsTowardsTop() {
-    double breakLimitSignedDegrees = (m_defaultArmParams.m_grabberBreaksIfOpenBelowThisLimit * 360)
-        - 360;
-    double initialPosSignedDegrees = breakLimitSignedDegrees + 4;
+    double initialDegreesAboveBreakPoint = 4;
+    double targetDegreesAboveBreakPoint = 8;
+    double expectedFinalDegreesAboveBreakPoint = 8;
+    boolean expectedArmInitiallyBroken = false;
+    boolean expectedWinchIsBroken = false;
+    boolean expectedIsArmBroken = false;
 
-    double backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
-        * Math.sin(initialPosSignedDegrees * Math.PI / 180));
-    double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint
-        + backArmAbovePivot;
-    double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
-
-    WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
-    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true);
-
-    // Initialize the number of rotations
-    tempwinchSimulation.updateNewLenSpooled(0);
-
-    // Now that grabber is set open, need to simulate one cycle
-    tempArmSimulation.simulationPeriodic();
-
-    assertTrue(!tempArmSimulation.getIsBroken());
-    double expect = initialPosSignedDegrees + 360;
-    double actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
-    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
-
-    double targetPosSignedDegrees = breakLimitSignedDegrees + 8;
-
-    // Now calculate how much to turn the winch motor to get it to the target position
-    backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
-        * Math.sin(targetPosSignedDegrees * Math.PI / 180));
-    lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint + backArmAbovePivot;
-    double winchTargetLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
-
-    double spoolCircumferenceMeters = Math.PI * m_winchSpoolDiameterMeters;
-    double deltaWinchRotations = (winchInitialLenSpooled - winchTargetLenSpooled)
-        / spoolCircumferenceMeters;
-
-    // Simulate one cycle for winch, so that it updates
-    tempwinchSimulation.updateNewLenSpooled(deltaWinchRotations);
-    tempArmSimulation.simulationPeriodic();
-
-    assertTrue(!tempwinchSimulation.getIsBroken());
-    assertTrue(!tempArmSimulation.getIsBroken());
-
-    // We expect that the arm gets stuck at the break limit, instead of going all the way to the
-    // target degrees
-    expect = targetPosSignedDegrees + 360;
-    actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
-    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
+    moveArmWithGrabberOpenHelper(initialDegreesAboveBreakPoint,
+        targetDegreesAboveBreakPoint,
+        expectedFinalDegreesAboveBreakPoint,
+        expectedArmInitiallyBroken,
+        expectedWinchIsBroken,
+        expectedIsArmBroken);
   }
 
   @Test
   public void movingArmUpwardFromBreakLimitWithGrabberOpenShouldSucceed() {
-    double breakLimitSignedDegrees = (m_defaultArmParams.m_grabberBreaksIfOpenBelowThisLimit * 360)
-        - 360;
-    double initialPosSignedDegrees = breakLimitSignedDegrees;
+    double initialDegreesAboveBreakPoint = 0;
+    double targetDegreesAboveBreakPoint = 8;
+    double expectedFinalDegreesAboveBreakPoint = 8;
+    boolean expectedArmInitiallyBroken = false;
+    boolean expectedWinchIsBroken = false;
+    boolean expectedIsArmBroken = false;
 
-    double backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
-        * Math.sin(initialPosSignedDegrees * Math.PI / 180));
-    double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint
-        + backArmAbovePivot;
-    double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
-
-    WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
-    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true);
-
-    // Initialize the number of rotations
-    tempwinchSimulation.updateNewLenSpooled(0);
-
-    // Now that grabber is set open, need to simulate one cycle
-    tempArmSimulation.simulationPeriodic();
-
-    assertTrue(!tempArmSimulation.getIsBroken());
-    double expect = initialPosSignedDegrees + 360;
-    double actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
-    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
-
-    double targetPosSignedDegrees = breakLimitSignedDegrees + 8;
-
-    // Now calculate how much to turn the winch motor to get it to the target position
-    backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
-        * Math.sin(targetPosSignedDegrees * Math.PI / 180));
-    lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint + backArmAbovePivot;
-    double winchTargetLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
-
-    double spoolCircumferenceMeters = Math.PI * m_winchSpoolDiameterMeters;
-    double deltaWinchRotations = (winchInitialLenSpooled - winchTargetLenSpooled)
-        / spoolCircumferenceMeters;
-
-    // Simulate one cycle for winch, so that it updates
-    tempwinchSimulation.updateNewLenSpooled(deltaWinchRotations);
-    tempArmSimulation.simulationPeriodic();
-
-    assertTrue(!tempwinchSimulation.getIsBroken());
-    assertTrue(!tempArmSimulation.getIsBroken());
-
-    // We expect that the arm gets stuck at the break limit, instead of going all the way to the
-    // target degrees
-    expect = targetPosSignedDegrees + 360;
-    actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
-    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
+    moveArmWithGrabberOpenHelper(initialDegreesAboveBreakPoint,
+        targetDegreesAboveBreakPoint,
+        expectedFinalDegreesAboveBreakPoint,
+        expectedArmInitiallyBroken,
+        expectedWinchIsBroken,
+        expectedIsArmBroken);
   }
 
   @Test
   public void movingAlreadyBrokenArmShouldNotMoveArm() {
-    double breakLimitSignedDegrees = (m_defaultArmParams.m_grabberBreaksIfOpenBelowThisLimit * 360)
-        - 360;
-    double initialPosSignedDegrees = breakLimitSignedDegrees - 4;
+    double initialDegreesAboveBreakPoint = -4;
+    double targetDegreesAboveBreakPoint = 8;
+    double expectedFinalDegreesAboveBreakPoint = -4;
+    boolean expectedArmInitiallyBroken = true;
+    boolean expectedWinchIsBroken = false;
+    boolean expectedIsArmBroken = true;
 
-    double backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
-        * Math.sin(initialPosSignedDegrees * Math.PI / 180));
-    double lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint
-        + backArmAbovePivot;
-    double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
-
-    WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
-    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation, true);
-
-    // Now that grabber is set open, need to simulate one cycle
-    tempArmSimulation.simulationPeriodic();
-
-    assertTrue(tempArmSimulation.getIsBroken());
-    double expect = initialPosSignedDegrees + 360;
-    double actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
-    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
-
-    double targetPosSignedDegrees = breakLimitSignedDegrees + 8;
-
-    // Now calculate how much to turn the winch motor to get it to the target position
-    backArmAbovePivot = -1 * (m_defaultArmParams.m_armLengthFromEdgeToPivot
-        * Math.sin(targetPosSignedDegrees * Math.PI / 180));
-    lengthStringExtended = m_defaultArmParams.m_heightFromWinchToPivotPoint + backArmAbovePivot;
-    double winchTargetLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
-
-    double spoolCircumferenceMeters = Math.PI * m_winchSpoolDiameterMeters;
-    double deltaWinchRotations = (winchInitialLenSpooled - winchTargetLenSpooled)
-        / spoolCircumferenceMeters;
-
-    // Simulate one cycle for winch, so that it updates
-    tempwinchSimulation.updateNewLenSpooled(deltaWinchRotations);
-    tempArmSimulation.simulationPeriodic();
-
-    assertTrue(!tempwinchSimulation.getIsBroken());
-    assertTrue(tempArmSimulation.getIsBroken());
-
-    // We expect that the arm gets stuck at the break limit, instead of going all the way to the
-    // target degrees
-    expect = initialPosSignedDegrees + 360;
-    actual = UnitConversions.rotationToUnsignedDegrees(m_winchAbsoluteEncoder.get());
-    assertEquals(expect, actual, UnitConversions.kAngleTolerance);
+    moveArmWithGrabberOpenHelper(initialDegreesAboveBreakPoint,
+        targetDegreesAboveBreakPoint,
+        expectedFinalDegreesAboveBreakPoint,
+        expectedArmInitiallyBroken,
+        expectedWinchIsBroken,
+        expectedIsArmBroken);
   }
 
   private void createWithDegreeArmHelper(double backArmAbovePivot,
@@ -370,25 +292,15 @@ public class ArmSimulationTest {
         + backArmAbovePivot;
     double winchInitialLenSpooled = m_winchTotalStringLenMeters - lengthStringExtended;
 
-    // $TODO - Can I call createDefaultArmHelper here?
     WinchSimModel tempwinchSimulation = createWinchSimulation(winchInitialLenSpooled);
-
-    // Create a DoubleSupplier that gets the value getStringUnspooledLen()
-    DoubleSupplier stringUnspooledLenSupplier = () -> {
-      return tempwinchSimulation.getStringUnspooledLen();
-    };
-
-    ArmSimulation tempArmSimulation = new ArmSimulation(stringUnspooledLenSupplier,
-        m_winchAbsoluteEncoderSim, m_defaultArmParams);
+    ArmSimulation tempArmSimulation = createDefaultArmHelper(tempwinchSimulation,
+        false,
+        expectArmBroken);
 
     assertTrue(tempArmSimulation != null);
     assertTrue(!tempwinchSimulation.getIsBroken());
 
-    if (expectArmBroken) {
-      assertTrue(tempArmSimulation.getIsBroken());
-    }
-    else {
-      assertTrue(!tempArmSimulation.getIsBroken());
+    if (!expectArmBroken) {
       assertEquals(m_winchAbsoluteEncoder.get() * 360,
           expectedDegrees,
           UnitConversions.kAngleTolerance);

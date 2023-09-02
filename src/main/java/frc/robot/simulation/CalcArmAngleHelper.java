@@ -146,6 +146,21 @@ public class CalcArmAngleHelper {
     return new Result(true, stringLen);
   }
 
+  /**
+   * Given a signed angle at which the Robot arm is pointed, calculates the string length
+   * from the winch to the arm's back end.
+   * Also, validates the angle is valid.
+   */
+  public double calcAndValidateStringLengthForSignedDegrees(double signedDegrees) {
+    Result result = calcStringLengthForSignedDegrees(signedDegrees);
+
+    if (!result.m_isValid) {
+      throw new IllegalArgumentException("Angle " + signedDegrees + " is invalid");
+    }
+
+    return result.m_value;
+  }
+
   private double calcHeightOnRightTriangle(double lenHypotenuse, double signedAngle) {
     double angleRadians = Math.toRadians(signedAngle);
     return lenHypotenuse * Math.sin(angleRadians);
